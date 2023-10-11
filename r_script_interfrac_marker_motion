@@ -1,0 +1,194 @@
+## AUfRUF: Rscript /home/boeckefx/Documents/Prostate_SOP/scripte/interfrac_marker_motion.R
+
+## get distances = submarker ##
+
+###############
+## read data ##
+###############
+marker17a= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Albig^Bernd/Distances.txt", sep="") , header=TRUE, sep="\t",dec=".")
+balloon17a= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Albig^Bernd/BallonParameter.txt", sep=""), header=TRUE, sep="\t",dec=".")
+submarker17a = marker17a[,10:12]
+#
+marker17b= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Albig^Bernd2/Distances.txt", sep="") , header=TRUE, sep="\t",dec=".")
+balloon17= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Albig^Bernd2/BallonParameter.txt", sep=""), header=TRUE, sep="\t",dec=".")
+
+submarker17b = marker17b[,10:12]
+submarker171<-c(submarker17a[,1],submarker17b[,1])
+submarker172<-c(submarker17a[,2],submarker17b[,2])
+submarker173<-c(submarker17a[,3],submarker17b[,3])
+submarker17= cbind(submarker171,submarker172,submarker173)
+submarker17<-submarker17[-c( 3,6, 7,9,11), ]# 2. cbct in einer fraktion entfernt und ein fehlerbehaftetes -> erklärt in excel sop_patienten
+
+
+
+#
+marker1= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Ammon_Klaus/Distances.txt", sep="") , header=TRUE, sep="\t",dec=".")
+balloon1= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Ammon_Klaus/BallonParameter.txt", sep=""), header=TRUE, sep="\t",dec=".")
+submarker1 = marker1[,10:12]
+#
+
+
+marker13= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Beck^Michael/Distances.txt", sep="") , header=TRUE, sep="\t",dec=".")
+#balloon13= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Beck^Michael/BallonParameter.txt", sep=""), header=TRUE, sep="\t",dec=".")
+submarker13 = marker13[,10:12]
+submarker13<-submarker13[-c( 5, 22), ]# 2.CBCT und ein fehlerbehaftetes -> erklärt in excel sop_patienten
+
+
+
+# Bohn ??? für auswertung!!
+marker11= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Bohn^Werner/Distances.txt", sep="") , header=TRUE, sep="\t",dec=".")
+balloon11= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Bohn^Werner/BallonParameter.txt", sep=""), header=TRUE, sep="\t",dec=".")
+submarker11 = marker11[,10:12]
+submarker11<-submarker11[-c( 11, 13, 14, 17), ]# 2. CBCT und ein fehlerbehaftetes -> erklärt in excel sop_patienten
+
+
+
+
+#
+marker2= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Brauer_Reinhard/Distances.txt", sep="") , header=TRUE, sep="\t",dec=".")
+balloon2= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Brauer_Reinhard/BallonParameter.txt", sep=""), header=TRUE, sep="\t",dec=".")
+submarker2 = marker2[,10:12]
+submarker2<-submarker2[-c( 3, 5, 7), ]# 2. cbct in einer fraktion entfernt und doppelte -> erklärt in excel sop_patienten
+ 
+#
+
+
+
+## many more data to follow here
+
+#################
+## calculation ##
+#################
+
+## shift to zero ###
+
+submarkera=submarker17[,1]-mean(submarker17[,1]) # 7 days recovery days until planning CT // 7 days until 1. RT
+submarkerb=submarker17[,2]-mean(submarker17[,2])
+submarkerc=submarker17[,3]-mean(submarker17[,3])
+shiftmarker17= cbind(submarkera,submarkerb,submarkerc)
+
+submarkera=submarker1[,1]-mean(submarker1[,1]) # 3 days // 5
+submarkerb=submarker1[,2]-mean(submarker1[,2])
+submarkerc=submarker1[,3]-mean(submarker1[,3])
+shiftmarker1= cbind(submarkera,submarkerb,submarkerc)
+
+submarkera=submarker13[,1]-mean(submarker13[,1]) # 4 days // 14
+submarkerb=submarker13[,2]-mean(submarker13[,2])
+submarkerc=submarker13[,3]-mean(submarker13[,3])
+shiftmarker13= cbind(submarkera,submarkerb,submarkerc)
+
+submarkera=submarker11[,1]-mean(submarker11[,1]) # 3 days // 6
+submarkerb=submarker11[,2]-mean(submarker11[,2])
+submarkerc=submarker11[,3]-mean(submarker11[,3])
+shiftmarker11= cbind(submarkera,submarkerb,submarkerc)
+
+
+submarkera=submarker2[,1]-mean(submarker2[,1]) # 6 days // 5
+submarkerb=submarker2[,2]-mean(submarker2[,2])
+submarkerc=submarker2[,3]-mean(submarker2[,3])
+shiftmarker2= cbind(submarkera,submarkerb,submarkerc)
+
+## plus recovery days ## /// ignore weekends between RTs ///
+#navec<-c(NA[1:100])
+
+rotate <- function(x) t(apply(x, 2, rev))
+recmarker17= rotate(rotate(rotate(rbind(NA,NA,NA,NA,NA,NA,NA,shiftmarker17[1,],NA,NA,NA,NA,NA,NA,NA,shiftmarker17[2:nrow(shiftmarker17),]))))
+recmarker1= rotate(rotate(rotate(rbind(NA,NA,NA,shiftmarker1[1,],NA,NA,NA,NA,NA,shiftmarker1[2:nrow(shiftmarker1),]))))
+recmarker13= rotate(rotate(rotate(rbind(NA,NA,NA,NA,shiftmarker13[1,],NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,shiftmarker13[2:nrow(shiftmarker13),]))))
+#recmarker11= rotate(rotate(rotate(rbind(NA,NA,NA,shiftmarker11[1,],NA,NA,NA,NA,NA,NA,NA,shiftmarker11[2:length(shiftmarker11),]))))
+recmarker2= rotate(rotate(rotate(rbind(NA,NA,NA,NA,NA,NA,shiftmarker2[1,],NA,NA,NA,NA,NA,shiftmarker2[2:nrow(shiftmarker2),]))))
+
+minvec=min(maxseq<-c(ncol(recmarker17),ncol(recmarker1),ncol(recmarker13),ncol(recmarker2)))
+
+
+## sum all up ##
+
+#summarker= rbind(recmarker17[,1:28],recmarker1[,1:28],recmarker13[,1:28],recmarker11[,1:28],recmarker2[,1:28])
+summarker= rbind(recmarker17[,1:minvec],recmarker1[,1:minvec],recmarker13[,1:minvec],recmarker2[,1:minvec])
+
+###########
+## print ##
+###########
+
+## boxplot sum of all markers correlation days vs motion distance ###
+
+colnames(summarker)<-c(1:minvec)
+pdf("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct_analysis/interfrac_marker_motion.pdf",width= 9, height= 5)
+boxplot(summarker,xlab="Days",ylab="Sum of Distances [mm]", main="Correlation of Recovery Days and Distances", ylim=c(-10,10))
+
+
+## plotting std of all markers correlation days vs morion distance ##
+
+# std ##
+# ######
+
+remove <- c (NA)
+
+List=list()
+for(i in 1:ncol(summarker)){
+  a=summarker[,i]
+  b=a [! a %in% remove]
+  LM=sd(b)
+  List[[length(List)+1]] = LM
+}
+sdmarker <- as.numeric(unlist(List))
+colnames(summarker)<-c(1:minvec)
+print(sdmarker)
+
+plot(sdmarker, xaxt = "n",xlab="Days", ylab="Standard Deviation [mm]", main="Standard Deviation of Distances",ylim = c(0,4),type="p", col="blue",pch=3)
+#legend(3,20, c("Distance 1 to 2","Distance 2 to 3", "Distance 1 to 3"),pch=c(3,2,1), col=c("blue","red","darkgreen")) # gives the legend lines the correct color and width
+axis(1, at=1:28, labels=0:27)
+
+## plot individual marker motion ##
+
+# std calculation ##
+# ##################
+
+std1=sd(shiftmarker17[,1])
+std2=sd(shiftmarker17[,2])
+std3=sd(shiftmarker17[,3])
+max_std=round(max(std1,std2,std3), 2)
+
+# date ##
+# #######
+
+X <- factor(shiftmarker17[,1])
+x_series=(1:(length(X)))
+x_label1=paste("Date", marker17a$AquisitionDate[1], collapse = " ") # date neu rausziehen
+x_label2=paste("Date", marker17a$AquisitionDate[2], collapse = " ")
+
+# plot ##
+# #######
+
+pdf("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct_analysis/marker_motion_each_pat.pdf")
+
+title="Patient (17): Variation of Marker Distances"
+par(mar=c(6,5,4.1, 2.1))
+plot(x_series,shiftmarker17[,1], xaxt = "n",xlab="", ylab="", main=title,ylim = c(-10,+10),type="p", col="blue",pch=3)
+lines(shiftmarker17[,2], type="p", col="red",pch=2)# col=1 gray
+lines(shiftmarker17[,3], type="p", col="darkgreen",pch=1)
+
+abline(h = as.numeric(as.character(mean(shiftmarker17[,3])))-max_std, col = 1);
+abline(h = as.numeric(as.character(mean(shiftmarker17[,3])))+max_std, col = 1);
+
+text(1,as.numeric(as.character(shiftmarker17[1,3]))+1,label="CT")
+
+axis(1, at=1, labels="")
+axis(1, at=2, labels="")
+text(-2,-13, srt=45, pos=1, xpd=TRUE, labels=x_label1)
+text(-1,-13, srt=45, pos=1, xpd=TRUE, labels=x_label2)
+axis(1, at=3:length(x_series), labels=2:(length(x_series)-1))
+axis(2, at=max_std, las=2, labels=max_std)
+axis(2, at=-max_std, las=2, labels=-max_std)
+mtext("number of fraction", side = 1, line = 3, cex = 1, font = 1)
+mtext("distance [mm]", side = 2, line = 4, cex = 1, font = 1)
+legend(6,10, c("Distance 1 to 2","Distance 2 to 3", "Distance 1 to 3"),pch=c(3,2,1), col=c("blue","red","darkgreen")) # gives the legend lines the correct color and width
+
+print("ENDE")
+quit()
+
+
+
+
+
+
