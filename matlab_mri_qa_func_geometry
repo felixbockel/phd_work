@@ -1,0 +1,125 @@
+  %% Geometry: Calculation length_2_3_4_5 and mean length of 2-5             
+  function [perc_var_mean_len_phan,mean_length_19,percent_variation_length5_phantom,length5_of_phantom,percent_variation_length4_phantom,length4_of_phantom,percent_variation_length3_phantom,length3_of_phantom,percent_variation_length2_phantom,length2_of_phantom]=Geometry(dicom,t_path,T_image)
+            
+            
+            % segmentate inner circle
+            if T_image == 1
+            
+                [center,radius]=imfindcircles(dicom,[100 200]); % find any circle inside of that image T1
+            
+            elseif T_image == 2
+            
+                [center,radius]=imfindcircles(dicom,[59 150]); % find any circle inside of that image T2
+                
+            end
+            
+            [row,~]=size(dicom); % it is necessary that row and col have same length
+            [rr,cc] = meshgrid(1:row);
+            circle = sqrt((rr-center(1,1)).^2+(cc-center(1,2)).^2)<=radius; % create circle with same size and location; radius must be in pixels
+            circle_double=+circle; % convert circle from logical to double 
+            dicom_double=double(dicom);       
+            area_roi_large=circle_double.*dicom_double;
+            %figure;imshow(area_roi_large,[])
+ 
+            [~,col]=size(area_roi_large);
+        
+            %Calculation length_2_3_4_5 and mean length of 2-5
+            for i=1:col
+                  length_phantom(1,i)=length(find(area_roi_large(:,i)>0));
+                  length_phantom_lefttoright(1,i)=length(find(area_roi_large(i,:)>0));
+            end
+
+            % up to down
+            dicom_info=dicominfo(t_path); % DICOM image will be read out      
+            FOV=char(dicom_info.Private_0051_100c);
+            FOV=FOV(9:end);
+            FOV_num=double(str2double(FOV)); 
+            image_size=double(dicom_info.Rows);
+            resolution=image_size./FOV_num; % resolution: pixel per mm 
+            actual_length_2=19.0; % actual_length_1 of ACR-Phantom
+            actual_pixel_length=(actual_length_2.*10.*resolution)-((actual_length_2.*10.*resolution).*0.01);% 1% value variation is allowed to take in account           
+            length_phantom_corr=length_phantom;
+            length_phantom(length_phantom<actual_pixel_length)=[];
+            [~,leng_phantom_row]=size(length_phantom);
+            
+            if leng_phantom_row==0
+            
+            length_phantom=length_phantom_corr;    
+            actual_pixel_length_2=(actual_length_2.*10.*resolution)-((actual_length_2.*10.*resolution).*0.02);% 2% value variation is allowed to take in account           
+            length_phantom(length_phantom<actual_pixel_length_2)=[];    
+                
+            end
+            
+            mean_phantom_size=double(mean(length_phantom));
+            length2_of_phantom=(mean_phantom_size./resolution)./10; % length in cm     
+            percent_variation_length2_phantom=((abs(length2_of_phantom-actual_length_2)).*100)./actual_length_2;
+            % 2 Werte protokollieren
+
+            % left to right
+            
+            length_phantom_lefttoright_corr=length_phantom_lefttoright;
+            length_phantom_lefttoright(length_phantom_lefttoright<actual_pixel_length)=[];
+            [~,leng_phantom_row]=size(length_phantom_lefttoright);
+            
+            if leng_phantom_row==0
+            
+            length_phantom_lefttoright=length_phantom_lefttoright_corr;    
+            actual_pixel_length_2=(actual_length_2.*10.*resolution)-((actual_length_2.*10.*resolution).*0.02);% 2% value variation is allowed to take in account           
+            length_phantom_lefttoright(length_phantom_lefttoright<actual_pixel_length_2)=[];    
+                
+            end
+
+            mean_phantom_size=double(mean(length_phantom_lefttoright));     
+            length3_of_phantom=(mean_phantom_size./resolution)./10; % length in cm
+            percent_variation_length3_phantom=((abs(length3_of_phantom-actual_length_2)).*100)./actual_length_2;
+            % 2 Werte protokollieren
+
+            % -45 Grad Diagonale
+            I=area_roi_large;
+            % Skalierung, scaling
+            I(I>1)=1;
+            I=double(I);
+            dx=0;
+            dy=0;
+            alpha=0.25; % -45° and alpha=0.75 +45°
+            I_move =rotrans2(I,area_roi_large,dx,dy,alpha);
+            %figure;imshow(I_move,[]);
+            [~,col]=size(area_roi_large);         
+
+            for i=1:col
+                  length_phantom(1,i)=length(find(I_move(:,i)>0));              
+            end
+
+            length_phantom(length_phantom<actual_pixel_length)=[];
+            mean_phantom_size=double(mean(length_phantom));
+            length4_of_phantom=(mean_phantom_size./resolution)./10; % length in cm     
+            percent_variation_length4_phantom=((abs(length4_of_phantom-actual_length_2)).*100)./actual_length_2;
+            % 2 Werte protokollieren
+
+            % 45 Grad Diagonale
+            I=area_roi_large;
+            % Skalierung, scaling
+            I(I>1)=1;
+            I=double(I);
+            dx=0;
+            dy=0;
+            alpha=-0.25; % -45° and alpha=-0.25 +45°
+            I_move =rotrans2(I,area_roi_large,dx,dy,alpha);
+            %figure;imshow(I_move,[]);
+            [~,col]=size(area_roi_large);         
+
+            for i=1:col
+                  length_phantom(1,i)=length(find(I_move(:,i)>0));              
+            end
+
+            length_phantom(length_phantom<actual_pixel_length)=[];
+            mean_phantom_size=double(mean(length_phantom));
+            length5_of_phantom=(mean_phantom_size./resolution)./10; % length in cm     
+            percent_variation_length5_phantom=((abs(length5_of_phantom-actual_length_2)).*100)./actual_length_2;
+            % 2 Werte protokollieren
+
+            % All length of phantom together
+            all_length_19=[length2_of_phantom,length3_of_phantom,length4_of_phantom,length5_of_phantom];
+            mean_length_19=mean(all_length_19);
+            perc_var_mean_len_phan=((abs(mean_length_19-actual_length_2)).*100)./actual_length_2;
+            % 2 Werte protokollieren
