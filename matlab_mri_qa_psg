@@ -1,0 +1,120 @@
+function [psg,psg_test]=PSG(dicom,t_path,T_image)
+          
+         if T_image == 1
+  
+            [center,~]=imfindcircles(dicom,[100 200]); % find any circle inside of that image
+            
+         elseif T_image == 2
+             
+            [center,~]=imfindcircles(dicom,[50 100]); % find any circle inside of that image
+          
+         end
+
+          % create large circle 20 cm²
+          
+          center(1,2)=center(1,2)+10;% to avoid that dark box is inside of the radius_roi_large circle
+          area_circle=200;% 200cm² circle must be placed into large circle
+          radius_roi_large= 10*(sqrt(area_circle/pi));% radius of 200cm² cirlce, radius in mm     
+          dicom_info=dicominfo(t_path); % DICOM image will be read out      
+          FOV=char(dicom_info.Private_0051_100c);
+          FOV=FOV(9:end);
+          FOV_num=double(str2double(FOV)); 
+          image_size=double(dicom_info.Rows);
+          resolution=image_size./FOV_num; % resolution: pixel per mm
+          radius_pixel=radius_roi_large*resolution;  
+          [row,~]=size(dicom); % it is necessary that row and col have same length
+          [rr,cc] = meshgrid(1:row);
+          circle = sqrt((rr-center(1,1)).^2+(cc-center(1,2)).^2)<=radius_pixel; % create circle with same size and location; radius must be in pixels
+          circle_double=+circle; % convert circle from logical to double 
+          dicom_double=double(dicom);       
+          %figure;imshow(circle,[]);          
+          area_roi_large=circle_double.*dicom_double;  
+          
+          [M,~]=size(area_roi_large);
+          d=0;
+          values_gr_null=[];
+          
+          for i=1:M 
+    
+                [~,~,ones_true]=find(area_roi_large(i,:) > 0);
+
+                if ones_true == 1
+                    
+                  d=d+1;
+                  index_gr_null= area_roi_large(i,:) > 0;
+                  values_gr_null(d,1)=mean(area_roi_large(i,index_gr_null));
+                                    
+                end
+                
+          end
+          
+          
+          % 4 squares left,right,up,down 13.5 cm² placed inside of background
+          area_square=1350;% 13.5 cm²==1350 mm²
+          length_edge=sqrt(area_square);
+          smaller_edge=length_edge./3; % 1/2 der totalen Länge
+          longer_edge=length_edge.*3;% 2* der totalen Länge
+          smaller_edge_pixel=round(smaller_edge*resolution);
+          longer_edge_pixel=round(longer_edge*resolution);
+          [row_dicom,col_dicom]=size(dicom);
+          mean_row_dicom=row_dicom/2;
+          mean_col_dicom=col_dicom/2;
+          longer_edge_pixel_half=round(longer_edge_pixel/2);
+          
+          %T1- Images == 1, T2- Image == 2
+          
+          if T_image == 1
+              
+              square_left=dicom((mean_row_dicom-longer_edge_pixel_half):(mean_row_dicom+longer_edge_pixel_half),10:(10+smaller_edge_pixel));
+              square_right=dicom((mean_row_dicom-longer_edge_pixel_half):(mean_row_dicom+longer_edge_pixel_half),(500-smaller_edge_pixel):500);
+              square_up=dicom(10:(10+smaller_edge_pixel),((mean_col_dicom-longer_edge_pixel_half):(mean_col_dicom+longer_edge_pixel_half)));
+              square_down=dicom((500-smaller_edge_pixel):500,(mean_col_dicom-longer_edge_pixel_half):(mean_col_dicom+longer_edge_pixel_half));
+              %figure;imshow(square_left,[]); 
+          
+          elseif T_image == 2
+              
+              square_left=dicom((mean_row_dicom-longer_edge_pixel_half):(mean_row_dicom+longer_edge_pixel_half),5:(5+smaller_edge_pixel));
+              square_right=dicom((mean_row_dicom-longer_edge_pixel_half):(mean_row_dicom+longer_edge_pixel_half),(250-smaller_edge_pixel):250);
+              square_up=dicom(5:(5+smaller_edge_pixel),((mean_col_dicom-longer_edge_pixel_half):(mean_col_dicom+longer_edge_pixel_half)));
+              square_down=dicom((250-smaller_edge_pixel):250,(mean_col_dicom-longer_edge_pixel_half):(mean_col_dicom+longer_edge_pixel_half));
+              %figure;imshow(square_left,[]); 
+              
+          end
+                   
+%           %TEST;Darstellung, wo sich die 4 Boxen befinden
+%           circle_double(circle_double==1)=2;
+%           circle_double(circle_double==0)=1;
+%           dicom_test=circle_double.*dicom_double;
+%           max_dicom_test=max(max(dicom_test));
+%           dicom_test((mean_row_dicom-longer_edge_pixel_half):(mean_row_dicom+longer_edge_pixel_half),5:(5+smaller_edge_pixel))=max_dicom_test; 
+%           dicom_test((mean_row_dicom-longer_edge_pixel_half):(mean_row_dicom+longer_edge_pixel_half),(250-smaller_edge_pixel):250)=max_dicom_test;
+%           dicom_test(5:(5+smaller_edge_pixel),((mean_col_dicom-longer_edge_pixel_half):(mean_col_dicom+longer_edge_pixel_half)))=max_dicom_test;
+%           dicom_test((250-smaller_edge_pixel):250,(mean_col_dicom-longer_edge_pixel_half):(mean_col_dicom+longer_edge_pixel_half))=max_dicom_test;
+%           figure;imshow(dicom_test,[]);
+% %           
+%           %TEST;Darstellung, wo sich die 4 Boxen befinden
+%           circle_double(circle_double==1)=2;
+%           circle_double(circle_double==0)=1;
+%           dicom_test=circle_double.*dicom_double;
+%           max_dicom_test=max(max(dicom_test));
+%           dicom_test((mean_row_dicom-longer_edge_pixel_half):(mean_row_dicom+longer_edge_pixel_half),10:(10+smaller_edge_pixel))=max_dicom_test; 
+%           dicom_test((mean_row_dicom-longer_edge_pixel_half):(mean_row_dicom+longer_edge_pixel_half),(500-smaller_edge_pixel):500)=max_dicom_test;
+%           dicom_test(10:(10+smaller_edge_pixel),((mean_col_dicom-longer_edge_pixel_half):(mean_col_dicom+longer_edge_pixel_half)))=max_dicom_test;
+%           dicom_test((500-smaller_edge_pixel):500,(mean_col_dicom-longer_edge_pixel_half):(mean_col_dicom+longer_edge_pixel_half))=max_dicom_test;
+%           figure;imshow(dicom_test,[]);
+          
+          
+          % Analysis
+          mean_area_large=mean(values_gr_null);
+          mean_square_left=mean(mean(square_left));
+          mean_square_right=mean(mean(square_right));
+          mean_square_up=mean(mean(square_up));
+          mean_square_down=mean(mean(square_down));
+          psg=abs(((mean_square_up+mean_square_down)-(mean_square_left+mean_square_right))/(2*mean_area_large));
+          
+          
+          if psg<=0.025
+              psg_test='psg test passed';
+          else
+              psg_test='psg test failed';
+          end 
