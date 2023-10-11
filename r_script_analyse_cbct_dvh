@@ -1,0 +1,2465 @@
+## AUfRUF: Rscript /home/boeckefx/Documents/Prostate_SOP/scripte/cbct_dvh.r Ammon inter
+
+##########
+## data ##
+##########
+
+# input arguments
+
+args<-commandArgs(TRUE)
+patientID = as.character(args[1]) # name of patient: .../dvh_kontur_shift/analysis/patientID
+print(patientID);
+
+args<-commandArgs(TRUE)
+motionID = as.character(args[2]) # inter oder intra: inter includes analysis of interfractional motion and intra means inter- + intrafractional motion 
+print(motionID);
+
+# create folders
+
+dir.create(file.path(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",patientID, sep="")))
+dir.create(file.path(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",patientID,"/",motionID, sep="")))
+dir.create(file.path(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",patientID,"/",motionID, sep=""),"png_all_fr"))
+
+# Graph parameters
+
+color_prostate=rgb(1,0,1,1) # pink
+color_rektwand=rgb(0,0.5,0,1) # dunkelgrün
+color_rektum=rgb(0,1,0,1) # hellgrün
+color_bulb=rgb(0,1,1,1) # hellblau
+color_prostate_totaldose=rgb(1,0,1,1)
+color_rektwand_totaldose=rgb(0,0.5,0,1)
+color_rektum_totaldose=rgb(0,1,0,1)
+color_bulb_totaldose=rgb(0,1,1,1)
+type_line_nonshift="l"
+type_line_shift="l"
+lty_solid=1 # for non shift
+lty_dotted=2 # for shift
+
+seq_dose=seq(0,55,5)
+seq_vol_name=seq(0,100,10)
+seq_vol_pos=seq(0,1,0.1)
+font_size=0.9
+font_type=1
+x_axis="Dose [Gy]"
+y_axis="Volume [%]"
+x_lim=c(0,55)
+
+# print graph
+
+#png
+print_width=8
+print_height=4
+print_res=300
+
+myPng <- function(..., width=print_width, height=print_height, res=print_res) {
+  png(..., width=width*res, height=height*res, res=res)
+  
+}
+
+# pdf
+#pdf_width=9
+#pdf_height=5
+
+# print dvh verlauf png
+path_print_totaldose=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",patientID,"/",motionID,"/totaldose.png", sep="")
+path_print_doseverlauf=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",patientID,"/",motionID,"/png_all_fr/", sep="")
+
+# print pdf
+#path_pdf_totaldose=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",patientID,"/totaldose.pdf", sep="")
+#path_pdf_doseverlauf=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",patientID,"/doseverlauf.pdf", sep="")
+
+#
+legend_totaldose=c("Prostate dose without motion","Prostate dose with motion","Anterior rectal wall dose without motion","Anterior rectal wall dose with motion","Rectum dose without motion","Rectum dose with motion","Penile Bulb without motion")
+#
+
+if(motionID == "intra"){
+
+   pathID=paste(patientID,"/","inter_intra_shift",sep="")
+   print(pathID)
+   
+} else {
+   
+   pathID=paste(patientID,"/","inter_shift",sep="")
+   print(pathID)
+   
+}
+
+
+
+## x-ray marker ##
+
+# prostate ## 
+
+
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh0.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0=dvh_prep
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh1.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_1=dvh_prep
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh2.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_2=dvh_prep
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh3.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_3=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh4.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_4=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh5.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_5=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh6.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_6=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh7.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_7=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh8.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_8=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh9.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_9=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh10.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_10=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh11.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_11=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh12.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_12=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh13.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_13=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh14.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_14=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh15.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_15=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh16.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_16=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh17.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_17=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh18.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_18=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh19.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_19=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh20.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_20=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh21.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_21=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh22.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_22=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh23.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_23=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh24.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_24=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh25.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_25=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh26.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_26=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh27.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_27=dvh_prep
+
+# prostata zero shift
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_0.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_0=dvh_prep
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_1.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_1=dvh_prep
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_2.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_2=dvh_prep
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_3.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_3=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_4.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_4=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_5.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_5=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_6.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_6=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_7.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_7=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_8.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_8=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_9.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_9=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_10.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_10=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_11.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_11=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_12.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_12=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_13.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_13=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_14.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_14=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_15.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_15=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_16.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_16=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_17.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_17=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_18.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_18=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_19.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_19=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_20.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_20=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_21.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_21=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_22.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_22=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_23.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_23=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_24.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_24=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_25.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_25=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_26.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_26=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Prostate/dvh_0_27.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_prostate_0_27=dvh_prep
+
+
+
+#
+# rektumvorderwand ## 
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh0.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0=dvh_prep
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh1.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_1=dvh_prep
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh2.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_2=dvh_prep
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh3.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_3=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh4.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_4=dvh_prep
+#
+
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh5.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_5=dvh_prep
+#
+
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh6.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_6=dvh_prep
+#
+
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh7.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_7=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh8.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_8=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh9.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_9=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh10.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_10=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh11.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_11=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh12.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_12=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh13.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_13=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh14.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_14=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh15.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_15=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh16.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_16=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh17.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_17=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh18.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_18=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh19.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_19=dvh_prep
+#
+
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh20.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_20=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh21.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_21=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh22.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_22=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh23.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_23=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh24.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_24=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh25.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_25=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh26.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_26=dvh_prep
+#
+
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh27.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_27=dvh_prep
+
+# zero shift
+
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_0.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_0=dvh_prep
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_1.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_1=dvh_prep
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_2.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_2=dvh_prep
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_3.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_3=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_4.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_4=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_5.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_5=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_6.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_6=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_7.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_7=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_8.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_8=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_9.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_9=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_10.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_10=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_11.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_11=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_12.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_12=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_13.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_13=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_14.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_14=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_15.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_15=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_16.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_16=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_17.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_17=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_18.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_18=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_19.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_19=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_20.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_20=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_21.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_21=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_22.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_22=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_23.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_23=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_24.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_24=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_25.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_25=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_26.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_26=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektumvorderwand/dvh_0_27.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektwand_0_27=dvh_prep
+
+# Bulb ## 
+
+# zero shift
+
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_0.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_0=dvh_prep
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_1.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_1=dvh_prep
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_2.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_2=dvh_prep
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_3.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_3=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_4.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_4=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_5.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_5=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_6.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_6=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_7.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_7=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_8.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_8=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_9.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_9=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_10.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_10=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_11.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_11=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_12.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_12=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_13.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_13=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_14.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_14=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_15.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_15=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_16.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_16=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_17.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_17=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_18.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_18=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_19.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_19=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_20.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_20=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_21.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_21=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_22.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_22=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_23.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_23=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_24.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_24=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_25.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_25=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_26.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_26=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Bulb/dvh_0_27.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_bulb_0_27=dvh_prep
+
+
+# rektum
+
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh0.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0=dvh_prep
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh1.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_1=dvh_prep
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh2.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_2=dvh_prep
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh3.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_3=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh4.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_4=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh5.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_5=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh6.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_6=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh7.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_7=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh8.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_8=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh9.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_9=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh10.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_10=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh11.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_11=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh12.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_12=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh13.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_13=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh14.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_14=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh15.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_15=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh16.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_16=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh17.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_17=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh18.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_18=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh19.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_19=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh20.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_20=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh21.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_21=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh22.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_22=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh23.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_23=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh24.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_24=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh25.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_25=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh26.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_26=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh27.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_27=dvh_prep
+
+# zero shift
+
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_0.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_0=dvh_prep
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_1.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_1=dvh_prep
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_2.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_2=dvh_prep
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_3.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_3=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_4.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_4=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_5.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_5=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_6.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_6=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_7.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_7=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_8.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_8=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_9.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_9=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_10.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_10=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_11.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_11=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_12.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_12=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_13.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_13=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_14.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_14=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_15.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_15=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_16.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_16=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_17.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_17=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_18.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_18=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_19.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_19=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_20.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_20=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_21.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_21=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_22.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_22=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_23.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_23=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_24.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_24=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_25.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_25=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_26.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_26=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/Rektum/dvh_0_27.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_rektum_0_27=dvh_prep
+
+
+
+
+
+# ptv
+
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh0.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0=dvh_prep
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh1.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_1=dvh_prep
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh2.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_2=dvh_prep
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh3.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_3=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh4.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_4=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh5.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_5=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh6.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_6=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh7.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_7=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh8.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_8=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh9.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_9=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh10.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_10=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh11.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_11=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh12.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_12=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh13.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_13=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh14.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_14=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh15.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_15=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh16.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_16=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh17.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_17=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh18.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_18=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh19.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_19=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh20.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_20=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh21.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_21=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh22.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_22=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh23.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_23=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh24.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_24=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh25.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_25=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh26.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_26=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh27.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_27=dvh_prep
+
+# zero shift
+
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_0.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_0=dvh_prep
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_1.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_1=dvh_prep
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_2.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_2=dvh_prep
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_3.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_3=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_4.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_4=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_5.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_5=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_6.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_6=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_7.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_7=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_8.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_8=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_9.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_9=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_10.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_10=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_11.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_11=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_12.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_12=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_13.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_13=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_14.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_14=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_15.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_15=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_16.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_16=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_17.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_17=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_18.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_18=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_19.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_19=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_20.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_20=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_21.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_21=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_22.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_22=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_23.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_23=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_24.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_24=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_25.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_25=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_26.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_26=dvh_prep
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/",pathID,"/dvh/PTV/dvh_0_27.txt", sep="") , header=TRUE, sep="\t",dec=".")
+dvh_prep=dvh[,c(1,2)]
+index_nonzeros=which(dvh_prep[,c(2)]!=0)
+index_end=(length(index_nonzeros))+2
+dvh_prep<-dvh_prep[-c(index_end:nrow(dvh_prep)), ]
+dvh_ptv_0_27=dvh_prep
+
+
+
+
+#
+
+#################
+## calucaltion ##
+#################
+
+
+
+
+
+###########
+## print ##
+###########
+
+## dvh ##
+
+
+myPng(path_print_totaldose, width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot(dvh_prostate_0_27[,c(1)],dvh_prostate_0_27[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate_totaldose,ylab=NA, xlab=NA,yaxt="n",xaxt = "n")#ylab=NA, xlab=NA,yaxt="n",xaxt = "n",
+lines(dvh_prostate_27[,c(1)],dvh_prostate_27[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate_totaldose)
+lines(dvh_rektwand_0_27[,c(1)],dvh_rektwand_0_27[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand_totaldose)
+lines(dvh_rektwand_27[,c(1)],dvh_rektwand_27[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand_totaldose)
+lines(dvh_rektum_0_27[,c(1)],dvh_rektum_0_27[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum_totaldose)
+lines(dvh_rektum_27[,c(1)],dvh_rektum_27[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum_totaldose)
+lines(dvh_bulb_0_27[,c(1)],dvh_bulb_0_27[,c(2)],type=type_line_shift,  lty=lty_solid,col=color_bulb_totaldose)
+
+
+#lines(dvh_ptv_0_20[,c(1)],dvh_ptv_0_20[,c(2)],type="l",  lty=1,col=("red"))
+#lines(dvh_ptv_20[,c(1)],dvh_ptv_20[,c(2)],type="l",  lty=2,col=("red"))
+
+#grid(80, 20, lwd=0, col=("gray"))
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line = 3, cex = font_size, font = font_type)
+legend("bottomleft", legend=legend_totaldose,lty=c(1,2), col =c(color_prostate,color_prostate,color_rektwand,color_rektwand,color_rektum,color_rektum,color_bulb),cex = 0.8,bg="white")
+
+#
+
+#legend("bottomleft", legend=(c("Prostate dose after TPS","Prostate dose including motion","Anterior rectal wall dose after TPS","Anterior rectal wall dose including motion","rectal wall dose after TPS","rectal wall dose including motion")),lty=c(1,2), col =c("black","black","gray40","gray40","gray60","gray60"),cex = 0.8,bg="white")
+#main="CBCT DVH Patient 1 - Prostate motion"
+
+
+myPng(paste(path_print_doseverlauf,"1fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+#pdf(path_pdf_doseverlauf,width= pdf_width, height= pdf_height)
+
+plot((dvh_prostate_0_0[,c(1)]),dvh_prostate_0_0[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_0[,c(1)],dvh_prostate_0[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_0[,c(1)]),dvh_rektwand_0_0[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_0[,c(1)],dvh_rektwand_0[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_0[,c(1)]),dvh_rektum_0_0[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_0[,c(1)],dvh_rektum_0[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+
+#
+
+myPng(paste(path_print_doseverlauf,"2fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot((dvh_prostate_0_1[,c(1)]),dvh_prostate_0_1[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_1[,c(1)],dvh_prostate_1[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_1[,c(1)]),dvh_rektwand_0_1[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_1[,c(1)],dvh_rektwand_1[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_1[,c(1)]),dvh_rektum_0_1[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_1[,c(1)],dvh_rektum_1[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+#
+myPng(paste(path_print_doseverlauf,"3fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot((dvh_prostate_0_2[,c(1)]),dvh_prostate_0_2[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_2[,c(1)],dvh_prostate_2[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_2[,c(1)]),dvh_rektwand_0_2[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_2[,c(1)],dvh_rektwand_2[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_2[,c(1)]),dvh_rektum_0_2[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_2[,c(1)],dvh_rektum_2[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+#
+myPng(paste(path_print_doseverlauf,"4fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot((dvh_prostate_0_3[,c(1)]),dvh_prostate_0_3[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_3[,c(1)],dvh_prostate_3[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_3[,c(1)]),dvh_rektwand_0_3[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_3[,c(1)],dvh_rektwand_3[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_3[,c(1)]),dvh_rektum_0_3[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_3[,c(1)],dvh_rektum_3[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+#
+myPng(paste(path_print_doseverlauf,"5fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot((dvh_prostate_0_4[,c(1)]),dvh_prostate_0_4[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_4[,c(1)],dvh_prostate_4[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_4[,c(1)]),dvh_rektwand_0_4[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_4[,c(1)],dvh_rektwand_4[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_4[,c(1)]),dvh_rektum_0_4[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_4[,c(1)],dvh_rektum_4[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+#
+myPng(paste(path_print_doseverlauf,"6fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot((dvh_prostate_0_5[,c(1)]),dvh_prostate_0_5[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_5[,c(1)],dvh_prostate_5[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_5[,c(1)]),dvh_rektwand_0_5[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_5[,c(1)],dvh_rektwand_5[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_5[,c(1)]),dvh_rektum_0_5[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_5[,c(1)],dvh_rektum_5[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+#
+myPng(paste(path_print_doseverlauf,"7fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot((dvh_prostate_0_6[,c(1)]),dvh_prostate_0_6[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_6[,c(1)],dvh_prostate_6[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_6[,c(1)]),dvh_rektwand_0_6[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_6[,c(1)],dvh_rektwand_6[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_6[,c(1)]),dvh_rektum_0_6[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_6[,c(1)],dvh_rektum_6[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+#
+myPng(paste(path_print_doseverlauf,"8fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot((dvh_prostate_0_7[,c(1)]),dvh_prostate_0_7[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_7[,c(1)],dvh_prostate_7[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_7[,c(1)]),dvh_rektwand_0_7[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_7[,c(1)],dvh_rektwand_7[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_7[,c(1)]),dvh_rektum_0_7[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_7[,c(1)],dvh_rektum_7[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+#
+myPng(paste(path_print_doseverlauf,"9fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot((dvh_prostate_0_8[,c(1)]),dvh_prostate_0_8[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_8[,c(1)],dvh_prostate_8[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_8[,c(1)]),dvh_rektwand_0_8[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_8[,c(1)],dvh_rektwand_8[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_8[,c(1)]),dvh_rektum_0_8[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_8[,c(1)],dvh_rektum_8[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+#
+myPng(paste(path_print_doseverlauf,"10fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot((dvh_prostate_0_9[,c(1)]),dvh_prostate_0_9[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_9[,c(1)],dvh_prostate_9[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_9[,c(1)]),dvh_rektwand_0_9[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_9[,c(1)],dvh_rektwand_9[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_9[,c(1)]),dvh_rektum_0_9[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_9[,c(1)],dvh_rektum_9[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+#
+myPng(paste(path_print_doseverlauf,"11fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot((dvh_prostate_0_10[,c(1)]),dvh_prostate_0_10[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_10[,c(1)],dvh_prostate_10[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_10[,c(1)]),dvh_rektwand_0_10[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_10[,c(1)],dvh_rektwand_10[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_10[,c(1)]),dvh_rektum_0_10[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_10[,c(1)],dvh_rektum_10[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+#
+myPng(paste(path_print_doseverlauf,"12fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot((dvh_prostate_0_11[,c(1)]),dvh_prostate_0_11[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_11[,c(1)],dvh_prostate_11[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_11[,c(1)]),dvh_rektwand_0_11[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_11[,c(1)],dvh_rektwand_11[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_11[,c(1)]),dvh_rektum_0_11[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_11[,c(1)],dvh_rektum_11[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+#
+myPng(paste(path_print_doseverlauf,"13fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot((dvh_prostate_0_12[,c(1)]),dvh_prostate_0_12[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_12[,c(1)],dvh_prostate_12[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_12[,c(1)]),dvh_rektwand_0_12[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_12[,c(1)],dvh_rektwand_12[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_12[,c(1)]),dvh_rektum_0_12[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_12[,c(1)],dvh_rektum_12[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+#
+myPng(paste(path_print_doseverlauf,"14fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot((dvh_prostate_0_13[,c(1)]),dvh_prostate_0_13[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_13[,c(1)],dvh_prostate_13[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_13[,c(1)]),dvh_rektwand_0_13[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_13[,c(1)],dvh_rektwand_13[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_13[,c(1)]),dvh_rektum_0_13[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_13[,c(1)],dvh_rektum_13[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+#
+myPng(paste(path_print_doseverlauf,"15fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot((dvh_prostate_0_14[,c(1)]),dvh_prostate_0_14[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_14[,c(1)],dvh_prostate_14[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_14[,c(1)]),dvh_rektwand_0_14[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_14[,c(1)],dvh_rektwand_14[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_14[,c(1)]),dvh_rektum_0_14[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_14[,c(1)],dvh_rektum_14[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+#
+myPng(paste(path_print_doseverlauf,"16fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot((dvh_prostate_0_15[,c(1)]),dvh_prostate_0_15[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_15[,c(1)],dvh_prostate_15[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_15[,c(1)]),dvh_rektwand_0_15[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_15[,c(1)],dvh_rektwand_15[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_15[,c(1)]),dvh_rektum_0_15[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_15[,c(1)],dvh_rektum_15[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+#
+myPng(paste(path_print_doseverlauf,"17fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot((dvh_prostate_0_16[,c(1)]),dvh_prostate_0_16[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_16[,c(1)],dvh_prostate_16[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_16[,c(1)]),dvh_rektwand_0_16[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_16[,c(1)],dvh_rektwand_16[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_16[,c(1)]),dvh_rektum_0_16[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_16[,c(1)],dvh_rektum_16[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+#
+myPng(paste(path_print_doseverlauf,"18fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot((dvh_prostate_0_17[,c(1)]),dvh_prostate_0_17[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_17[,c(1)],dvh_prostate_17[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_17[,c(1)]),dvh_rektwand_0_17[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_17[,c(1)],dvh_rektwand_17[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_17[,c(1)]),dvh_rektum_0_17[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_17[,c(1)],dvh_rektum_17[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+#
+myPng(paste(path_print_doseverlauf,"19fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot((dvh_prostate_0_18[,c(1)]),dvh_prostate_0_18[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_18[,c(1)],dvh_prostate_18[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_18[,c(1)]),dvh_rektwand_0_18[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_18[,c(1)],dvh_rektwand_18[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_18[,c(1)]),dvh_rektum_0_18[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_18[,c(1)],dvh_rektum_18[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+#
+myPng(paste(path_print_doseverlauf,"20fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot((dvh_prostate_0_19[,c(1)]),dvh_prostate_0_19[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_19[,c(1)],dvh_prostate_19[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_19[,c(1)]),dvh_rektwand_0_19[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_19[,c(1)],dvh_rektwand_19[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_19[,c(1)]),dvh_rektum_0_19[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_19[,c(1)],dvh_rektum_19[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+#
+myPng(paste(path_print_doseverlauf,"21fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot((dvh_prostate_0_20[,c(1)]),dvh_prostate_0_20[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_20[,c(1)],dvh_prostate_20[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_20[,c(1)]),dvh_rektwand_0_20[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_20[,c(1)],dvh_rektwand_20[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_20[,c(1)]),dvh_rektum_0_20[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_20[,c(1)],dvh_rektum_20[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+#
+myPng(paste(path_print_doseverlauf,"22fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot((dvh_prostate_0_21[,c(1)]),dvh_prostate_0_21[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_21[,c(1)],dvh_prostate_21[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_21[,c(1)]),dvh_rektwand_0_21[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_21[,c(1)],dvh_rektwand_21[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_21[,c(1)]),dvh_rektum_0_21[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_21[,c(1)],dvh_rektum_21[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+#
+myPng(paste(path_print_doseverlauf,"23fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot((dvh_prostate_0_22[,c(1)]),dvh_prostate_0_22[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_22[,c(1)],dvh_prostate_22[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_22[,c(1)]),dvh_rektwand_0_22[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_22[,c(1)],dvh_rektwand_22[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_22[,c(1)]),dvh_rektum_0_22[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_22[,c(1)],dvh_rektum_22[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+#
+myPng(paste(path_print_doseverlauf,"24fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot((dvh_prostate_0_23[,c(1)]),dvh_prostate_0_23[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_23[,c(1)],dvh_prostate_23[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_23[,c(1)]),dvh_rektwand_0_23[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_23[,c(1)],dvh_rektwand_23[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_23[,c(1)]),dvh_rektum_0_23[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_23[,c(1)],dvh_rektum_23[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+#
+myPng(paste(path_print_doseverlauf,"25fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot((dvh_prostate_0_24[,c(1)]),dvh_prostate_0_24[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_24[,c(1)],dvh_prostate_24[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_24[,c(1)]),dvh_rektwand_0_24[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_24[,c(1)],dvh_rektwand_24[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_24[,c(1)]),dvh_rektum_0_24[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_24[,c(1)],dvh_rektum_24[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+#
+myPng(paste(path_print_doseverlauf,"26fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot((dvh_prostate_0_25[,c(1)]),dvh_prostate_0_25[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_25[,c(1)],dvh_prostate_25[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_25[,c(1)]),dvh_rektwand_0_25[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_25[,c(1)],dvh_rektwand_25[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_25[,c(1)]),dvh_rektum_0_25[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_25[,c(1)],dvh_rektum_25[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+#
+myPng(paste(path_print_doseverlauf,"27fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot((dvh_prostate_0_26[,c(1)]),dvh_prostate_0_26[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_26[,c(1)],dvh_prostate_26[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_26[,c(1)]),dvh_rektwand_0_26[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_26[,c(1)],dvh_rektwand_26[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_26[,c(1)]),dvh_rektum_0_26[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_26[,c(1)],dvh_rektum_26[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+#
+myPng(paste(path_print_doseverlauf,"28fr.png",sep=""), width=print_width, height=print_height, res=print_res)
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot((dvh_prostate_0_27[,c(1)]),dvh_prostate_0_27[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",xlim=x_lim)
+lines(dvh_prostate_27[,c(1)],dvh_prostate_27[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines((dvh_rektwand_0_27[,c(1)]),dvh_rektwand_0_27[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektwand)
+lines(dvh_rektwand_27[,c(1)],dvh_rektwand_27[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines((dvh_rektum_0_27[,c(1)]),dvh_rektum_0_27[,c(2)],type=type_line_nonshift,  lty=lty_solid,col=color_rektum)
+lines(dvh_rektum_27[,c(1)],dvh_rektum_27[,c(2)],type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line=3, cex = font_size, font = font_type)
+
+#
+
+##########
+## save ##
+##########
+
+write.table(dvh_prostate_0_27, file = paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",patientID,"/",motionID,"/prostate_28fr_noshift.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+write.table(dvh_prostate_27, file = paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",patientID,"/",motionID,"/prostate_28fr_shift.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+write.table(dvh_rektwand_0_27, file = paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",patientID,"/",motionID,"/rektwand_28fr_noshift.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+write.table(dvh_rektwand_27, file = paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",patientID,"/",motionID,"/rektwand_28fr_shift.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+write.table(dvh_rektum_0_27, file = paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",patientID,"/",motionID,"/rektum_28fr_noshift.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+write.table(dvh_rektum_27, file = paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",patientID,"/",motionID,"/rektum_28fr_shift.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+write.table(dvh_bulb_0_27, file = paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",patientID,"/",motionID,"/bulb_28fr_noshift.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+
+print("Ende")
+
