@@ -1,0 +1,207 @@
+function [dy,dx]=find_mitte(dicom_binary)
+
+% dicom needs to be binary image: double, int both works
+
+%% check ones which are surrounded by zeros and also on the edges - find center of image which consists ones
+
+I=dicom_binary;
+[M,N]=size(I);
+
+%
+
+I([1:5],1:end)=0;
+I(1:end,[1:5])=0;
+I([end-5:end],1:end)=0;
+I(1:end,[end-5:end])=0;
+
+mask_1=[0,0,0,0,0;0,0,0,0,0;0,0,1,0,0;0,0,0,0,0;0,0,0,0,0]; % Filter 1 100
+mask_2=[0,0,0,0,0;0,0,0,0,0;0,1,1,0,0;0,0,0,0,0;0,0,0,0,0]; % Filter 2 200
+mask_3=[0,0,0,0,0;0,0,0,0,0;0,0,1,1,0;0,0,0,0,0;0,0,0,0,0]; % Filter 3 200
+mask_4=[0,0,0,0,0;0,0,1,0,0;0,0,1,0,0;0,0,0,0,0;0,0,0,0,0]; % Filter 4 200
+mask_5=[0,0,0,0,0;0,0,0,0,0;0,0,1,0,0;0,0,1,0,0;0,0,0,0,0]; % Filter 5 200
+mask_6=[0,0,0,0,0;0,1,1,0,0;0,1,1,0,0;0,0,0,0,0;0,0,0,0,0]; % Filter 6 400
+mask_7=[0,0,0,0,0;0,0,1,1,0;0,0,1,1,0;0,0,0,0,0;0,0,0,0,0]; % Filter 7 400
+mask_8=[0,0,0,0,0;0,0,0,0,0;0,1,1,0,0;0,1,1,0,0;0,0,0,0,0]; % Filter 8 400
+mask_9=[0,0,0,0,0;0,0,0,0,0;0,0,1,1,0;0,0,1,1,0;0,0,0,0,0]; % Filter 9 400
+
+for i=1:M 
+    
+    
+        [~,~,ones_true]=find(I(i,:) == 100);
+           
+        if ones_true == 1
+            
+          image_find_seg=find(I(i,:) == 100);  
+          [~,col_seg]=size(image_find_seg);  
+            
+            for ii=1:col_seg
+                
+                I_mask_size=[[I(i-2,[image_find_seg(ii)]-2)],[I(i-2,[image_find_seg(ii)]-1)],[I(i-2,[image_find_seg(ii)])],[I(i-2,[image_find_seg(ii)]+1)],[I(i-2,[image_find_seg(ii)]+2)];[I(i-1,[image_find_seg(ii)]-2)],[I(i-1,[image_find_seg(ii)]-1)],[I(i-1,[image_find_seg(ii)])],[I(i-1,[image_find_seg(ii)]+1)],[I(i-1,[image_find_seg(ii)]+2)];[I(i,[image_find_seg(ii)]-2)],[I(i,[image_find_seg(ii)]-1)],[I(i,[image_find_seg(ii)])],[I(i,[image_find_seg(ii)]+1)],[I(i,[image_find_seg(ii)]+2)];[I(i+1,[image_find_seg(ii)]-2)],[I(i+1,[image_find_seg(ii)]-1)],[I(i+1,[image_find_seg(ii)])],[I(i+1,[image_find_seg(ii)]+1)],[I(i+1,[image_find_seg(ii)]+2)]; [I(i+2,[image_find_seg(ii)]-2)],[I(i+2,[image_find_seg(ii)]-1)],[I(i+2,[image_find_seg(ii)])],[I(i+2,[image_find_seg(ii)]+1)],[I(i+2,[image_find_seg(ii)]+2)]];
+                %[row_mask1,col_mask1]=find(I(i,ii) == mask_1);
+                  
+                sum_I_mask_size=sum(sum(I_mask_size));
+                
+                if  sum_I_mask_size == 100
+
+                        %mask1
+                        mask_1=double(mask_1);
+                        I_mask_size=double(I_mask_size);      
+                        number=sum(sum(I_mask_size.*mask_1));%+sum(sum(I_mask_size.*mask_2))+sum(sum(I_mask_size.*mask_3))+sum(sum(I_mask_size.*mask_4))+sum(sum(I_mask_size.*mask_5))+sum(sum(I_mask_size.*mask_6))+sum(sum(I_mask_size.*mask_7)); 
+  
+                        if number == 100
+
+                            I(i,[image_find_seg(ii)])=0;
+                            break
+                        end
+
+                    
+                elseif  sum_I_mask_size == 200
+                    
+                        %mask2
+                        mask_2=double(mask_2);
+                        I_mask_size=double(I_mask_size);      
+                        number=sum(sum(I_mask_size.*mask_2));%+sum(sum(I_mask_size.*mask_2))+sum(sum(I_mask_size.*mask_3))+sum(sum(I_mask_size.*mask_4))+sum(sum(I_mask_size.*mask_5))+sum(sum(I_mask_size.*mask_6))+sum(sum(I_mask_size.*mask_7)); 
+
+                        if  number == 200
+
+                            I(i,[image_find_seg(ii)])=0;
+                            I(i,[image_find_seg(ii)]-1)=0;
+                            break
+                        end
+
+                        %mask3
+                        mask_3=double(mask_3);
+                        I_mask_size=double(I_mask_size);      
+                        number=sum(sum(I_mask_size.*mask_3));%+sum(sum(I_mask_size.*mask_2))+sum(sum(I_mask_size.*mask_3))+sum(sum(I_mask_size.*mask_4))+sum(sum(I_mask_size.*mask_5))+sum(sum(I_mask_size.*mask_6))+sum(sum(I_mask_size.*mask_7)); 
+                        
+                        if number == 200
+            
+                            I(i,[image_find_seg(ii)])=0;
+                            I(i,[image_find_seg(ii)]+1)=0;
+                            break
+                        end
+
+                        %mask4
+                        mask_4=double(mask_4);
+                        I_mask_size=double(I_mask_size);      
+                        number=sum(sum(I_mask_size.*mask_4));%+sum(sum(I_mask_size.*mask_2))+sum(sum(I_mask_size.*mask_3))+sum(sum(I_mask_size.*mask_4))+sum(sum(I_mask_size.*mask_5))+sum(sum(I_mask_size.*mask_6))+sum(sum(I_mask_size.*mask_7)); 
+
+                        if number == 200
+
+                                I(i,[image_find_seg(ii)])=0;
+                                I(i-1,[image_find_seg(ii)])=0;
+                                break
+                        end
+
+                        %mask5
+                        mask_5=double(mask_5);
+                        I_mask_size=double(I_mask_size);      
+                        number=sum(sum(I_mask_size.*mask_5));%+sum(sum(I_mask_size.*mask_2))+sum(sum(I_mask_size.*mask_3))+sum(sum(I_mask_size.*mask_4))+sum(sum(I_mask_size.*mask_5))+sum(sum(I_mask_size.*mask_6))+sum(sum(I_mask_size.*mask_7)); 
+
+                        if number == 200
+
+                                I(i,[image_find_seg(ii)])=0;
+                                I(i+1,[image_find_seg(ii)])=0;
+                                break
+                        end
+                        
+                elseif  sum_I_mask_size == 400
+                        
+                        %mask6
+                        mask_6=double(mask_6);
+                        I_mask_size=double(I_mask_size);      
+                        number=sum(sum(I_mask_size.*mask_6));%+sum(sum(I_mask_size.*mask_2))+sum(sum(I_mask_size.*mask_3))+sum(sum(I_mask_size.*mask_4))+sum(sum(I_mask_size.*mask_5))+sum(sum(I_mask_size.*mask_6))+sum(sum(I_mask_size.*mask_7)); 
+
+                        if number == 400
+
+                                I(i,[image_find_seg(ii)])=0;
+                                I(i,[image_find_seg(ii)]-1)=0;
+                                I(i-1,[image_find_seg(ii)]-1)=0;
+                                I(i-1,[image_find_seg(ii)])=0;
+                                break
+                        end
+
+                        %mask7
+                        mask_7=double(mask_7);
+                        I_mask_size=double(I_mask_size);      
+                        number=sum(sum(I_mask_size.*mask_7));%+sum(sum(I_mask_size.*mask_2))+sum(sum(I_mask_size.*mask_3))+sum(sum(I_mask_size.*mask_4))+sum(sum(I_mask_size.*mask_5))+sum(sum(I_mask_size.*mask_6))+sum(sum(I_mask_size.*mask_7)); 
+
+                        if number == 400
+
+                                I(i,[image_find_seg(ii)])=0;
+                                I(i-1,[image_find_seg(ii)])=0;
+                                I(i-1,[image_find_seg(ii)]+1)=0;
+                                I(i,[image_find_seg(ii)]+1)=0;
+                                break
+                        end
+
+                        %mask8
+                        mask_8=double(mask_8);
+                        I_mask_size=double(I_mask_size);      
+                        number=sum(sum(I_mask_size.*mask_8));%+sum(sum(I_mask_size.*mask_2))+sum(sum(I_mask_size.*mask_3))+sum(sum(I_mask_size.*mask_4))+sum(sum(I_mask_size.*mask_5))+sum(sum(I_mask_size.*mask_6))+sum(sum(I_mask_size.*mask_7)); 
+
+                        if number == 400
+                  
+                                I(i,[image_find_seg(ii)])=0;
+                                I(i,[image_find_seg(ii)]-1)=0;
+                                I(i+1,[image_find_seg(ii)]-1)=0;
+                                I(i+1,[image_find_seg(ii)])=0;
+                                break
+                        end
+
+                        %mask9
+                        mask_9=double(mask_9);
+                        I_mask_size=double(I_mask_size);      
+                        number=sum(sum(I_mask_size.*mask_9));%+sum(sum(I_mask_size.*mask_2))+sum(sum(I_mask_size.*mask_3))+sum(sum(I_mask_size.*mask_4))+sum(sum(I_mask_size.*mask_5))+sum(sum(I_mask_size.*mask_6))+sum(sum(I_mask_size.*mask_7)); 
+
+                        if number == 400
+
+                                I(i,[image_find_seg(ii)])=0;
+                                I(i,[image_find_seg(ii)]+1)=0;
+                                I(i+1,[image_find_seg(ii)])=0;
+                                I(i+1,[image_find_seg(ii)+1])=0;
+                                break
+                        end
+                end
+                
+            end
+        end
+    
+end
+
+
+%% centerfindung von movingbild %%
+%max-wert von links, rechts, oben und unten
+
+[Imaxoben,indoben]=max(I); % Imax gibt alle max in den coloumbs und ind definiert von oben gez�hlt, wo der erste max auftritt 
+Imax=max(max(I));
+for i=1:M
+    if Imaxoben(1,i)<Imax
+        Imaxoben(1,i)=0;
+        
+    end
+end
+Imaxfind=find(Imaxoben==Imax);
+Imaxposlinks=Imaxfind(1,1);%columns
+Imaxposrechts=Imaxfind(1,end);%columns
+Imaxoben=double(Imaxoben);
+Imaxposoben=min((indoben.*Imaxoben)./Imaxoben);
+Iud=flipud(I);% kehrt jede einzelne columns um
+[Imaxunten,indunten]=max(Iud);% nun das selbe wie oben, aber theoretisch von unten die max gefunden und indize
+for i=1:M
+    if Imaxunten(1,i)<Imax
+        Imaxunten(1,i)=0;
+        
+    end
+end
+Imaxunten=double(Imaxunten);
+Imaxposunten=min((indunten.*Imaxunten)./Imaxunten);
+Imaxposunten=N+1-Imaxposunten;
+
+%centerberechnung
+center(:,1)=(Imaxposoben+Imaxposunten)/2;% dy oder dn- Koordinate
+center(:,2)=(Imaxposlinks+Imaxposrechts)/2;% dx oder dm- Koordinate
+% jetzt noch als dm oder dn umwandeln.
+
+dy = center(:,1);
+dx = center(:,2);
