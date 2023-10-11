@@ -1,0 +1,280 @@
+#!/usr/bin/bash
+
+#Aufruf: ./run_files.sh
+
+####### input ########
+Path="/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/" # Source folder of CBCT files
+
+CBCTProstate="/home/boeckefx/Documents/Prostate_SOP/ITK/CBCTmarker/CBCT-build/CBCTProstate"
+Plastimatch="/projects/Plastimatch/Plastimatch/plastimatch"
+CBCTballon="/home/boeckefx/Documents/Prostate_SOP/ITK/CBCTBalloon/Ballon-build/CBCTBallon"
+CTballon="/home/boeckefx/Documents/Prostate_SOP/ITK/CBCTBalloon/Ballon-build/CTBallon"
+Slicer="/projects/3DSlicer/3DSlicer/Slicer-build/Slicer"
+createdicom="/projects/Tools/verocbct2dicom/createdicom"
+# CT und CBCT in Path- Ordner schieben
+# CT- Name: ct_01_30_2016 - ct_mm_dd_yyyy
+a="0"
+rm -rfv ${Path}tmp.nrrd # delete file
+####### Method #######
+
+# sollen alle dicom. files und nrrd. files gelöscht werden
+
+# 1) ########## CBCT- RAW from Vero to DICOM #############
+
+
+for i in $(find $Path -name "*.zip"); do # find any zip.file in folder path; i is path of zip.file
+		
+		FileName=${i##*/} #get name of zip file name +.zip
+		FolderName=${FileName%.*} # get name of zip file name without .zip
+		FolderName_cbct=${FolderName:0:4}
+		NameNumber=_${FolderName:5:6}
+		Grandparent="${i%/*/*}" # get grandparent's directoy path of path i
+		newFolderName=${Grandparent##*/} # get name of grandparent
+		Date=_${newFolderName:0:10} # speichert namen vom filename von der nullten bis zur zehnten stelle
+		newStorage="${i%/*/*/*}"
+		parentfolder="${i%/*}"
+		countzip=$(find $parentfolder -maxdepth 1 -name '*.zip' | wc -l) # count number of zip files in each parentfolder
+		a=$(($a+1))	
+		mkdir $newStorage/$FolderName_cbct$Date$NameNumber # erstellt folder in dem gegebenen path
+		#mkdir $newStorage/$FolderName_cbct$Date$NameNumber/Dicom
+		mv $newStorage/$FolderName_cbct$Date$NameNumber "${newStorage}" # move folder to initial folder "path"
+		unzip -o $i -d $newStorage/$FolderName_cbct$Date$NameNumber
+		
+		for i in $(find $newStorage/$FolderName_cbct$Date$NameNumber -name CBCT-*.TXT); do # i in this for loop will be the number 001,002,...
+		#for i in CBCT-*.TXT; do
+		baseName=${i/%.TXT/};# /%.TXT/ füge .TXT hinzu
+		
+		${createdicom} ${baseName} ${newStorage}/${FolderName_cbct}${Date}${NameNumber}/${baseName/#*\//}.dcm; 
+		
+		done
+		
+		find $newStorage/$FolderName_cbct$Date$NameNumber -name "*.TXT" | xargs rm # find .TXT file and delete them
+		find $newStorage/$FolderName_cbct$Date$NameNumber -name "*.RAW" | xargs rm # find .RAW file and delete them
+		
+		if [ "$countzip" == "$a" ]; then
+		    
+		    rm -rfv "${parentfolder%/*}"
+		    a="0"
+		    
+		fi
+		
+done
+
+# 2) ###### Dicom- CBCT and CT convert to .nrrd ########
+
+for i in ${Path}*/{ct,cbct}*; do # gehe alle CT (und dann/ oder !!) CBCT's durch // Folders mit CT oder CBCT beschriften- im Tochterordner befinden sich die Datein
+			
+			FileName=${i##*/}
+			if [ -f $i.nrrd ];then	# if .nrrd file exist, then find and convert next ct or cbct
+			
+			  echo "$FileName.nrrd exist."
+			  
+			else
+			
+			  if [ "${FileName:0:2}" == "ct" ] || [ "${FileName:0:2}" == "cb" ] ; then # convert all .dicom to .nrrd file
+			    if [ -d "${i}" ]; then
+								  
+				  ${Plastimatch} convert --input ${i} --output-img ${i}.nrrd
+			  
+			  
+			    fi
+			  fi
+			fi
+
+
+done
+
+# 3) #### ask if DICOM of specific patient should be deleted 
+
+for i in ${Path}*; do	
+		  countfolder=$(find $i -mindepth 1 -maxdepth 1 -type d ) # number of folders within each subdirectory
+		  FileName=${i##*/} #get name of folder
+		  if [ -z "${countfolder}" ]; then  # check if folder is empty
+		      echo "no DICOM folders are stored at directory $i"    
+		  else
+		      read -r -p "Are you sure you want to delete all Dicom files of $FileName? [Y/N] " response # ask Y/N
+		      if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]];then
+			  for l in $(find $i -mindepth 1 -maxdepth 1 -type d ); do
+			  rm -rfv "$l" # delete folders
+			  echo ".dcm of $l is deleted"
+			  done
+		      else
+			  echo "Dicom of $FileName are still available"
+		      fi    
+		  fi   		 
+done
+
+
+#4) ###### get F.fcsv file- prostate markers ##########
+
+${Slicer} & # das & gibt mir die möglichkeit in der konsole was einzutragen	
+
+for i in ${Path}*; do
+		      
+		      FileName=${i##*/} #get name of folder
+		      until [ -e $i/F.fcsv ]; do # wait for processing until file is found
+			echo "F.fcsv of $FileName still missing- load CT- file and use 3D Slicer to place 3 markers"
+			sleep 10 # every 10 sec i think echo is called
+			
+		      done
+
+		      echo "F.fcsv of $FileName exists!!!"
+		      sleep 2
+	
+done	
+	
+# 5) ###### Prostate Analysis ########### mit F.fcsv file
+
+for i in ${Path}*; do
+      patient=${i##*/}
+      type_cbct="0"
+      type_ct="1"
+      distance_txt_file=$(find $i/* -type f -name 'Distances.txt')
+      if [ -z "${distance_txt_file}" ]; then  # check if variable is empty
+	 echo -e 'Fiducial 1 x\t''Fiducial 1 y\t''Fiducial 1 z\t''Fiducial 2 x\t''Fiducial 2 y\t''Fiducial 2 z\t''Fiducial 3 x\t''Fiducial 3 y\t''Fiducial 3 z\t''Distance1\t' 'Distance2\t' 'Distance3\t' 'CTtype\t' 'AquisitionDate'>> $i/Distances.txt # in Distance.txt wird header geschrieben
+	 a="0"	
+	 for l in $i/cbct*; do # gehe alle CBCT's durch 
+			        
+			  if [ -f "${l}" -a "${l:(-5)}" == ".nrrd" ]; then # ist der path i ../CT oder CBCT... .nrrd == .nrrd, dann
+				  if [ -f "${l}" -a "${l:(-19)}" == "LabelMapBallon.nrrd" ]; then # ist der path i ../CT oder CBCT... .nrrd == .nrrd, dann
+				    echo "Balloon data will be ignored for prostate marker distance measurements"
+				  else	
+				    FileName=${l##*/}
+				    Date=${FileName:5:10}
+				    #Date=${Date_//_} # Date without any '_' -> i.e. 01112016
+				    CTtype=${FileName:0:4}
+				    a=$(($a+1))
+				    echo "${CTtype}${a}${patient}"
+				    ${CBCTProstate} $l $i/F.fcsv $type_cbct>> $i/Distances.txt # 1) starte c++ programm, 2) schreibe outputdaten der c++ datei in die distance.txt	      
+				    tmpIFS=$IFS
+				    IFS=_
+				    set ${i/*\//}
+				    IFS=$tmpIFS
+				    echo -e ${CTtype} '\t' ${Date} >> $i/Distances.txt
+				    rm -rfv ${Path}tmp.nrrd # delete file
+				  fi
+			  fi		
+	  done 
+	  a="0"
+	  for l in $i/ct*; do # gehe CT durch
+			  
+			  if [ -f "${l}" -a "${l:(-5)}" == ".nrrd" ]; then # ist der path i ../CT oder CBCT... .nrrd == .nrrd, dann
+				  if [ -f "${l}" -a "${l:(-19)}" == "LabelMapBallon.nrrd" ]; then # ist der path i ../CT oder CBCT... .nrrd == .nrrd, dann
+				    echo "Balloon data will be ignored for prostate marker distance measurements"
+				  else	
+				    FileName=${l##*/}
+				    Date_=${FileName:3:10}
+				    Date=${Date_//_}
+				    CTtype=${FileName:0:2}
+				    a=$(($a+1))
+				    echo "${CTtype}${a}${patient}"
+				    ${CBCTProstate} $l $i/F.fcsv $type_ct>> $i/Distances.txt # 1) starte c++ programm, 2) schreibe outputdaten der c++ datei in die distance.txt	      
+				    tmpIFS=$IFS
+				    IFS=_
+				    set ${i/*\//}
+				    IFS=$tmpIFS
+				    echo -e ${CTtype} '\t' ${Date} >> $i/Distances.txt
+				    rm -rfv ${Path}tmp.nrrd # delete file
+				  fi
+			  fi		
+	  done 
+	  
+	  
+      else
+	 echo "Distance.txt file already exist for patient ${patient}"
+      fi
+      
+done
+
+# 6) ##### Balloon analysis #######
+
+for i in ${Path}*; do		
+      
+      patient=${i##*/}
+      CBCTtype="CBCT"
+      CTtype="CT"
+      balloon_txt_file=$(find $i/* -type f -name 'BallonParameter.txt')
+      if [ -z "${balloon_txt_file}" ]; then  # check if variable is empty
+	    #echo -e 'Path\t''EllipsoidDiameter\t''SizeofBallon[ml]\t''RoundnessofBalloon\t''Centroidx\t' 'Centroidy\t' 'Centroidz\t' 'Type'>> $i/BallonParameter.txt
+	    echo -e 'Path\t''EllipsoidDiameterX\t''EllipsoidDiameterY\t''EllipsoidDiameterZ\t''SizeofBallon[ml]\t''RoundnessofBalloon\t''Centroidx\t' 'Centroidy\t' 'Centroidz'>> $i/BallonParameter.txt
+	    a="0"
+	    for l in $i/cbct*; do
+		  if [ -f "${l}" -a "${l:(-14)}" == "_korrektur.txt" ]; then # ist der path i ../CT oder CBCT... .nrrd == .nrrd, dann
+		    echo "Balloon correction data will be ignored for further analysis"
+		  else
+		    a=$(($a+1))
+		    echo "${CBCTtype}${a}${patient}"
+		    ${CBCTballon} $l $i >> $i/BallonParameter.txt
+		    rm -rfv ${Path}tmp.nrrd # delete file
+		  fi
+	    done
+	    a="0"
+	    for l in $i/ct*; do
+		  if [ -f "${l}" -a "${l:(-14)}" == "_korrektur.txt" ]; then # ist der path i ../CT oder CBCT... .nrrd == .nrrd, dann
+		    echo "Balloon correction data will be ignored for further analysis"
+		  else
+		    a=$(($a+1))
+		    echo "${CTtype}${a}${patient}"
+		    ${CTballon} $l $i >> $i/BallonParameter.txt
+		    rm -rfv ${Path}tmp.nrrd # delete file
+		  fi
+	    done
+     else
+      
+	    echo "BallonParameter.txt file already exist for patient ${patient}"
+      
+      fi
+done
+
+# 7) ##### ask me if i want to delete nrrd. files #####
+
+for i in ${Path}*; do	
+			countfiles=$(find $i -mindepth 1 -maxdepth 1 -type f -name '*.nrrd') # number of files within each subdirectory
+			FileName=${i##*/} #get name of folder
+			
+			if [ -z "${countfiles}" ]; then  # if .nrrd file exist, then delete or keep them
+
+			  echo "no .NRRD files are stored at directory $i"    
+			  
+			else
+			
+			    read -r -p "Are you sure you want to delete all .NRRD files of $FileName? [Y/N] " response # ask Y/N
+			      
+			      if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]];then
+			      
+				for l in $(find $i -mindepth 1 -maxdepth 1 -type f -name '*.nrrd' ); do
+				  
+				  
+				  rm -f "$l" # delete files
+				  echo ".nrrd of $l is deleted"
+				  
+				done
+				
+			      else
+			      
+				echo ".NRRD of $FileName are still available"
+				
+			      fi 
+	
+			fi
+			
+done
+
+
+# 8) ##### Analysis Prostate Markers #############
+
+#Rscript /home/boeckefx/Documents/Prostate_SOP/ITK/CBCTmarker/CBCT-src/Boxplot.R 
+#Rscript /home/boeckefx/Documents/Prostate_SOP/ITK/CBCTmarker/CBCT-src/ComparisonManuallyAutomatically.R
+#Rscript /home/boeckefx/Documents/Prostate_SOP/ITK/CBCTmarker/CBCT-src/RecoveryDays.R
+#Rscript /home/boeckefx/Documents/Prostate_SOP/ITK/CBCTmarker/CBCT-src/ResultProstateMarker.R
+
+# 9) ##### Analysis Balloon #######
+
+#Rscript /home/boeckefx/Documents/Prostate_SOP/ITK/CBCTBalloon/Ballon-src/BalloonEvaluation.R
+#Rscript /home/boeckefx/Documents/Prostate_SOP/ITK/CBCTBalloon/Ballon-src/CompToPhantom.R
+#Rscript /home/boeckefx/Documents/Prostate_SOP/ITK/CBCTBalloon/Ballon-src/meanERB.R
+
+
+
+
+
