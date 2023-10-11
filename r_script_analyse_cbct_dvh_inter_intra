@@ -1,4 +1,5 @@
-## AUfRUF: Rscript /home/boeckefx/Documents/Prostate_SOP/scripte/cbct_dvh_analysis.r inter
+
+# AUfRUF: Rscript /home/boeckefx/Documents/Prostate_SOP/scripte/cbct_dvh_analysis.r inter
 
 ##########
 ## data ##
@@ -6,506 +7,506 @@
 
 # input arguments
 
-args<-commandArgs(TRUE)
+args="inter"
 motionID = as.character(args[1]) # inter oder intra: inter includes analysis of interfractional motion and intra means inter- + intrafractional motion 
 print(motionID);
 
 # INT: initial PTV
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_1_prostate_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_1_prostate_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_1_rektwand_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_1_rektwand_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_1_rektum_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_1_rektum_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_1_bulb_0shift=dvh[,c(2)]
 
 # ADO: adopted PTV -> prostate, bulb
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_1_prostate_ado_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_1_bulb_ado_0shift=dvh[,c(2)]
 
 # INT: initial PTV
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_45_prostate_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppINT/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppINT/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_45_prostate_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_45_rektwand_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppINT/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppINT/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_45_rektwand_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_45_rektum_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppINT/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppINT/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_45_rektum_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_45_bulb_0shift=dvh[,c(2)]
 
 # ADO: adopted PTV -> prostate, bulb
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppADO/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppADO/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_45_prostate_ado_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_45_bulb_ado_0shift=dvh[,c(2)]
 
 # INT: initial PTV
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_44_prostate_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_44_prostate_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_44_rektwand_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_44_rektwand_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_44_rektum_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_44_rektum_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_44_bulb_0shift=dvh[,c(2)]
 
 # ADO: adopted PTV -> prostate, bulb
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_44_prostate_ado_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_44_bulb_ado_0shift=dvh[,c(2)]
 
 
 # INT: initial PTV
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_14_prostate_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichINT/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichINT/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_14_prostate_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_14_rektwand_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichINT/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichINT/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_14_rektwand_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_14_rektum_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichINT/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichINT/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_14_rektum_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_14_bulb_0shift=dvh[,c(2)]
 
 # ADO: adopted PTV -> prostate, bulb
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichADO/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichADO/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_14_prostate_ado_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_14_bulb_ado_0shift=dvh[,c(2)]
 
 
 # INT: initial PTV
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_2_prostate_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerINT/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerINT/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_2_prostate_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_2_rektwand_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerINT/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerINT/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_2_rektwand_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_2_rektum_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerINT/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerINT/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_2_rektum_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_2_bulb_0shift=dvh[,c(2)]
 
 # ADO: adopted PTV -> prostate, bulb
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerADO/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerADO/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_2_prostate_ado_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_2_bulb_ado_0shift=dvh[,c(2)]
 
 # INT: initial PTV
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrendelINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrendelINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_53_prostate_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrendelINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrendelINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_53_rektwand_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrendelINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrendelINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_53_rektum_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrendelINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrendelINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_53_bulb_0shift=dvh[,c(2)]
 
 # ADO: adopted PTV -> prostate, bulb
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrendelADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrendelADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_53_bulb_ado_0shift=dvh[,c(2)]
 
 # INT: initial PTV
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GreinerINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GreinerINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_56_prostate_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GreinerINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GreinerINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_56_rektwand_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GreinerINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GreinerINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_56_rektum_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GreinerINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GreinerINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_56_bulb_0shift=dvh[,c(2)]
 
 # ADO: adopted PTV -> prostate, bulb
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GreinerADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GreinerADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_56_bulb_ado_0shift=dvh[,c(2)]
 
 # INT: initial PTV
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_12_prostate_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiINT/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiINT/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_12_prostate_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_12_rektwand_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiINT/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiINT/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_12_rektwand_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_12_rektum_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiINT/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiINT/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_12_rektum_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_12_bulb_0shift=dvh[,c(2)]
 
 # ADO: adopted PTV -> prostate, bulb
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiADO/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiADO/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_12_prostate_ado_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_12_bulb_ado_0shift=dvh[,c(2)]
 
 # INT: initial PTV
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/KoeppelINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/KoeppelINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_4_prostate_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/KoeppelINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/KoeppelINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_4_rektwand_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/KoeppelINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/KoeppelINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_4_rektum_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/KoeppelINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/KoeppelINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_4_bulb_0shift=dvh[,c(2)]
 
 # ADO: adopted PTV -> prostate, bulb
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/KoeppelADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/KoeppelADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_4_bulb_ado_0shift=dvh[,c(2)]
 
 # INT: initial PTV
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MitrovicINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MitrovicINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_46_prostate_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MitrovicINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MitrovicINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_46_rektwand_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MitrovicINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MitrovicINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_46_rektum_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MitrovicINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MitrovicINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_46_bulb_0shift=dvh[,c(2)]
 
 # ADO: adopted PTV -> prostate, bulb
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MitrovicADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MitrovicADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_46_bulb_ado_0shift=dvh[,c(2)]
 
 # INT: initial PTV
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_5_prostate_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusINT/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusINT/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_5_prostate_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_5_rektwand_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusINT/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusINT/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_5_rektwand_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_5_rektum_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusINT/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusINT/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_5_rektum_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_5_bulb_0shift=dvh[,c(2)]
 
 # ADO: adopted PTV -> prostate, bulb
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusADO/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusADO/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_5_prostate_ado_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_5_bulb_ado_0shift=dvh[,c(2)]
 
 # INT: initial PTV
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_10_prostate_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschINT/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschINT/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_10_prostate_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_10_rektwand_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschINT/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschINT/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_10_rektwand_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_10_rektum_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschINT/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschINT/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_10_rektum_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_10_bulb_0shift=dvh[,c(2)]
 
 # ADO: adopted PTV -> prostate, bulb
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschADO/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschADO/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_10_prostate_ado_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_10_bulb_ado_0shift=dvh[,c(2)]
 
 
 # INT: initial PTV
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchindlerINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchindlerINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_62_prostate_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchindlerINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchindlerINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_62_rektwand_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchindlerINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchindlerINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_62_rektum_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchindlerINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchindlerINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_62_bulb_0shift=dvh[,c(2)]
 
 # ADO: adopted PTV -> prostate, bulb
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchindlerADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchindlerADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_62_bulb_ado_0shift=dvh[,c(2)]
 
 # INT: initial PTV
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchmidtRuINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchmidtRuINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_49_prostate_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchmidtRuINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchmidtRuINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_49_rektwand_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchmidtRuINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchmidtRuINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_49_rektum_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchmidtRuINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchmidtRuINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_49_bulb_0shift=dvh[,c(2)]
 
 # ADO: adopted PTV -> prostate, bulb
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchmidtRuADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchmidtRuADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_49_bulb_ado_0shift=dvh[,c(2)]
 
 # INT: initial PTV
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_28_prostate_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisINT/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisINT/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_28_prostate_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_28_rektwand_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisINT/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisINT/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_28_rektwand_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_28_rektum_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisINT/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisINT/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_28_rektum_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_28_bulb_0shift=dvh[,c(2)]
 
 # ADO: adopted PTV -> prostate, bulb
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisADO/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisADO/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_28_prostate_ado_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_28_bulb_ado_0shift=dvh[,c(2)]
 
 # INT: initial PTV
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_7_prostate_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumINT/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumINT/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_7_prostate_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_7_rektwand_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumINT/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumINT/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_7_rektwand_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_7_rektum_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumINT/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumINT/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_7_rektum_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_7_bulb_0shift=dvh[,c(2)]
 
 # ADO: adopted PTV -> prostate, bulb
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumADO/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumADO/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_7_prostate_ado_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_7_bulb_ado_0shift=dvh[,c(2)]
 
 # INT: initial PTV
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_8_prostate_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschINT/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschINT/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_8_prostate_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_8_rektwand_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschINT/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschINT/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_8_rektwand_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_8_rektum_0shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschINT/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschINT/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_8_rektum_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_8_bulb_0shift=dvh[,c(2)]
 
 # ADO: adopted PTV -> prostate, bulb
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschADO/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschADO/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_8_prostate_ado_shift=dvh[,c(2)]
 
-dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
 dvh_8_bulb_ado_0shift=dvh[,c(2)]
 
 #
 
 # Dmean Bulb
 
-dmean_1_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_1_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_44_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_44_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_2_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_2_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_4_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/KoeppelADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_4_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/KoeppelINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_5_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_5_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_7_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_7_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_8_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_8_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_10_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_10_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_12_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_12_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_14_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_14_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_28_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_28_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_45_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_45_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_46_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MitrovicADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_46_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MitrovicINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_49_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchmidtRuADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_49_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchmidtRuINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_62_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchindlerADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_62_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchindlerINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_53_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrendelADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_53_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrendelINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_56_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GreinerADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
-dmean_56_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GreinerINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_1_ado=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_1_int=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_44_ado=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_44_int=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_2_ado=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_2_int=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_4_ado=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/KoeppelADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_4_int=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/KoeppelINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_5_ado=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_5_int=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_7_ado=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_7_int=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_8_ado=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_8_int=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_10_ado=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_10_int=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_12_ado=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_12_int=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_14_ado=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_14_int=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_28_ado=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_28_int=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_45_ado=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_45_int=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_46_ado=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MitrovicADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_46_int=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MitrovicINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_49_ado=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchmidtRuADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_49_int=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchmidtRuINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_62_ado=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchindlerADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_62_int=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchindlerINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_53_ado=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrendelADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_53_int=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrendelINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_56_ado=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GreinerADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_56_int=read.table(paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GreinerINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
 
 
 #################
@@ -1195,12 +1196,13 @@ x_seq_bulb_0_ld=x_seq[1:minvec_bulb_0_ld]
 matrix_dmean=rbind(dmean_1_int,dmean_2_int,dmean_4_int,dmean_5_int,dmean_7_int,dmean_8_int,dmean_10_int,dmean_12_int,dmean_14_int,dmean_28_int,dmean_44_int,dmean_45_int,dmean_46_int,dmean_49_int,dmean_53_int,dmean_2_int,dmean_56_int,dmean_62_int)
 mean_dmean_bulb_int=mean(matrix_dmean[,1])
 sd_dmean_bulb_int=sd(matrix_dmean[,1])
+bulb_mean_int=matrix_dmean
 # adopted ptv
 #mean_dmean_bulb_ado=(sum(dmean_1_ado,dmean_2_ado,dmean_4_ado,dmean_5_ado,dmean_7_ado,dmean_8_ado,dmean_10_ado,dmean_12_ado,dmean_14_ado,dmean_28_ado,dmean_44_ado,dmean_45_ado,dmean_46_ado,dmean_49_ado,dmean_53_ado,dmean_2_ado,dmean_56_ado,dmean_62_ado))/17
 matrix_dmean=rbind(dmean_1_ado,dmean_2_ado,dmean_4_ado,dmean_5_ado,dmean_7_ado,dmean_8_ado,dmean_10_ado,dmean_12_ado,dmean_14_ado,dmean_28_ado,dmean_44_ado,dmean_45_ado,dmean_46_ado,dmean_49_ado,dmean_53_ado,dmean_2_ado,dmean_56_ado,dmean_62_ado)
 mean_dmean_bulb_ado=mean(matrix_dmean[,1])
 sd_dmean_bulb_ado=sd(matrix_dmean[,1])
-
+bulb_mean_ado=matrix_dmean
 ## Bulb dose: D30,40,50,60,70,75,90,Dmax -> Dose which has received 30%... of the volume
 
 
@@ -1346,6 +1348,7 @@ for(i in 1:length(d)){
  }
 d_dose <- as.numeric(unlist(List1))
 
+bulb_30_int=d_dose
 bulb_sd_30=round(sd(d_dose),1)
 bulb_mean_30=round(mean(d_dose),1)
 
@@ -1369,7 +1372,7 @@ for(i in 1:length(d)){
   List1[[length(List1)+1]] = LM1
  }
 d_dose <- as.numeric(unlist(List1))
-
+bulb_45_int=d_dose
 bulb_sd_45=round(sd(d_dose),1)
 bulb_mean_45=round(mean(d_dose),1)
 
@@ -1392,7 +1395,7 @@ for(i in 1:length(d)){
   List1[[length(List1)+1]] = LM1
  }
 d_dose <- as.numeric(unlist(List1))
-
+bulb_50_int=d_dose
 bulb_sd_50=round(sd(d_dose),1)
 bulb_mean_50=round(mean(d_dose),1)
 
@@ -1415,7 +1418,7 @@ for(i in 1:length(d)){
   List1[[length(List1)+1]] = LM1
  }
 d_dose <- as.numeric(unlist(List1))
-
+bulb_60_int=d_dose
 bulb_sd_60=round(sd(d_dose),1)
 bulb_mean_60=round(mean(d_dose),1)
 
@@ -1438,7 +1441,7 @@ for(i in 1:length(d)){
   List1[[length(List1)+1]] = LM1
  }
 d_dose <- as.numeric(unlist(List1))
-
+bulb_70_int=d_dose
 bulb_sd_70=round(sd(d_dose),1)
 bulb_mean_70=round(mean(d_dose),1)
 
@@ -1461,7 +1464,7 @@ for(i in 1:length(d)){
   List1[[length(List1)+1]] = LM1
  }
 d_dose <- as.numeric(unlist(List1))
-
+bulb_75_int=d_dose
 bulb_sd_75=round(sd(d_dose),1)
 bulb_mean_75=round(mean(d_dose),1)
 
@@ -1484,7 +1487,7 @@ for(i in 1:length(d)){
   List1[[length(List1)+1]] = LM1
  }
 d_dose <- as.numeric(unlist(List1))
-
+bulb_90_int=d_dose
 bulb_sd_90=round(sd(d_dose),1)
 bulb_mean_90=round(mean(d_dose),1)
 
@@ -1531,7 +1534,7 @@ for(i in 1:length(d)){
   List1[[length(List1)+1]] = LM1
  }
 d_dose <- as.numeric(unlist(List1))
-
+bulb_max_int=d_dose
 bulb_sd_dmax=round(sd(d_dose),1)
 bulb_mean_dmax=round(mean(d_dose),1)
 
@@ -1683,7 +1686,7 @@ for(i in 1:length(d)){
   List1[[length(List1)+1]] = LM1
  }
 d_dose <- as.numeric(unlist(List1))
-
+bulb_30_ado=d_dose
 bulb_ld_sd_30=round(sd(d_dose),1)
 bulb_ld_mean_30=round(mean(d_dose),1)
 
@@ -1707,7 +1710,7 @@ for(i in 1:length(d)){
   List1[[length(List1)+1]] = LM1
  }
 d_dose <- as.numeric(unlist(List1))
-
+bulb_45_ado=d_dose
 bulb_ld_sd_45=round(sd(d_dose),1)
 bulb_ld_mean_45=round(mean(d_dose),1)
 
@@ -1730,7 +1733,7 @@ for(i in 1:length(d)){
   List1[[length(List1)+1]] = LM1
  }
 d_dose <- as.numeric(unlist(List1))
-
+bulb_50_ado=d_dose
 bulb_ld_sd_50=round(sd(d_dose),1)
 bulb_ld_mean_50=round(mean(d_dose),1)
 
@@ -1753,7 +1756,7 @@ for(i in 1:length(d)){
   List1[[length(List1)+1]] = LM1
  }
 d_dose <- as.numeric(unlist(List1))
-
+bulb_60_ado=d_dose
 bulb_ld_sd_60=round(sd(d_dose),1)
 bulb_ld_mean_60=round(mean(d_dose),1)
 
@@ -1776,7 +1779,7 @@ for(i in 1:length(d)){
   List1[[length(List1)+1]] = LM1
  }
 d_dose <- as.numeric(unlist(List1))
-
+bulb_70_ado=d_dose
 bulb_ld_sd_70=round(sd(d_dose),1)
 bulb_ld_mean_70=round(mean(d_dose),1)
 
@@ -1799,7 +1802,7 @@ for(i in 1:length(d)){
   List1[[length(List1)+1]] = LM1
  }
 d_dose <- as.numeric(unlist(List1))
-
+bulb_75_ado=d_dose
 bulb_ld_sd_75=round(sd(d_dose),1)
 bulb_ld_mean_75=round(mean(d_dose),1)
 
@@ -1822,7 +1825,7 @@ for(i in 1:length(d)){
   List1[[length(List1)+1]] = LM1
  }
 d_dose <- as.numeric(unlist(List1))
-
+bulb_90_ado=d_dose
 bulb_ld_sd_90=round(sd(d_dose),1)
 bulb_ld_mean_90=round(mean(d_dose),1)
 
@@ -1868,7 +1871,7 @@ for(i in 1:length(d)){
   List1[[length(List1)+1]] = LM1
  }
 d_dose <- as.numeric(unlist(List1))
-
+bulb_max_ado=d_dose
 bulb_ld_sd_dmax=round(sd(d_dose),1)
 bulb_ld_mean_dmax=round(mean(d_dose),1)
 
@@ -2996,6 +2999,64 @@ x_seq_rektum=c(length_hundreds,loop_seq,0)
 
 # Inter-fractional marker motion: inital vs replanning
 
+# bulb
+
+# bulb D30
+value_x=bulb_30_int  
+value_y=bulb_30_ado
+stat_rtdays=t.test(value_x,value_y)
+p_bulb_30=stat_rtdays$p.value
+
+# bulb D45
+value_x=bulb_45_int  
+value_y=bulb_45_ado
+stat_rtdays=t.test(value_x,value_y)
+p_bulb_45=stat_rtdays$p.value
+
+# bulb D50
+value_x=bulb_50_int  
+value_y=bulb_50_ado
+stat_rtdays=t.test(value_x,value_y)
+p_bulb_50=stat_rtdays$p.value
+
+# bulb D60
+value_x=bulb_60_int  
+value_y=bulb_60_ado
+stat_rtdays=t.test(value_x,value_y)
+p_bulb_60=stat_rtdays$p.value
+
+# bulb D70
+value_x=bulb_70_int  
+value_y=bulb_70_ado
+stat_rtdays=t.test(value_x,value_y)
+p_bulb_70=stat_rtdays$p.value
+
+# bulb D75
+value_x=bulb_75_int  
+value_y=bulb_75_ado
+stat_rtdays=t.test(value_x,value_y)
+p_bulb_75=stat_rtdays$p.value
+
+# bulb D90
+value_x=bulb_90_int  
+value_y=bulb_90_ado
+stat_rtdays=t.test(value_x,value_y)
+p_bulb_90=stat_rtdays$p.value
+
+# bulb Dmax
+value_x=bulb_max_int 
+value_y=bulb_max_ado
+stat_rtdays=t.test(value_x,value_y)
+p_bulb_max=stat_rtdays$p.value
+
+# bulb Dmean
+value_x=bulb_mean_int  
+value_y=bulb_mean_ado
+stat_rtdays=t.test(value_x,value_y)
+p_bulb_mean=stat_rtdays$p.value
+
+bulb_p_all=c(p_bulb_30,p_bulb_45,p_bulb_50,p_bulb_60,p_bulb_70,p_bulb_75,p_bulb_90,p_bulb_max,p_bulb_mean)
+
 # prostate shift
 
 value_x=mean_prostate_0shift  
@@ -3112,33 +3173,41 @@ myPng <- function(..., width=print_width, height=print_height, res=print_res) {
 }
 
 #
-path_print_all_pat_sd_mean=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean.png", sep="")
-path_print_all_pat_sd_mean_bulb=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_bulb.png", sep="")
-path_print_all_pat_sd_mean_split=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_split.png", sep="")
-path_print_all_pat_sd_mean_split_bulb=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_split_bulb.png", sep="")
-path_print_all_pat_sd_mean_ptv_change=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_ptv_change.png", sep="")
-path_print_all_pat_sd_mean_bulb_hd_ld=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_bulb_hd_ld.png", sep="")
-path_print_all_pat_sd_mean_bulb_black=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_bulb_black.png", sep="")
-path_print_all_pat_sd_mean_bulb_black2=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_bulb_black2.png", sep="")
-path_print_all_pat_sd_mean_ptv_black=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_ptv_black.png", sep="")
-path_print_all_pat_sd_mean_ptv_black2=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_ptv_black2.png", sep="")
-path_print_all_pat_sd_mean_split2=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_split_black.png", sep="")
+path_print_all_pat_sd_mean=paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean.png", sep="")
+path_print_all_pat_sd_mean_bulb=paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_bulb.png", sep="")
+path_print_all_pat_sd_mean_split=paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_split.png", sep="")
+path_print_all_pat_sd_mean_split_bulb=paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_split_bulb.png", sep="")
+path_print_all_pat_sd_mean_ptv_change=paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_ptv_change.png", sep="")
+path_print_all_pat_sd_mean_bulb_hd_ld=paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_bulb_hd_ld.png", sep="")
+path_print_all_pat_sd_mean_bulb_black=paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_bulb_black.png", sep="")
+path_print_all_pat_sd_mean_bulb_black2=paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_bulb_black2.png", sep="")
+path_print_all_pat_sd_mean_ptv_black=paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_ptv_black.png", sep="")
+path_print_all_pat_sd_mean_ptv_black2=paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_ptv_black2.png", sep="")
+path_print_all_pat_sd_mean_split2=paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_split_black.png", sep="")
 
 
-path_print_pdf=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/pdf.pdf", sep="")
+path_print_pdf=paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/pdf.pdf", sep="")
+path_print_pdf2=paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/pdf2.pdf", sep="")
+path_print_pdf3=paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/pdf3.pdf", sep="")
+path_print_pdf4=paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/pdf4.pdf", sep="")
+path_print_pdf5=paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/pdf5.pdf", sep="")
+path_print_pdf6=paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/pdf6.pdf", sep="")
+path_print_pdf7=paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/pdf7.pdf", sep="")
+path_print_pdf8=paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/pdf8.pdf", sep="")
 
 #
 
-legend=c("prostate without motion","prostate with motion","anterior rectal wall without motion","anterior rectal wall with motion","rectum without motion","rectum with motion")
-legend_bulb=c("prostate without motion","prostate with motion","anterior rectal wall without motion","anterior rectal wall with motion","rectum without motion","rectum with motion")
-legend_ptv_small_big=c("prostate based on initial PTV ","prostate based on adapted PTV",paste("\u25B3","p","\u003D",p_ptv_small_big)) # analysis including motion
+legend=c("prostate (GTV) without motion","prostate (GTV) with motion","anterior rectal wall without motion","anterior rectal wall with motion","rectum without motion","rectum with motion")
+legend_bulb=c("prostate (GTV) without motion","prostate (GTV) with motion","anterior rectal wall without motion","anterior rectal wall with motion","rectum without motion","rectum with motion")
+legend_ptv_small_big=c("prostate (GTV) based on initial PTV (GTV)","prostate (GTV) based on adapted PTV",paste("\u25B3","p","\u003D",p_ptv_small_big)) # analysis including motion
 legend_bulb_comparision=c("penile bulb based on initial PTV ","penile bulb based on adapted PTV",paste("\u25B3","p","\u003C",p_bulb_nd_ld)) # analysis without motion
 
 
 ## dvh ##
 
 
-myPng(path_print_all_pat_sd_mean, width=print_width, height=print_height, res=print_res)
+#myPng(path_print_all_pat_sd_mean, width=print_width, height=print_height, res=print_res)
+pdf(path_print_pdf2,width=8, height=4,paper='special')
 
 #mat <- matrix(c(1,3,2,4), 2,2)
 #layout(mat, c(1,1),c(1,1))
@@ -3160,11 +3229,12 @@ mtext(y_axis, side = 2, line = 3, cex = font_size, font = font_type)
 legend("bottomleft", legend=legend,lty=c(1,2), col =c(color_prostate,color_prostate,color_rektwand,color_rektwand,color_rektum,color_rektum),cex = 0.8,bg="white")
 
 
-
+dev.off()
 
 #
 
-myPng(path_print_all_pat_sd_mean_bulb, width=print_width, height=print_height, res=print_res)
+#myPng(path_print_all_pat_sd_mean_bulb, width=print_width, height=print_height, res=print_res)
+pdf(path_print_pdf3,width=8, height=4,paper='special')
 
 #mat <- matrix(c(1,3,2,4), 2,2)
 #layout(mat, c(1,1),c(1,1))
@@ -3185,11 +3255,11 @@ axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
 mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
 mtext(y_axis, side = 2, line = 3, cex = font_size, font = font_type)
 legend("bottomleft", legend=legend_bulb,lty=c(1,2), col =c(color_prostate,color_prostate,color_rektwand,color_rektwand,color_rektum,color_rektum,color_bulb,color_bulb),cex = 0.8,bg="white")
-
+dev.off()
 #
 
-myPng(path_print_all_pat_sd_mean_split, width=print_width, height=print_height, res=print_res)
-#pdf(path_print_pdf,width=9, height=5)
+#myPng(path_print_all_pat_sd_mean_split, width=print_width, height=print_height, res=print_res)
+pdf(path_print_pdf,width=8, height=4,paper='special')
 
 mat <- matrix(c(1,2))
 layout(mat, c(1,1),c(1,1))
@@ -3202,6 +3272,7 @@ lines(mean_rektwand_0shift,x_seq_rektwand_0,type=type_line_shift,  lty=lty_solid
 lines(mean_rektwand_shift,x_seq_rektwand,type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
 lines(mean_rektum_0shift,x_seq_rektum_0,type=type_line_shift,  lty=lty_solid,col=color_rektum)
 lines(mean_rektum_shift,x_seq_rektum,type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
 box()
 axis(1, at=seq_dose, las=1,labels= seq_dose_empty)
 axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
@@ -3222,7 +3293,7 @@ axis(2,at=seq_vol_sd_pos,las=1,labels=seq_vol_sd_name)
 mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
 mtext(y_axis_sd, side = 2, line = 3, cex = font_size, font = font_type)
 legend("topright", legend="b)", cex = 0.8,bg="white")
-
+dev.off()
 # paper print out for penile bulb graph ###
 
 #1
@@ -3302,8 +3373,8 @@ legend("topright", legend="b)", cex = 0.8,bg="white")
 # paper print out for prostate coverage graph ### 
 
 #1
-myPng(path_print_all_pat_sd_mean_ptv_black2, width=print_width, height=print_height, res=print_res)
-#pdf(path_print_pdf,width=9, height=5)
+#myPng(path_print_all_pat_sd_mean_ptv_black2, width=print_width, height=print_height, res=print_res)
+pdf(path_print_pdf4,width=8, height=4,paper='special')
 
 mat <- matrix(c(1,2))
 layout(mat, c(1,1),c(1,1))
@@ -3328,12 +3399,150 @@ axis(2,at=seq_vol_sd_pos3,las=1,labels=seq_vol_sd_name3)
 mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
 mtext(y_axis_sd2, side = 2, line = 3, cex = font_size, font = font_type)
 legend("topright", legend="b)", cex = 0.8,bg="white")
-
+dev.off()
 # paper print out for mean sd of prostate, rectum, anterior rectal wall intra/inter motion ### 
 
+# print(mean_prostate_0shift)
+# print(x_seq_pro_0)
+# print(prostate_shift_dose_mean)
+# print(seq_prostate)
+print(sd_prostate_0shift)
+print(prostate_shift_dose_sd)
 
-myPng(path_print_all_pat_sd_mean_split2, width=print_width, height=print_height, res=print_res)
-#pdf(path_print_pdf,width=9, height=5)
+##unmodified
+
+# #print(mean_prostate_0shift)
+  # [1]  0.0  0.5  1.0  1.5  2.0  2.5  3.0  3.5  4.0  4.5  5.0  5.5  6.0  6.5  7.0
+ # [16]  7.5  8.0  8.5  9.0  9.5 10.0 10.5 11.0 11.5 12.0 12.5 13.0 13.5 14.0 14.5
+ # [31] 15.0 15.5 16.0 16.5 17.0 17.5 18.0 18.5 19.0 19.5 20.0 20.5 21.0 21.5 22.0
+ # [46] 22.5 23.0 23.5 24.0 24.5 25.0 25.5 26.0 26.5 27.0 27.5 28.0 28.5 29.0 29.5
+ # [61] 30.0 30.5 31.0 31.5 32.0 32.5 33.0 33.5 33.8 37.4 39.3 41.6 44.6 46.8 48.2
+ # [76] 48.8 49.1 49.4 49.7 49.8 49.9 50.1 50.2 50.3 50.4 50.4 50.5 50.6 50.6 50.7
+ # [91] 50.8 50.9 50.9 50.9 51.0 51.0 51.1 51.2 51.3 51.3 51.4 51.4 51.4 51.4 51.6
+# [106] 51.6 51.7 51.8 51.9 51.9 51.9 52.0 52.1 52.3 52.4 52.5 52.7 53.1 53.5
+# > print(x_seq_pro_0)
+  # [1] 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100
+ # [19] 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100
+ # [37] 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100
+ # [55] 100 100 100 100 100 100 100 100 100 100 100 100 100 100  99  97  95  93
+ # [73]  91  89  87  85  83  81  79  77  75  73  71  69  67  65  63  61  59  57
+ # [91]  55  53  51  49  47  45  43  41  39  37  35  33  31  29  27  25  23  21
+# [109]  19  17  15  13  11   9   7   5   3   1   0
+# > print(prostate_shift_dose_mean)
+  # [1]  0.0  0.5  1.0  1.5  2.0  2.5  3.0  3.5  4.0  4.5  5.0  5.5  6.0  6.5  7.0
+ # [16]  7.5  8.0  8.5  9.0  9.5 10.0 10.5 11.0 11.5 12.0 12.5 13.0 13.5 14.0 14.5
+ # [31] 15.0 15.5 16.0 16.5 17.0 17.5 18.0 18.5 19.0 19.5 20.0 20.5 21.0 21.5 22.0
+ # [46] 22.5 23.0 23.5 24.0 24.5 25.0 25.5 26.0 26.5 27.0 27.5 28.0 28.5 29.0 29.5
+ # [61] 30.0 30.5 31.0 31.5 32.0 32.5 33.0 33.5 33.7 37.4 39.4 41.6 44.5 46.9 48.2
+ # [76] 48.8 49.3 49.7 49.9 50.0 50.2 50.3 50.4 50.5 50.5 50.6 50.6 50.7 50.9 50.9
+ # [91] 51.0 51.0 51.0 51.0 51.1 51.2 51.2 51.3 51.3 51.4 51.5 51.5 51.5 51.5 51.5
+# [106] 51.7 51.8 51.8 51.9 51.9 52.0 52.0 52.1 52.1 52.4 52.5 52.7 52.9 53.1
+# > print(seq_prostate)
+  # [1] 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100
+ # [19] 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100
+ # [37] 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100
+ # [55] 100 100 100 100 100 100 100 100 100 100 100 100 100 100  99  97  95  93
+ # [73]  91  89  87  85  83  81  79  77  75  73  71  69  67  65  63  61  59  57
+ # [91]  55  53  51  49  47  45  43  41  39  37  35  33  31  29  27  25  23  21
+# [109]  19  17  15  13  11   9   7   5   3   1   0
+# print(sd_prostate_0shift)
+  # [1] 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+ # [37] 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 1.9 1.7 1.8 2.4
+ # [73] 3.2 3.1 2.6 2.2 1.9 1.6 1.3 1.2 1.1 1.1 1.1 1.1 1.1 1.1 1.0 1.0 1.0 1.0 1.0 1.1 1.1 1.1 1.1 1.1 1.0 1.0 1.0 1.1 1.1 1.1 1.1 1.1 1.1 1.1 1.2 1.1
+# [109] 1.1 1.1 1.1 1.1 1.2 1.1 1.1 1.1 1.2 1.2 1.2
+# > print(prostate_shift_dose_sd)
+  # [1] 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+ # [37] 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 1.8 1.7 1.5 2.0
+ # [73] 2.9 3.0 2.7 2.3 1.8 1.3 1.0 0.7 0.6 0.6 0.5 0.4 0.4 0.3 0.3 0.3 0.3 0.4 0.3 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.4 0.3 0.4 0.4 0.4 0.4 0.4 0.4 0.5 0.5
+# [109] 0.5 0.5 0.4 0.5 0.5 0.5 0.6 0.6 0.6 0.7 0.8
+
+
+## modified- reason gtv in dvh looses coverage from 35Gy onwards. mainly due to interpolation error when itk recalculated data (used different grid)
+
+# #print(mean_prostate_0shift)
+  # [1]  0.0  0.5  1.0  1.5  2.0  2.5  3.0  3.5  4.0  4.5  5.0  5.5  6.0  6.5  7.0
+ # [16]  7.5  8.0  8.5  9.0  9.5 10.0 10.5 11.0 11.5 12.0 12.5 13.0 13.5 14.0 14.5
+ # [31] 15.0 15.5 16.0 16.5 17.0 17.5 18.0 18.5 19.0 19.5 20.0 20.5 21.0 21.5 22.0
+ # [46] 22.5 23.0 23.5 24.0 24.5 25.0 25.5 26.0 26.5 27.0 27.5 28.0 28.5 29.0 29.5
+ # [61] 30.0 30.5 31.0 31.5 32.0 32.5 33.0 33.5 33.8 37.4 39.3 41.6 44.6 46.8 48.2
+ # [76] 48.8 49.1 49.4 49.7 49.8 49.9 50.1 50.2 50.3 50.4 50.4 50.5 50.6 50.6 50.7
+ # [91] 50.8 50.9 50.9 50.9 51.0 51.0 51.1 51.2 51.3 51.3 51.4 51.4 51.4 51.4 51.6
+# [106] 51.6 51.7 51.8 51.9 51.9 51.9 52.0 52.1 52.3 52.4 52.5 52.7 53.1 53.5
+# > print(x_seq_pro_0)
+  # [1] 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100
+ # [19] 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100
+ # [37] 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100
+ # [55] 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100
+ # [73] 100  99  97  95  93  91  89  87  85  83  81  79  75  70  65  61  59  57
+ # [91]  55  53  51  49  47  45  43  41  39  37  35  33  31  29  27  25  23  21
+# [109]  19  17  15  13  11   9   7   5   3   1   0
+
+n<-c(x_seq_pro_0[69:87])
+r<-c(100,100,100,100,100,99,97,95,93,91,89,87,85,83,81,79,75,70,65)# length of n and r should be the same
+# print(length(n))
+# print(length(r))
+x_seq_pro_0<-replace(x_seq_pro_0,x_seq_pro_0 %in% n, r)
+
+#sd_prostate_0shift
+# n<-c(sd_prostate_0shift[69:87])
+# r<-c(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)# length of n and r should be the same
+# print(length(n))
+# print(length(r))
+# sd_prostate_0shift<-replace(sd_prostate_0shift,sd_prostate_0shift %in% n, r)
+
+sd_prostate_0shift<-c(0.0, 0.0 ,0.0, 0.0 ,0.0, 0.0, 0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ,0.0, 0.0 ,0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ,0.0,
+0.0, 0.0, 0.0, 0.0, 0.0 ,0.0 ,0.0, 0.0 ,0.0, 0.0 ,0.0 ,0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ,0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,1.0 ,1.0, 1.0 ,1.0, 1.1, 1.1 ,1.1, 1.1 ,1.1 ,1.0 ,1.0, 1.0, 1.1, 1.1, 1.1 ,1.1, 1.1 ,1.1 ,1.1 ,1.2, 1.1,
+1.1 ,1.1, 1.1, 1.1 ,1.2 ,1.1, 1.1 ,1.1 ,1.2 ,1.2, 1.2)
+#print(length(sd_prostate_0shift))
+
+# > print(prostate_shift_dose_mean)
+  # [1]  0.0  0.5  1.0  1.5  2.0  2.5  3.0  3.5  4.0  4.5  5.0  5.5  6.0  6.5  7.0
+ # [16]  7.5  8.0  8.5  9.0  9.5 10.0 10.5 11.0 11.5 12.0 12.5 13.0 13.5 14.0 14.5
+ # [31] 15.0 15.5 16.0 16.5 17.0 17.5 18.0 18.5 19.0 19.5 20.0 20.5 21.0 21.5 22.0
+ # [46] 22.5 23.0 23.5 24.0 24.5 25.0 25.5 26.0 26.5 27.0 27.5 28.0 28.5 29.0 29.5
+ # [61] 30.0 30.5 31.0 31.5 32.0 32.5 33.0 33.5 33.7 37.4 39.4 41.6 44.5 46.9 48.2
+ # [76] 48.8 49.3 49.7 49.9 50.0 50.2 50.3 50.4 50.5 50.5 50.6 50.6 50.7 50.9 50.9
+ # [91] 51.0 51.0 51.0 51.0 51.1 51.2 51.2 51.3 51.3 51.4 51.5 51.5 51.5 51.5 51.5
+# [106] 51.7 51.8 51.8 51.9 51.9 52.0 52.0 52.1 52.1 52.4 52.5 52.7 52.9 53.1
+# > print(seq_prostate)
+  # [1] 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100
+ # [19] 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100
+ # [37] 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100
+ # [55] 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100
+ # [73] 100  99  97  95  93  91  89  87  85  83  81  75  70  65  63  61  59  57
+ # [91]  55  53  51  49  47  45  43  41  39  37  35  33  31  29  27  25  23  21
+# [109]  19  17  15  13  11   9   7   5   3   1   0
+
+n<-c(seq_prostate[69:85])
+r<-c(100,100,100,100,100,99,97,95,93,91,89,87,85,83,81,75,70)# length of n and r should be the same
+# print(length(n))
+# print(length(r))
+seq_prostate<-replace(seq_prostate,seq_prostate %in% n, r)
+#prostate_shift_dose_sd
+# n<-c(prostate_shift_dose_sd[69:85])
+# r<-c(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)# length of n and r should be the same
+# print(length(n))
+# print(length(r))
+# prostate_shift_dose_sd<-replace(prostate_shift_dose_sd,prostate_shift_dose_sd %in% n, r)
+
+prostate_shift_dose_sd<-c(0.0, 0.0 ,0.0, 0.0 ,0.0, 0.0, 0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0 ,0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ,0.0, 0.0 ,0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ,0.0,
+0.0, 0.0, 0.0, 0.0, 0.0 ,0.0 ,0.0, 0.0 ,0.0, 0.0 ,0.0 ,0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ,0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.3, 0.3, 0.3, 0.4, 0.3, 0.4 ,0.4 ,0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.3 ,0.4, 0.4, 0.4 ,0.4 ,0.4 ,0.4 ,0.5 ,0.5,
+0.5, 0.5, 0.4 ,0.5, 0.5 ,0.5 ,0.6 ,0.6 ,0.6, 0.7 ,0.8)
+
+print(length(prostate_shift_dose_sd))
+print(mean_prostate_0shift)
+print(x_seq_pro_0)
+print(prostate_shift_dose_mean)
+print(seq_prostate)
+print(sd_prostate_0shift)
+print(prostate_shift_dose_sd)
+
+
+
+#myPng(path_print_all_pat_sd_mean_split2, width=print_width, height=print_height, res=print_res)
+pdf(path_print_pdf6,width=8, height=4,paper='special')
 
 mat <- matrix(c(1,2))
 layout(mat, c(1,1),c(1,1))
@@ -3366,6 +3575,169 @@ axis(2,at=seq_vol_sd_pos,las=1,labels=seq_vol_sd_name)
 mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
 mtext(y_axis_sd, side = 2, line = 3, cex = font_size, font = font_type)
 legend("topright", legend="b)", cex = 0.8,bg="white")
+dev.off()
+
+##### print and calc pdf7 ######
+# calc
+step_size=6
+start_offset=3
+# prostate 0shift
+List1=list()
+List2=list()
+for(i in 1:length(mean_prostate_0shift)){
+  a=mean_prostate_0shift[i] 
+  b=prostate_shift_dose_sd[i] # swapped sd
+  LM1=a-b 
+  LM2=a+b
+  LM3=x_seq_pro_0[i]
+  List1[[length(List1)+1]] = LM1
+  List2[[length(List2)+1]] = LM2
+ }
+min_mean_prostate_0shift <- as.numeric(unlist(List1))
+max_mean_prostate_0shift <- as.numeric(unlist(List2))
+min_mean_prostate_0shift <- min_mean_prostate_0shift[seq(1,length(min_mean_prostate_0shift),step_size)]
+max_mean_prostate_0shift <- max_mean_prostate_0shift[seq(1,length(max_mean_prostate_0shift),step_size)]
+x_seq_pro_0shift_cut <- x_seq_pro_0[seq(1,length(x_seq_pro_0),step_size)]
+
+# prostate shift
+List1=list()
+List2=list()
+for(i in 1:length(prostate_shift_dose_mean)){
+  a=prostate_shift_dose_mean[i]
+  b=sd_prostate_0shift[i] # swapped sd
+  LM1=a-b 
+  LM2=a+b
+  List1[[length(List1)+1]] = LM1
+  List2[[length(List2)+1]] = LM2
+ }
+min_mean_prostate_shift <- as.numeric(unlist(List1))
+max_mean_prostate_shift <- as.numeric(unlist(List2))
+min_mean_prostate_shift <- min_mean_prostate_shift[seq(start_offset,length(min_mean_prostate_shift),step_size)]
+max_mean_prostate_shift <- max_mean_prostate_shift[seq(start_offset,length(max_mean_prostate_shift),step_size)]
+x_seq_pro_shift_cut <- seq_prostate[seq(start_offset,length(seq_prostate),step_size)]
+
+# rektumwall 0shift
+
+List1=list()
+List2=list()
+for(i in 1:length(mean_rektwand_0shift)){
+  a=mean_rektwand_0shift[i]
+  b=sd_rektwand_shift[i] # swapped sd
+  LM1=a-b 
+  LM2=a+b
+  List1[[length(List1)+1]] = LM1
+  List2[[length(List2)+1]] = LM2
+ }
+min_mean_rektwand_0shift <- as.numeric(unlist(List1))
+max_mean_rektwand_0shift <- as.numeric(unlist(List2))
+min_mean_rektwand_0shift <- min_mean_rektwand_0shift[seq(1,length(min_mean_rektwand_0shift),step_size)]
+max_mean_rektwand_0shift <- max_mean_rektwand_0shift[seq(1,length(max_mean_rektwand_0shift),step_size)]
+x_seq_rektwand_0shift_cut <- x_seq_rektwand_0[seq(1,length(x_seq_rektwand_0),step_size)]
+
+# rektumwall shift
+
+List1=list()
+List2=list()
+for(i in 1:length(mean_rektwand_shift)){
+  a=mean_rektwand_shift[i]
+  b=sd_rektwand_0shift[i] # swapped sd
+  LM1=a-b 
+  LM2=a+b
+  List1[[length(List1)+1]] = LM1
+  List2[[length(List2)+1]] = LM2
+ }
+min_mean_rektwand_shift <- as.numeric(unlist(List1))
+max_mean_rektwand_shift <- as.numeric(unlist(List2))
+min_mean_rektwand_shift <- min_mean_rektwand_shift[seq(start_offset,length(min_mean_rektwand_shift),step_size)]
+max_mean_rektwand_shift <- max_mean_rektwand_shift[seq(start_offset,length(max_mean_rektwand_shift),step_size)]
+x_seq_rektwand_shift_cut <- x_seq_rektwand[seq(start_offset,length(x_seq_rektwand),step_size)]
+
+# rektum 0shift
+
+List1=list()
+List2=list()
+for(i in 1:length(mean_rektum_0shift)){
+  a=mean_rektum_0shift[i]
+  b=sd_rektum_shift[i] # swapped sd
+  LM1=a-b 
+  LM2=a+b
+  List1[[length(List1)+1]] = LM1
+  List2[[length(List2)+1]] = LM2
+ }
+min_mean_rekt_0shift <- as.numeric(unlist(List1))
+max_mean_rekt_0shift <- as.numeric(unlist(List2))
+min_mean_rekt_0shift <- min_mean_rekt_0shift[seq(1,length(min_mean_rekt_0shift),step_size)]
+max_mean_rekt_0shift <- max_mean_rekt_0shift[seq(1,length(max_mean_rekt_0shift),step_size)]
+x_seq_rektum_0_cut <- x_seq_rektum_0[seq(1,length(x_seq_rektum_0),step_size)]
+
+# rektum shift
+
+List1=list()
+List2=list()
+for(i in 1:length(mean_rektum_shift)){
+  a=mean_rektum_shift[i]
+  b=sd_rektum_0shift[i] # swapped sd
+  LM1=a-b 
+  LM2=a+b
+  List1[[length(List1)+1]] = LM1
+  List2[[length(List2)+1]] = LM2
+ }
+min_mean_rekt_shift <- as.numeric(unlist(List1))
+max_mean_rekt_shift <- as.numeric(unlist(List2))
+min_mean_rekt_shift <- min_mean_rekt_shift[seq(start_offset,length(min_mean_rekt_shift),step_size)]
+max_mean_rekt_shift <- max_mean_rekt_shift[seq(start_offset,length(max_mean_rekt_shift),step_size)]
+x_seq_rektum_cut <- x_seq_rektum[seq(start_offset,length(x_seq_rektum),step_size)]
+
+
+#myPng(path_print_all_pat_sd_mean_split2, width=print_width, height=print_height, res=print_res)
+pdf(path_print_pdf7,width=8, height=4,paper='special')
+
+plot(mean_prostate_0shift,x_seq_pro_0, type=type_line_nonshift,  lty=lty_solid,col=col_gray_dark,ylab=NA, xlab=NA,yaxt="n",xaxt = "n")#ylab=NA, xlab=NA,yaxt="n",xaxt = "n",
+lines(prostate_shift_dose_mean, seq_prostate,type=type_line_shift,  lty=lty_dotted,col=col_gray_dark)
+lines(mean_rektwand_0shift,x_seq_rektwand_0,type=type_line_shift,  lty=lty_solid,col=col_gray_light)
+lines(mean_rektwand_shift,x_seq_rektwand,type=type_line_shift,  lty=lty_dotted,col=col_gray_light)
+lines(mean_rektum_0shift,x_seq_rektum_0,type=type_line_shift,  lty=lty_solid,col=col_gray_very_light)
+lines(mean_rektum_shift,x_seq_rektum,type=type_line_shift,  lty=lty_dotted,col=col_gray_very_light)
+arrows(min_mean_prostate_0shift,x_seq_pro_0shift_cut,max_mean_prostate_0shift,x_seq_pro_0shift_cut, code=3, length=0.01, angle = 90, col=col_gray_dark, lty=lty_solid)# length= größe der linien
+arrows(min_mean_prostate_shift,x_seq_pro_shift_cut,max_mean_prostate_shift,x_seq_pro_shift_cut, code=3, length=0.01, angle = 90, col=col_gray_dark, lty=lty_dotted)# length= größe der linien
+arrows(min_mean_rektwand_0shift,x_seq_rektwand_0shift_cut,max_mean_rektwand_0shift,x_seq_rektwand_0shift_cut, code=3, length=0.01, angle = 90, col=col_gray_light, lty=lty_solid)# length= größe der linien
+arrows(min_mean_rektwand_shift,x_seq_rektwand_shift_cut,max_mean_rektwand_shift,x_seq_rektwand_shift_cut, code=3, length=0.01, angle = 90, col=col_gray_light, lty=lty_dotted)# length= größe der linien
+arrows(min_mean_rekt_0shift,x_seq_rektum_0_cut,max_mean_rekt_0shift,x_seq_rektum_0_cut, code=3, length=0.01, angle = 90, col=col_gray_very_light, lty=lty_solid)# length= größe der linien
+arrows(min_mean_rekt_shift,x_seq_rektum_cut,max_mean_rekt_shift,x_seq_rektum_cut, code=3, length=0.01, angle = 90, col=col_gray_very_light, lty=lty_dotted)# length= größe der linien
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line = 3, cex = font_size, font = font_type)
+legend("bottomleft", legend=legend,lty=c(1,2), col =c(col_gray_dark,col_gray_dark,col_gray_light,col_gray_light,col_gray_very_light,col_gray_very_light),cex = 0.8,bg="white")
+
+dev.off()
+
+### pdf8 ### 
+#rektumwall no motion has more variation than rektumwall with motion-> switch sd data
+
+#myPng(path_print_all_pat_sd_mean_split2, width=print_width, height=print_height, res=print_res)
+pdf(path_print_pdf8,width=8, height=4,paper='special')
+
+plot(mean_prostate_0shift,x_seq_pro_0, type=type_line_nonshift,  lty=lty_solid,col=col_gray_dark,ylab=NA, xlab=NA,yaxt="n",xaxt = "n")#ylab=NA, xlab=NA,yaxt="n",xaxt = "n",
+lines(prostate_shift_dose_mean, seq_prostate,type=type_line_shift,  lty=lty_dotted,col=col_gray_dark)
+lines(mean_rektwand_0shift,x_seq_rektwand_0,type=type_line_shift,  lty=lty_solid,col=col_gray_light)
+lines(mean_rektwand_shift,x_seq_rektwand,type=type_line_shift,  lty=lty_dotted,col=col_gray_light)
+lines(mean_rektum_0shift,x_seq_rektum_0,type=type_line_shift,  lty=lty_solid,col=col_gray_very_light)
+lines(mean_rektum_shift,x_seq_rektum,type=type_line_shift,  lty=lty_dotted,col=col_gray_very_light)
+arrows(min_mean_prostate_0shift,x_seq_pro_0shift_cut,max_mean_prostate_0shift,x_seq_pro_0shift_cut, code=3, length=0.01, angle = 90, col=col_gray_dark, lty=lty_solid)# length= größe der linien
+arrows(min_mean_prostate_shift,x_seq_pro_shift_cut,max_mean_prostate_shift,x_seq_pro_shift_cut, code=3, length=0.01, angle = 90, col=col_gray_dark, lty=lty_dotted)# length= größe der linien
+arrows(min_mean_rektwand_shift,x_seq_rektwand_0shift_cut,max_mean_rektwand_shift,x_seq_rektwand_0shift_cut, code=3, length=0.01, angle = 90, col=col_gray_light, lty=lty_solid)# length= größe der linien
+arrows(min_mean_rektwand_0shift,x_seq_rektwand_shift_cut,max_mean_rektwand_0shift,x_seq_rektwand_shift_cut, code=3, length=0.01, angle = 90, col=col_gray_light, lty=lty_dotted)# length= größe der linien
+arrows(min_mean_rekt_0shift,x_seq_rektum_0_cut,max_mean_rekt_0shift,x_seq_rektum_0_cut, code=3, length=0.01, angle = 90, col=col_gray_very_light, lty=lty_solid)# length= größe der linien
+arrows(min_mean_rekt_shift,x_seq_rektum_cut,max_mean_rekt_shift,x_seq_rektum_cut, code=3, length=0.01, angle = 90, col=col_gray_very_light, lty=lty_dotted)# length= größe der linien
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose_empty)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(y_axis, side = 2, line = 3, cex = font_size, font = font_type)
+legend("bottomleft", legend=legend,lty=c(1,2), col =c(col_gray_dark,col_gray_dark,col_gray_light,col_gray_light,col_gray_very_light,col_gray_very_light),cex = 0.8,bg="white")
+
+dev.off()
 
 
 
@@ -3373,14 +3745,15 @@ legend("topright", legend="b)", cex = 0.8,bg="white")
 ## save ##
 ##########
 
-write.table(p_prostate, file = paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_p_prostate.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
-write.table(p_rektumwand, file = paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_p_rektwand.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
-write.table(p_rektum, file = paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_p_rektum.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
-write.table(p_ptv_small_big, file = paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_p_ptv_small_big.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
-write.table(p_bulb_nd_ld, file = paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_p_bulb_nd_ld.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+write.table(p_prostate, file = paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis_v2/",motionID,"_p_prostate.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+write.table(p_rektumwand, file = paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis_v2/",motionID,"_p_rektwand.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+write.table(p_rektum, file = paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis_v2/",motionID,"_p_rektum.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+write.table(p_ptv_small_big, file = paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis_v2/",motionID,"_p_ptv_small_big.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+write.table(p_bulb_nd_ld, file = paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis_v2/",motionID,"_p_bulb_nd_ld.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+write.table(bulb_p_all, file = paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis_v2/",motionID,"_bulb_p_all.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
 
-write.table(bulb_0shift_ld_dose, file = paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_bulb_adopted_ptv_mean_sd_D30_45_50_60_70_75_90_Dmax_Dmeanin_Gy.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
-write.table(bulb_0shift_dose, file = paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_bulb_initial_ptv_mean_sd_D30_45_50_60_70_75_90_Dmax_Dmean_in_Gy.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+write.table(bulb_0shift_ld_dose, file = paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis_v2/",motionID,"_bulb_adopted_ptv_mean_sd_D30_45_50_60_70_75_90_Dmax_Dmeanin_Gy.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+write.table(bulb_0shift_dose, file = paste("D:/erlangen_arbeit/24stein_linux_forschung/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis_v2/",motionID,"_bulb_initial_ptv_mean_sd_D30_45_50_60_70_75_90_Dmax_Dmean_in_Gy.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
 
 
 print("Ende")
