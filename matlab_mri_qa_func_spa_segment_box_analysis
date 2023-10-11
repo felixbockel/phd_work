@@ -1,0 +1,135 @@
+%% segmentate image out of image box and analysis
+function spa_dist_mm=SPA_segment_box_analysis(dicom,t_path,T_image)
+           
+    % Image 1  
+        
+          %dicom=dicomread('test_image11');%T2
+          % Umrechnungsfaktor 512 zu 256 = divided by two
+          
+          if T_image == 1
+              
+            dicom_image=dicom(80:140,230:280); % Box für T1, 512 matrix
+          
+          elseif T_image == 2
+             
+            dicom_image=dicom(40:70,115:140); % Box für T2, 256 Matrix  %%%%% Box kontrollieren%%%%% weitermachen
+          
+          end
+           
+           
+          
+          %find max and binary matrix
+          threshold_intensity=300;% 1. threshold
+          dicom_image(dicom_image<= threshold_intensity)=1;
+          dicom_image(dicom_image> threshold_intensity)=0;
+          %figure;imshow(dicom_image,[]); 
+          [row,col]=size(dicom_image);
+          image_find_seg=[];
+          image_seg_row=[];
+          
+          for i=1:col
+              
+              [~,~,ones_true]=find(dicom_image(:,i) == 1);
+              image_find_seg=find(dicom_image(:,i) == 1);
+              
+              if ones_true == 1
+                  
+                    image_seg_col(:,i) =image_find_seg([1 end]); 
+              
+              end
+              
+          end
+%         
+          pos_ones= image_seg_col(1,:)==1; % Korrektur des Bildes   
+          max_image_seg=max(image_seg_col(2,:));
+          ten_max_image_seg=10;% threshold 10
+          
+          if max_image_seg > 2*ten_max_image_seg
+              
+              image_segment=dicom_image(ten_max_image_seg:row,pos_ones);%;ten_max_image_seg:row,pos_ones);
+            
+          else
+              
+              image_segment=dicom_image(1:row,pos_ones);%;ten_max_image_seg:row,pos_ones);
+              
+          end
+          
+          % one more time look for ones after cutting image smaller
+          image_seg_col=[];
+          image_find_seg=[];
+          pos_ones=[];
+          ones_true=[];
+          [row,col]=size(image_segment);
+ 
+          for i=1:col
+              
+              [~,~,ones_true]=find(image_segment(:,i) == 1);
+              image_find_seg=find(image_segment(:,i) == 1);
+              
+              if ones_true == 1
+                  
+                    image_seg_col(:,i) =image_find_seg([1 end]); 
+              
+              end
+              
+          end
+          
+          pos_ones= image_seg_col(1,:)==1; % Korrektur des Bildes   
+          image_segment2=image_segment(1:row,pos_ones);%;ten_max_image_seg:row,pos_ones);
+          [~,col]=size(image_segment2);
+          image_bw=[];
+          
+          
+          for i=1:col
+              image_find_bw=find(image_segment2(:,i) == 1);
+              image_bw(i,1) = image_find_bw(end);     
+          end
+          
+          %figure;plot(image_bw_col);
+          %figure;plot(image_seg_row(:,2));
+          [row,~]=size(image_bw);
+          col_half=round(row/2);
+          mean_image_bw=mean(image_bw);
+          
+          if  mean_image_bw<image_bw(col_half,1) % find center value of given two binary images
+              col_half=col_half+1;
+              
+              if mean_image_bw<image_bw(col_half,1)
+                  col_half=col_half+1;
+                    
+                  if mean_image_bw<image_bw(col_half,1)
+                        col_half=col_half+1;
+                  end  
+                  
+              end
+              
+          elseif mean_image_bw>image_bw(col_half,1)
+                    col_half=col_half-1;
+              
+                    if mean_image_bw<image_bw(col_half,1)
+                        col_half=col_half-1; 
+                        
+                        if mean_image_bw<image_bw(col_half,1)
+                            col_half=col_half-1;                  
+                        end
+                        
+                    end
+              
+          end
+
+          right_image=mean(image_bw(1:col_half-1,1)); % length right image
+          left_image=mean(image_bw(col_half:end,1)); % length left image
+          
+          image_dist=abs(right_image-left_image);
+          
+          dicom_info=dicominfo(t_path); % DICOM image will be read out      
+          FOV=char(dicom_info.Private_0051_100c);
+          FOV=FOV(9:end);
+          FOV_num=double(str2double(FOV)); 
+          image_size=double(dicom_info.Rows);
+          resolution=image_size./FOV_num; % resolution: pixel per mm 
+          
+          spa_dist_mm=image_dist/resolution; % Images right and left should have a max difference of 4 mm
+          % image_dist auslesen
+          
+          
