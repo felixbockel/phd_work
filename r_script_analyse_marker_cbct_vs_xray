@@ -1,0 +1,262 @@
+## AUfRUF: Rscript /home/boeckefx/Documents/Prostate_SOP/scripte/ifpp_ifmm_marker_cbct_vs_xray.R
+
+##########
+## data ##
+##########
+
+## x-ray marker ##
+marker_xrt= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct_analysis/ifmm_marker_xrt.dat", sep="") , header=TRUE, sep="\t",dec=".")
+colnames(marker_xrt)<-c(1:ncol(marker_xrt))
+marker_cbct= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct_analysis/ifpp_hist_marker_allpat.dat", sep="") , header=TRUE, sep="\t",dec=".")
+colnames(marker_cbct)<-c(1:ncol(marker_cbct))
+
+## calculation ## 
+
+remove <- c (NA)
+
+#
+mean_sum_marker_balx=mean(t(marker_cbct[c(1),])) # mean of x values
+mean_sum_marker_baly=mean(t(marker_cbct[c(2),])) # mean of y values
+mean_sum_marker_balz=mean(t(marker_cbct[c(3),])) # mean of z values
+std_sum_marker_balx=sd(t(marker_cbct[c(1),])) # std of x values
+std_sum_marker_baly=sd(t(marker_cbct[c(2),])) # std of y values
+std_sum_marker_balz=sd(t(marker_cbct[c(3),])) # std of z values
+
+balmeanstdmarker_corr=cbind(mean_sum_marker_balx,std_sum_marker_balx,mean_sum_marker_baly,std_sum_marker_baly,mean_sum_marker_balz,std_sum_marker_balz)
+
+#
+mean_lat_marker_xrt=round(mean(marker_xrt[,c(1)]),2)
+std_lat_marker_xrt=round(sd(marker_xrt[,c(1)]),2)
+
+mean_vert_marker_xrt=round(mean(marker_xrt[,c(2)]),2)
+std_vert_marker_xrt=round(sd(marker_xrt[,c(2)]),2)
+
+mean_long_marker_xrt=round(mean(marker_xrt[,c(3)]),2)
+std_long_marker_xrt=round(sd(marker_xrt[,c(3)]),2)
+#
+
+
+## prepare data ##
+
+y_hist_abtasten=80
+
+## function for hist y-axis rounding ##
+
+mround<-function(x,base){base*round(x/base)}
+
+## p- and t- test ##
+
+# p<0.05 considered significant correlation between x and y. p>0.05 the opposite: kk Wang 2010
+# p<0.001 high correlation :jones 2013
+# t:  t kann sowohl negativ als auch positiv sein ? negativ bedeutet, dass der Mittelwert x kleiner als Mittelwert y unseres Versuchs war; positiv entsprechend anders herum- http://scienceblogs.de/andererseits/2010/08/17/statistik-fur-anfanger-der-ttest/
+# p<0.01 high correlation : bassim paper
+# for inter-fractional set-up variability versus treatment days ##
+
+
+# Inter-fractional marker motion: x-ray vs cbct
+
+# x- direction
+value_x=t(marker_cbct[c(1),])  
+value_y=marker_xrt[c(1),]
+stat_rtdays=t.test(value_x,value_y)
+ttest_irplan_marker_x=stat_rtdays$statistic
+p_x=ifelse((stat_rtdays$p.value)<=0.01,0.01,round(stat_rtdays$p.value,2))# p_rtdays<0.001 -> result equals p<0.001 otherwise p>0.001
+
+# y- direction
+value_x=t(marker_cbct[c(2),])  
+value_y=marker_xrt[c(2),]
+stat_rtdays=t.test(value_x,value_y)
+ttest_irplan_marker_y=stat_rtdays$statistic
+p_y=ifelse((stat_rtdays$p.value)<=0.01,0.01,round(stat_rtdays$p.value,2))# p_rtdays<0.001 -> result equals p<0.001 otherwise p>0.001 =0.79
+
+# z- direction
+value_x=t(marker_cbct[c(3),])  
+value_y=marker_xrt[c(3),]
+stat_rtdays=t.test(value_x,value_y)
+ttest_irplan_marker_z=stat_rtdays$statistic
+p_z=ifelse((stat_rtdays$p.value)<=0.01,0.01,round(stat_rtdays$p.value,2))# p_rtdays<0.001 -> result equals p<0.001 otherwise p>0.001 =0.71
+
+
+###########
+## print ##
+###########
+
+
+matrix_hist<-marker_cbct
+x <- t(marker_cbct[c(1),])
+y <- t(marker_cbct[c(2),])
+z <- t(marker_cbct[c(3),])
+
+diff=round(diff((c((min(matrix_hist)),(max(matrix_hist))))),0)
+num_bins=round(sqrt((ncol(matrix_hist))),0)# x,y,z have same number of values
+diff2=round(diff((c((min(x)),(max(x))))),0)
+div=round((diff2/diff),2)
+breaks=round(div*num_bins,0)
+hx<-hist(x, breaks=breaks)
+x_corr_marker=hx
+xfit<-seq(min(x),max(x),length=y_hist_abtasten)
+yfit<-dnorm(xfit,mean=mean(x),sd=sd(x))
+yfit <- yfit*diff(hx$mids[1:2])*length(x)
+lines(xfit, yfit,type="l", lty=2,col=rgb(0,0,0,1))
+#
+diff2=round(diff((c((min(y)),(max(y))))),0)
+div=round((diff2/diff),2)
+breaks=round(div*num_bins,0)
+hy<-hist(y, breaks=breaks)
+y_corr_marker=hy
+xfit2<-seq(min(y),max(y),length=y_hist_abtasten)
+yfit2<-dnorm(xfit2,mean=mean(y),sd=sd(y))
+yfit2 <- yfit2*diff(hy$mids[1:2])*length(y)
+lines(xfit2, yfit2,type="l", lty=2,col=rgb(0,0,0,1))
+#
+diff2=round(diff((c((min(z)),(max(z))))),0)
+div=round((diff2/diff),2)
+breaks=round(div*num_bins,0)
+hz<-hist(z, breaks=breaks)
+z_corr_marker=hz
+xfit3<-seq(min(z),max(z),length=y_hist_abtasten)
+yfit3<-dnorm(xfit3,mean=mean(z),sd=sd(z))
+yfit3 <- yfit3*diff(hz$mids[1:2])*length(z)
+lines(xfit3, yfit3,type="l", lty=2,col=rgb(0,0,0,1))
+#
+
+num_counts<-c(yfit,yfit2,yfit3)
+max_counts=max(num_counts)
+
+List=list()
+for(i in 1:(length(num_counts))){
+  a=num_counts[i]
+  b=a [! a %in% remove]
+  LM= b*100/max_counts
+  List[[length(List)+1]] = LM
+}
+counts_prozent <- as.numeric(unlist(List))
+x_length=length(yfit)
+y_length=length(yfit2)
+z_length=length(yfit3)
+yfit=round(counts_prozent[1:x_length],0)
+yfit2=round(counts_prozent[x_length+1:y_length],0)
+yfit3=round(counts_prozent[x_length+y_length+1:z_length],0)
+
+#
+yfit_a=yfit
+yfit2_a=yfit2
+yfit3_a=yfit3
+xfit_a=xfit
+xfit2_a=xfit2
+xfit3_a=xfit3
+
+##
+
+matrix_hist<-t(marker_xrt)
+
+x <- marker_xrt[,1]# lat
+y <- marker_xrt[,2]# vert
+z <- marker_xrt[,3]# long
+
+diff=round(diff((c((min(matrix_hist)),(max(matrix_hist))))),0)
+num_bins=round(sqrt((ncol(matrix_hist))),0)# x,y,z have same number of values
+diff2=round(diff((c((min(x)),(max(x))))),0)
+div=round((diff2/diff),2)
+breaks=round(div*num_bins,0)
+hx<-hist(x, breaks=breaks)
+xfit<-seq(min(x),max(x),length=y_hist_abtasten)
+yfit<-dnorm(xfit,mean=mean(x),sd=sd(x))
+yfit <- yfit*diff(hx$mids[1:2])*length(x)
+lines(xfit, yfit,type="l", pch=c(1),col=rgb(0,0,0,1))
+#
+diff2=round(diff((c((min(y)),(max(y))))),0)
+div=round((diff2/diff),2)
+breaks=round(div*num_bins,0)
+hy<-hist(y, breaks=breaks)
+xfit2<-seq(min(y),max(y),length=y_hist_abtasten)
+yfit2<-dnorm(xfit2,mean=mean(y),sd=sd(y))
+yfit2 <- yfit2*diff(hy$mids[1:2])*length(y)
+lines(xfit2, yfit2,type="l",  pch=c(15),col=rgb(0,0,0,1))
+#
+diff2=round(diff((c((min(z)),(max(z))))),0)
+div=round((diff2/diff),2)
+breaks=round(div*num_bins,0)
+hz<-hist(z, breaks=breaks)
+xfit3<-seq(min(z),max(z),length=y_hist_abtasten)
+yfit3<-dnorm(xfit3,mean=mean(z),sd=sd(z))
+yfit3 <- yfit3*diff(hz$mids[1:2])*length(z)
+lines(xfit3, yfit3,type="l",  pch=c(8),col=rgb(0,0,0,1))
+#
+
+num_counts<-c(yfit,yfit2,yfit3)
+max_counts=max(num_counts)
+
+List=list()
+for(i in 1:(length(num_counts))){
+  a=num_counts[i]
+  b=a [! a %in% remove]
+  LM= b*100/max_counts
+  List[[length(List)+1]] = LM
+}
+counts_prozent <- as.numeric(unlist(List))
+x_length=length(yfit)
+y_length=length(yfit2)
+z_length=length(yfit3)
+yfit=round(counts_prozent[1:x_length],0)
+yfit2=round(counts_prozent[x_length+1:y_length],0)
+yfit3=round(counts_prozent[x_length+y_length+1:z_length],0)
+
+#
+yfit_b=yfit
+yfit2_b=yfit2
+yfit3_b=yfit3
+xfit_b=xfit
+xfit2_b=xfit2
+xfit3_b=xfit3
+
+## x-ray vs cbct ##
+
+pdf("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct_analysis/ifpp_ifmm_marker_cbct_vs_xray.pdf",width= 9, height= 5)
+
+max_y_fits=max(yfit_a,yfit2_a,yfit3_a,yfit_b,yfit2_b,yfit3_b)
+max_x_fits=15
+labels_y=seq(0,max_y_fits,(mround((max_y_fits/10),10)))
+plot(hx, ylab=NA, xlab=NA,col=rgb(0,1,1,0),border=NA,yaxt="n",xaxt = "n",main="Inter-fractional marker motion variability",xlim=c(-(round(max_x_fits,1)),+(round(max_x_fits,1))),ylim=c(0,+(round(max_y_fits,1))))
+lines(xfit_a, yfit_a,type="l", lty=2,col=rgb(0,0,0,1))
+lines(xfit2_a, yfit2_a,type="l", lty=1,col=rgb(0,0,0,1))
+lines(xfit3_a, yfit3_a,type="l", lty=6,col=rgb(0,0,0,1))
+lines(xfit_b, yfit_b,type="l",  lty=2,col=rgb(0,0,0,1))# lat
+lines(xfit2_b, yfit2_b,type="l",  lty=1,col=rgb(0,0,0,1))# vert
+lines(xfit3_b, yfit3_b,type="l",  lty=6,col=rgb(0,0,0,1))# long
+box()
+axis(1, at=-5, las=1,labels= "-5")
+axis(1, at=-10, las=1,labels= "-10")
+axis(1, at=-15, las=1,labels= "-15")
+axis(1, at=-20, las=1,labels= "-20")
+axis(1, at=-25, las=1,labels= "-25")
+axis(1, at=0, las=1,labels= "0")
+axis(1, at=5, las=1,labels= "5")
+axis(1, at=10, las=1,labels= "10")
+axis(1, at=15, las=1,labels= "15")
+axis(1, at=20, las=1,labels= "20")
+axis(1, at=25, las=1,labels= "25")
+axis(1, at=30, las=1,labels= "30")
+axis(1, at=-30, las=1,labels= "-30")
+axis(2,at=labels_y,las=1,labels=labels_y)
+legendtext_corr2<-c(
+paste("CBCT lateral: ",round(balmeanstdmarker_corr[1],2),"\u00B1",round(balmeanstdmarker_corr[2],2)),
+paste("X-ray lateral: ",round((mean_lat_marker_xrt),2),"\u00B1",round((std_lat_marker_xrt),2)),
+paste("p","\u003D",p_x),
+paste(""),
+paste("CBCT vertical: ",round(balmeanstdmarker_corr[3],2),"\u00B1",round(balmeanstdmarker_corr[4],2)),
+paste("X-ray vertical: ",round((mean_vert_marker_xrt),2),"\u00B1",round((std_vert_marker_xrt),2)),
+paste("p","\u003D",p_y),
+paste(""),
+paste("CBCT longitudinal: ",round(balmeanstdmarker_corr[5],2),"\u00B1",round(balmeanstdmarker_corr[6],2)),
+paste("X-ray longitudinal: ",round((mean_long_marker_xrt),2),"\u00B1",round((std_long_marker_xrt),2)),
+paste("p","\u003D",p_z))
+
+legend("topleft",round((max_y_fits),0), legend=legendtext_corr2,lty=c(2,2,NA,NA,1,1,NA,NA,6,6,NA), pch=c(NA,NA,2,NA,NA,NA,2,NA,NA,NA,2),col =c("black","black","black","black","black","black","black","black","black"),cex = 0.8,bg="white")
+mtext("Frequency", side = 2, line=3, cex = 0.9, font = 1)
+mtext("Relative shifts [mm]", side = 1, line = 3, cex = 0.9, font = 1)
+#mtext("reference CBCT", side = 1, line = 0.5, at=0,cex = 0.9, font = 1)
+abline(v=0, col = "black", lty=2,lwd=.5)
+
+
+print("Ende")
