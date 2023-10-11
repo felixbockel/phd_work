@@ -1,0 +1,3387 @@
+## AUfRUF: Rscript /home/boeckefx/Documents/Prostate_SOP/scripte/cbct_dvh_analysis.r inter
+
+##########
+## data ##
+##########
+
+# input arguments
+
+args<-commandArgs(TRUE)
+motionID = as.character(args[1]) # inter oder intra: inter includes analysis of interfractional motion and intra means inter- + intrafractional motion 
+print(motionID);
+
+# INT: initial PTV
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_1_prostate_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_1_prostate_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_1_rektwand_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_1_rektwand_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_1_rektum_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_1_rektum_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_1_bulb_0shift=dvh[,c(2)]
+
+# ADO: adopted PTV -> prostate, bulb
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_1_prostate_ado_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_1_bulb_ado_0shift=dvh[,c(2)]
+
+# INT: initial PTV
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_45_prostate_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppINT/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_45_prostate_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_45_rektwand_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppINT/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_45_rektwand_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_45_rektum_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppINT/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_45_rektum_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_45_bulb_0shift=dvh[,c(2)]
+
+# ADO: adopted PTV -> prostate, bulb
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppADO/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_45_prostate_ado_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_45_bulb_ado_0shift=dvh[,c(2)]
+
+# INT: initial PTV
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_44_prostate_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_44_prostate_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_44_rektwand_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_44_rektwand_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_44_rektum_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_44_rektum_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_44_bulb_0shift=dvh[,c(2)]
+
+# ADO: adopted PTV -> prostate, bulb
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_44_prostate_ado_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_44_bulb_ado_0shift=dvh[,c(2)]
+
+
+# INT: initial PTV
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_14_prostate_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichINT/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_14_prostate_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_14_rektwand_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichINT/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_14_rektwand_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_14_rektum_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichINT/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_14_rektum_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_14_bulb_0shift=dvh[,c(2)]
+
+# ADO: adopted PTV -> prostate, bulb
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichADO/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_14_prostate_ado_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_14_bulb_ado_0shift=dvh[,c(2)]
+
+
+# INT: initial PTV
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_2_prostate_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerINT/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_2_prostate_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_2_rektwand_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerINT/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_2_rektwand_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_2_rektum_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerINT/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_2_rektum_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_2_bulb_0shift=dvh[,c(2)]
+
+# ADO: adopted PTV -> prostate, bulb
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerADO/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_2_prostate_ado_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_2_bulb_ado_0shift=dvh[,c(2)]
+
+# INT: initial PTV
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrendelINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_53_prostate_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrendelINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_53_rektwand_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrendelINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_53_rektum_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrendelINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_53_bulb_0shift=dvh[,c(2)]
+
+# ADO: adopted PTV -> prostate, bulb
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrendelADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_53_bulb_ado_0shift=dvh[,c(2)]
+
+# INT: initial PTV
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GreinerINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_56_prostate_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GreinerINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_56_rektwand_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GreinerINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_56_rektum_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GreinerINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_56_bulb_0shift=dvh[,c(2)]
+
+# ADO: adopted PTV -> prostate, bulb
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GreinerADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_56_bulb_ado_0shift=dvh[,c(2)]
+
+# INT: initial PTV
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_12_prostate_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiINT/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_12_prostate_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_12_rektwand_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiINT/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_12_rektwand_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_12_rektum_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiINT/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_12_rektum_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_12_bulb_0shift=dvh[,c(2)]
+
+# ADO: adopted PTV -> prostate, bulb
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiADO/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_12_prostate_ado_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_12_bulb_ado_0shift=dvh[,c(2)]
+
+# INT: initial PTV
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/KoeppelINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_4_prostate_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/KoeppelINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_4_rektwand_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/KoeppelINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_4_rektum_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/KoeppelINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_4_bulb_0shift=dvh[,c(2)]
+
+# ADO: adopted PTV -> prostate, bulb
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/KoeppelADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_4_bulb_ado_0shift=dvh[,c(2)]
+
+# INT: initial PTV
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MitrovicINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_46_prostate_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MitrovicINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_46_rektwand_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MitrovicINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_46_rektum_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MitrovicINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_46_bulb_0shift=dvh[,c(2)]
+
+# ADO: adopted PTV -> prostate, bulb
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MitrovicADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_46_bulb_ado_0shift=dvh[,c(2)]
+
+# INT: initial PTV
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_5_prostate_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusINT/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_5_prostate_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_5_rektwand_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusINT/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_5_rektwand_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_5_rektum_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusINT/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_5_rektum_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_5_bulb_0shift=dvh[,c(2)]
+
+# ADO: adopted PTV -> prostate, bulb
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusADO/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_5_prostate_ado_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_5_bulb_ado_0shift=dvh[,c(2)]
+
+# INT: initial PTV
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_10_prostate_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschINT/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_10_prostate_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_10_rektwand_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschINT/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_10_rektwand_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_10_rektum_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschINT/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_10_rektum_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_10_bulb_0shift=dvh[,c(2)]
+
+# ADO: adopted PTV -> prostate, bulb
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschADO/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_10_prostate_ado_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_10_bulb_ado_0shift=dvh[,c(2)]
+
+
+# INT: initial PTV
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchindlerINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_62_prostate_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchindlerINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_62_rektwand_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchindlerINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_62_rektum_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchindlerINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_62_bulb_0shift=dvh[,c(2)]
+
+# ADO: adopted PTV -> prostate, bulb
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchindlerADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_62_bulb_ado_0shift=dvh[,c(2)]
+
+# INT: initial PTV
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchmidtRuINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_49_prostate_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchmidtRuINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_49_rektwand_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchmidtRuINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_49_rektum_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchmidtRuINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_49_bulb_0shift=dvh[,c(2)]
+
+# ADO: adopted PTV -> prostate, bulb
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchmidtRuADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_49_bulb_ado_0shift=dvh[,c(2)]
+
+# INT: initial PTV
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_28_prostate_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisINT/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_28_prostate_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_28_rektwand_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisINT/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_28_rektwand_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_28_rektum_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisINT/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_28_rektum_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_28_bulb_0shift=dvh[,c(2)]
+
+# ADO: adopted PTV -> prostate, bulb
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisADO/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_28_prostate_ado_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_28_bulb_ado_0shift=dvh[,c(2)]
+
+# INT: initial PTV
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_7_prostate_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumINT/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_7_prostate_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_7_rektwand_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumINT/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_7_rektwand_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_7_rektum_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumINT/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_7_rektum_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_7_bulb_0shift=dvh[,c(2)]
+
+# ADO: adopted PTV -> prostate, bulb
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumADO/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_7_prostate_ado_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_7_bulb_ado_0shift=dvh[,c(2)]
+
+# INT: initial PTV
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschINT/",motionID,"/prostate_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_8_prostate_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschINT/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_8_prostate_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschINT/",motionID,"/rektwand_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_8_rektwand_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschINT/",motionID,"/rektwand_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_8_rektwand_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschINT/",motionID,"/rektum_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_8_rektum_0shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschINT/",motionID,"/rektum_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_8_rektum_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschINT/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_8_bulb_0shift=dvh[,c(2)]
+
+# ADO: adopted PTV -> prostate, bulb
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschADO/",motionID,"/prostate_28fr_shift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_8_prostate_ado_shift=dvh[,c(2)]
+
+dvh=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschADO/",motionID,"/bulb_28fr_noshift.dat", sep=""), header=TRUE, sep="\t",dec=".")
+dvh_8_bulb_ado_0shift=dvh[,c(2)]
+
+#
+
+# Dmean Bulb
+
+dmean_1_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_1_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Ammon/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_44_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_44_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/Babic/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_2_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_2_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrauerINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_4_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/KoeppelADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_4_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/KoeppelINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_5_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_5_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MoeniusINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_7_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_7_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/WolfrumINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_8_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_8_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/ZauschINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_10_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_10_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/PotschINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_12_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_12_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/JacobiINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_14_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_14_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/HeidenreichINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_28_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_28_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/VazoukisINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_45_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_45_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GroppINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_46_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MitrovicADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_46_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/MitrovicINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_49_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchmidtRuADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_49_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchmidtRuINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_62_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchindlerADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_62_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/SchindlerINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_53_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrendelADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_53_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/BrendelINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_56_ado=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GreinerADO/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+dmean_56_int=read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/GreinerINT/inter/Dmean_bulb.dat", sep=""), header=FALSE, sep="\t",dec=".")
+
+
+#################
+## calucaltion ##
+#################
+
+remove <- c (NA)
+
+x_seq=seq(0.5,100,0.5)
+
+# prepare for matrix ##
+
+maxseq1<-c(length(dvh_1_prostate_0shift),length(dvh_45_prostate_0shift),length(dvh_8_prostate_0shift),length(dvh_14_prostate_0shift),length(dvh_2_prostate_0shift),length(dvh_53_prostate_0shift),length(dvh_56_prostate_0shift),length(dvh_12_prostate_0shift),length(dvh_4_prostate_0shift),length(dvh_46_prostate_0shift),length(dvh_5_prostate_0shift),length(dvh_10_prostate_0shift),length(dvh_62_prostate_0shift),length(dvh_49_prostate_0shift),length(dvh_28_prostate_0shift),length(dvh_7_prostate_0shift),length(dvh_44_prostate_0shift))
+maxseq2<-c(length(dvh_1_prostate_shift),length(dvh_45_prostate_shift),length(dvh_8_prostate_shift),length(dvh_14_prostate_shift),length(dvh_2_prostate_shift),length(dvh_12_prostate_shift),length(dvh_5_prostate_shift),length(dvh_10_prostate_shift),length(dvh_7_prostate_shift),length(dvh_44_prostate_shift),length(dvh_28_prostate_shift))
+maxseq3<-c(length(dvh_1_rektwand_0shift),length(dvh_45_rektwand_0shift),length(dvh_8_rektwand_0shift),length(dvh_14_rektwand_0shift),length(dvh_2_rektwand_0shift),length(dvh_53_rektwand_0shift),length(dvh_56_rektwand_0shift),length(dvh_12_rektwand_0shift),length(dvh_4_rektwand_0shift),length(dvh_46_rektwand_0shift),length(dvh_5_rektwand_0shift),length(dvh_10_rektwand_0shift),length(dvh_62_rektwand_0shift),length(dvh_49_rektwand_0shift),length(dvh_28_rektwand_0shift),length(dvh_7_rektwand_0shift),length(dvh_44_rektwand_0shift))
+maxseq4<-c(length(dvh_1_rektwand_shift),length(dvh_45_rektwand_shift),length(dvh_8_rektwand_shift),length(dvh_14_rektwand_shift),length(dvh_2_rektwand_shift),length(dvh_12_rektwand_shift),length(dvh_5_rektwand_shift),length(dvh_10_rektwand_shift),length(dvh_7_rektwand_shift),length(dvh_44_rektwand_shift),length(dvh_28_rektwand_shift))
+maxseq5<-c(length(dvh_1_rektum_0shift),length(dvh_45_rektum_0shift),length(dvh_8_rektum_0shift),length(dvh_14_rektum_0shift),length(dvh_2_rektum_0shift),length(dvh_53_rektum_0shift),length(dvh_56_rektum_0shift),length(dvh_12_rektum_0shift),length(dvh_4_rektum_0shift),length(dvh_46_rektum_0shift),length(dvh_5_rektum_0shift),length(dvh_10_rektum_0shift),length(dvh_62_rektum_0shift),length(dvh_49_rektum_0shift),length(dvh_28_rektum_0shift),length(dvh_7_rektum_0shift),length(dvh_44_rektum_0shift))
+maxseq6<-c(length(dvh_1_rektum_shift),length(dvh_45_rektum_shift),length(dvh_8_rektum_shift),length(dvh_14_rektum_shift),length(dvh_2_rektum_shift),length(dvh_12_rektum_shift),length(dvh_5_rektum_shift),length(dvh_10_rektum_shift),length(dvh_7_rektum_shift),length(dvh_44_rektum_shift),length(dvh_28_rektum_shift))
+maxseq7<-c(length(dvh_1_bulb_0shift),length(dvh_45_bulb_0shift),length(dvh_8_bulb_0shift),length(dvh_14_bulb_0shift),length(dvh_2_bulb_0shift),length(dvh_53_bulb_0shift),length(dvh_56_bulb_0shift),length(dvh_12_bulb_0shift),length(dvh_4_bulb_0shift),length(dvh_46_bulb_0shift),length(dvh_5_bulb_0shift),length(dvh_10_bulb_0shift),length(dvh_62_bulb_0shift),length(dvh_49_bulb_0shift),length(dvh_28_bulb_0shift),length(dvh_7_bulb_0shift),length(dvh_44_bulb_0shift))
+maxseq8<-c(length(dvh_1_prostate_ado_shift),length(dvh_45_prostate_ado_shift),length(dvh_44_prostate_ado_shift),length(dvh_14_prostate_ado_shift),length(dvh_2_prostate_ado_shift),length(dvh_12_prostate_ado_shift),length(dvh_5_prostate_ado_shift),length(dvh_10_prostate_ado_shift),length(dvh_7_prostate_ado_shift),length(dvh_8_prostate_ado_shift),length(dvh_28_prostate_ado_shift))
+maxseq9<-c(length(dvh_1_bulb_ado_0shift),length(dvh_45_bulb_ado_0shift),length(dvh_44_bulb_ado_0shift),length(dvh_14_bulb_ado_0shift),length(dvh_2_bulb_ado_0shift),length(dvh_53_bulb_ado_0shift),length(dvh_56_bulb_ado_0shift),length(dvh_12_bulb_ado_0shift),length(dvh_4_bulb_ado_0shift),length(dvh_46_bulb_ado_0shift),length(dvh_5_bulb_ado_0shift),length(dvh_10_bulb_ado_0shift),length(dvh_62_bulb_ado_0shift),length(dvh_49_bulb_ado_0shift),length(dvh_28_bulb_ado_0shift),length(dvh_7_bulb_ado_0shift),length(dvh_8_bulb_ado_0shift))
+
+
+
+# print(maxseq1)
+# print(maxseq2)
+# print(maxseq3)
+# print(maxseq4)
+# print(maxseq5)
+
+add_empty_row=rep(NA,80) # empty values
+
+# adopt length to 111
+if(motionID == "intra"){
+
+dvh_1_prostate_0shift=c(dvh_1_prostate_0shift[1:(length(dvh_1_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 106
+dvh_45_prostate_0shift=c(dvh_45_prostate_0shift[1:(length(dvh_45_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 107
+dvh_44_prostate_0shift=c(dvh_44_prostate_0shift[1:(length(dvh_44_prostate_0shift)-1)],add_empty_row[1])# 111
+dvh_14_prostate_0shift=c(dvh_14_prostate_0shift[1:(length(dvh_14_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_2_prostate_0shift=c(dvh_2_prostate_0shift[1:(length(dvh_2_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_53_prostate_0shift=c(dvh_53_prostate_0shift[1:(length(dvh_53_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1])# 109
+dvh_56_prostate_0shift=c(dvh_56_prostate_0shift[1:(length(dvh_56_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_12_prostate_0shift=c(dvh_12_prostate_0shift[1:(length(dvh_12_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_4_prostate_0shift=c(dvh_4_prostate_0shift[1:(length(dvh_4_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_46_prostate_0shift=c(dvh_46_prostate_0shift[1:(length(dvh_46_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1])# 109
+dvh_5_prostate_0shift=c(dvh_5_prostate_0shift[1:(length(dvh_5_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_10_prostate_0shift=c(dvh_10_prostate_0shift[1:(length(dvh_10_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1])# 109
+dvh_62_prostate_0shift=c(dvh_62_prostate_0shift[1:(length(dvh_62_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_49_prostate_0shift=c(dvh_49_prostate_0shift[1:(length(dvh_49_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_28_prostate_0shift=c(dvh_28_prostate_0shift[1:(length(dvh_28_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_7_prostate_0shift=c(dvh_7_prostate_0shift[1:(length(dvh_7_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_8_prostate_0shift=c(dvh_8_prostate_0shift[1:(length(dvh_8_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+
+dvh_1_prostate_shift=c(dvh_1_prostate_shift[1:(length(dvh_1_prostate_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 105
+dvh_45_prostate_shift=c(dvh_45_prostate_shift[1:(length(dvh_45_prostate_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 105
+dvh_44_prostate_shift=c(dvh_44_prostate_shift[1:(length(dvh_44_prostate_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 110
+dvh_14_prostate_shift=c(dvh_14_prostate_shift[1:(length(dvh_14_prostate_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 108
+dvh_2_prostate_shift=c(dvh_2_prostate_shift[1:(length(dvh_2_prostate_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_12_prostate_shift=c(dvh_12_prostate_shift[1:(length(dvh_12_prostate_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_5_prostate_shift=c(dvh_5_prostate_shift[1:(length(dvh_5_prostate_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_10_prostate_shift=c(dvh_10_prostate_shift[1:(length(dvh_10_prostate_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_7_prostate_shift=c(dvh_7_prostate_shift[1:(length(dvh_7_prostate_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_8_prostate_shift=c(dvh_8_prostate_shift[1:(length(dvh_8_prostate_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_28_prostate_shift=c(dvh_28_prostate_shift[1:(length(dvh_28_prostate_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+
+
+dvh_1_rektwand_0shift=c(dvh_1_rektwand_0shift[1:(length(dvh_1_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 104
+dvh_45_rektwand_0shift=c(dvh_45_rektwand_0shift[1:(length(dvh_45_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 106
+dvh_44_rektwand_0shift=c(dvh_44_rektwand_0shift[1:(length(dvh_44_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 105
+dvh_14_rektwand_0shift=c(dvh_14_rektwand_0shift[1:(length(dvh_14_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 106
+dvh_2_rektwand_0shift=c(dvh_2_rektwand_0shift[1:(length(dvh_2_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_53_rektwand_0shift=c(dvh_53_rektwand_0shift[1:(length(dvh_53_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_56_rektwand_0shift=c(dvh_56_rektwand_0shift[1:(length(dvh_56_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_12_rektwand_0shift=c(dvh_12_rektwand_0shift[1:(length(dvh_12_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_4_rektwand_0shift=c(dvh_4_rektwand_0shift[1:(length(dvh_4_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_46_rektwand_0shift=c(dvh_46_rektwand_0shift[1:(length(dvh_46_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_5_rektwand_0shift=c(dvh_5_rektwand_0shift[1:(length(dvh_5_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_10_rektwand_0shift=c(dvh_10_rektwand_0shift[1:(length(dvh_10_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_62_rektwand_0shift=c(dvh_62_rektwand_0shift[1:(length(dvh_62_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_49_rektwand_0shift=c(dvh_49_rektwand_0shift[1:(length(dvh_49_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_28_rektwand_0shift=c(dvh_28_rektwand_0shift[1:(length(dvh_28_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_7_rektwand_0shift=c(dvh_7_rektwand_0shift[1:(length(dvh_7_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_8_rektwand_0shift=c(dvh_8_rektwand_0shift[1:(length(dvh_8_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+
+
+dvh_1_rektwand_shift=c(dvh_1_rektwand_shift[1:(length(dvh_1_rektwand_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 103
+dvh_45_rektwand_shift=c(dvh_45_rektwand_shift[1:(length(dvh_45_rektwand_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 105
+dvh_44_rektwand_shift=c(dvh_44_rektwand_shift[1:(length(dvh_44_rektwand_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 101
+dvh_14_rektwand_shift=c(dvh_14_rektwand_shift[1:(length(dvh_14_rektwand_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 104
+dvh_2_rektwand_shift=c(dvh_2_rektwand_shift[1:(length(dvh_2_rektwand_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_12_rektwand_shift=c(dvh_12_rektwand_shift[1:(length(dvh_12_rektwand_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_5_rektwand_shift=c(dvh_5_rektwand_shift[1:(length(dvh_5_rektwand_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_10_rektwand_shift=c(dvh_10_rektwand_shift[1:(length(dvh_10_rektwand_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_7_rektwand_shift=c(dvh_7_rektwand_shift[1:(length(dvh_7_rektwand_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_8_rektwand_shift=c(dvh_8_rektwand_shift[1:(length(dvh_8_rektwand_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_28_rektwand_shift=c(dvh_28_rektwand_shift[1:(length(dvh_28_rektwand_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+
+
+dvh_1_rektum_0shift=c(dvh_1_rektum_0shift[1:(length(dvh_1_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 104
+dvh_45_rektum_0shift=c(dvh_45_rektum_0shift[1:(length(dvh_45_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 106
+dvh_44_rektum_0shift=c(dvh_44_rektum_0shift[1:(length(dvh_44_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 105
+dvh_14_rektum_0shift=c(dvh_14_rektum_0shift[1:(length(dvh_14_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 103
+dvh_2_rektum_0shift=c(dvh_2_rektum_0shift[1:(length(dvh_2_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_53_rektum_0shift=c(dvh_53_rektum_0shift[1:(length(dvh_53_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_56_rektum_0shift=c(dvh_56_rektum_0shift[1:(length(dvh_56_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_12_rektum_0shift=c(dvh_12_rektum_0shift[1:(length(dvh_12_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_4_rektum_0shift=c(dvh_4_rektum_0shift[1:(length(dvh_4_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_46_rektum_0shift=c(dvh_46_rektum_0shift[1:(length(dvh_46_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_5_rektum_0shift=c(dvh_5_rektum_0shift[1:(length(dvh_5_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_10_rektum_0shift=c(dvh_10_rektum_0shift[1:(length(dvh_10_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_62_rektum_0shift=c(dvh_62_rektum_0shift[1:(length(dvh_62_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_49_rektum_0shift=c(dvh_49_rektum_0shift[1:(length(dvh_49_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_28_rektum_0shift=c(dvh_28_rektum_0shift[1:(length(dvh_28_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_7_rektum_0shift=c(dvh_7_rektum_0shift[1:(length(dvh_7_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_8_rektum_0shift=c(dvh_8_rektum_0shift[1:(length(dvh_8_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+
+
+dvh_1_rektum_shift=c(dvh_1_rektum_shift[1:(length(dvh_1_rektum_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 104
+dvh_45_rektum_shift=c(dvh_45_rektum_shift[1:(length(dvh_45_rektum_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 105
+dvh_44_rektum_shift=c(dvh_44_rektum_shift[1:(length(dvh_44_rektum_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 103
+dvh_14_rektum_shift=c(dvh_14_rektum_shift[1:(length(dvh_14_rektum_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 98
+dvh_2_rektum_shift=c(dvh_2_rektum_shift[1:(length(dvh_2_rektum_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_12_rektum_shift=c(dvh_12_rektum_shift[1:(length(dvh_12_rektum_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_5_rektum_shift=c(dvh_5_rektum_shift[1:(length(dvh_5_rektum_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_10_rektum_shift=c(dvh_10_rektum_shift[1:(length(dvh_10_rektum_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_7_rektum_shift=c(dvh_7_rektum_shift[1:(length(dvh_7_rektum_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_8_rektum_shift=c(dvh_8_rektum_shift[1:(length(dvh_8_rektum_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_28_rektum_shift=c(dvh_28_rektum_shift[1:(length(dvh_28_rektum_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+
+
+
+dvh_1_bulb_0shift=c(dvh_1_bulb_0shift[1:(length(dvh_1_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 104
+dvh_45_bulb_0shift=c(dvh_45_bulb_0shift[1:(length(dvh_45_bulb_0shift)-1)],add_empty_row[1])# 106
+dvh_44_bulb_0shift=c(dvh_44_bulb_0shift[1:(length(dvh_44_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 105
+dvh_14_bulb_0shift=c(dvh_14_bulb_0shift[1:(length(dvh_14_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 103
+dvh_2_bulb_0shift=c(dvh_2_bulb_0shift[1:(length(dvh_2_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_53_bulb_0shift=c(dvh_53_bulb_0shift[1:(length(dvh_53_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_56_bulb_0shift=c(dvh_56_bulb_0shift[1:(length(dvh_56_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_12_bulb_0shift=c(dvh_12_bulb_0shift[1:(length(dvh_12_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_4_bulb_0shift=c(dvh_4_bulb_0shift[1:(length(dvh_4_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_46_bulb_0shift=c(dvh_46_bulb_0shift[1:(length(dvh_46_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_5_bulb_0shift=c(dvh_5_bulb_0shift[1:(length(dvh_5_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_10_bulb_0shift=c(dvh_10_bulb_0shift[1:(length(dvh_10_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_62_bulb_0shift=c(dvh_62_bulb_0shift[1:(length(dvh_62_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_49_bulb_0shift=c(dvh_49_bulb_0shift[1:(length(dvh_49_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_28_bulb_0shift=c(dvh_28_bulb_0shift[1:(length(dvh_28_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_7_bulb_0shift=c(dvh_7_bulb_0shift[1:(length(dvh_7_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_8_bulb_0shift=c(dvh_8_bulb_0shift[1:(length(dvh_8_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+
+
+dvh_1_prostate_ado_shift=c(dvh_1_prostate_ado_shift[1:(length(dvh_1_prostate_ado_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_45_prostate_ado_shift=c(dvh_45_prostate_ado_shift[1:(length(dvh_45_prostate_ado_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_44_prostate_ado_shift=c(dvh_44_prostate_ado_shift[1:(length(dvh_44_prostate_ado_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_14_prostate_ado_shift=c(dvh_14_prostate_ado_shift[1:(length(dvh_14_prostate_ado_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_2_prostate_ado_shift=c(dvh_2_prostate_ado_shift[1:(length(dvh_2_prostate_ado_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_12_prostate_ado_shift=c(dvh_12_prostate_ado_shift[1:(length(dvh_12_prostate_ado_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_5_prostate_ado_shift=c(dvh_5_prostate_ado_shift[1:(length(dvh_5_prostate_ado_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_10_prostate_ado_shift=c(dvh_10_prostate_ado_shift[1:(length(dvh_10_prostate_ado_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_28_prostate_ado_shift=c(dvh_28_prostate_ado_shift[1:(length(dvh_28_prostate_ado_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_7_prostate_ado_shift=c(dvh_7_prostate_ado_shift[1:(length(dvh_7_prostate_ado_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_8_prostate_ado_shift=c(dvh_8_prostate_ado_shift[1:(length(dvh_8_prostate_ado_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+
+dvh_1_bulb_ado_0shift=c(dvh_1_bulb_ado_0shift[1:(length(dvh_1_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_45_bulb_ado_0shift=c(dvh_45_bulb_ado_0shift[1:(length(dvh_45_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_44_bulb_ado_0shift=c(dvh_44_bulb_ado_0shift[1:(length(dvh_44_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_14_bulb_ado_0shift=c(dvh_14_bulb_ado_0shift[1:(length(dvh_14_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_2_bulb_ado_0shift=c(dvh_2_bulb_ado_0shift[1:(length(dvh_2_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_12_bulb_ado_0shift=c(dvh_12_bulb_ado_0shift[1:(length(dvh_12_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_5_bulb_ado_0shift=c(dvh_5_bulb_ado_0shift[1:(length(dvh_5_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_10_bulb_ado_0shift=c(dvh_10_bulb_ado_0shift[1:(length(dvh_10_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_28_bulb_ado_0shift=c(dvh_28_bulb_ado_0shift[1:(length(dvh_28_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_7_bulb_ado_0shift=c(dvh_7_bulb_ado_0shift[1:(length(dvh_7_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_8_bulb_ado_0shift=c(dvh_8_bulb_ado_0shift[1:(length(dvh_8_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_53_bulb_ado_0shift=c(dvh_53_bulb_ado_0shift[1:(length(dvh_53_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_56_bulb_ado_0shift=c(dvh_56_bulb_ado_0shift[1:(length(dvh_56_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_4_bulb_ado_0shift=c(dvh_4_bulb_ado_0shift[1:(length(dvh_4_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_46_bulb_ado_0shift=c(dvh_46_bulb_ado_0shift[1:(length(dvh_46_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_62_bulb_ado_0shift=c(dvh_62_bulb_ado_0shift[1:(length(dvh_62_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_49_bulb_ado_0shift=c(dvh_49_bulb_ado_0shift[1:(length(dvh_49_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+
+
+} else {
+   
+dvh_1_prostate_0shift=c(dvh_1_prostate_0shift[1:(length(dvh_1_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 106
+dvh_45_prostate_0shift=c(dvh_45_prostate_0shift[1:(length(dvh_45_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 107
+dvh_44_prostate_0shift=c(dvh_44_prostate_0shift[1:(length(dvh_44_prostate_0shift)-1)],add_empty_row[1])# 111
+dvh_14_prostate_0shift=c(dvh_14_prostate_0shift[1:(length(dvh_14_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_2_prostate_0shift=c(dvh_2_prostate_0shift[1:(length(dvh_2_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_53_prostate_0shift=c(dvh_53_prostate_0shift[1:(length(dvh_53_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1])# 109
+dvh_56_prostate_0shift=c(dvh_56_prostate_0shift[1:(length(dvh_56_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_12_prostate_0shift=c(dvh_12_prostate_0shift[1:(length(dvh_12_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_4_prostate_0shift=c(dvh_4_prostate_0shift[1:(length(dvh_4_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_46_prostate_0shift=c(dvh_46_prostate_0shift[1:(length(dvh_46_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1])# 109
+dvh_5_prostate_0shift=c(dvh_5_prostate_0shift[1:(length(dvh_5_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_10_prostate_0shift=c(dvh_10_prostate_0shift[1:(length(dvh_10_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1])# 109
+dvh_62_prostate_0shift=c(dvh_62_prostate_0shift[1:(length(dvh_62_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_49_prostate_0shift=c(dvh_49_prostate_0shift[1:(length(dvh_49_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_28_prostate_0shift=c(dvh_28_prostate_0shift[1:(length(dvh_28_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_7_prostate_0shift=c(dvh_7_prostate_0shift[1:(length(dvh_7_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_8_prostate_0shift=c(dvh_8_prostate_0shift[1:(length(dvh_8_prostate_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+
+dvh_1_prostate_shift=c(dvh_1_prostate_shift[1:(length(dvh_1_prostate_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 105
+dvh_45_prostate_shift=c(dvh_45_prostate_shift[1:(length(dvh_45_prostate_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 105
+dvh_44_prostate_shift=c(dvh_44_prostate_shift[1:(length(dvh_44_prostate_shift)-1)],add_empty_row[1],add_empty_row[1])# 110
+dvh_14_prostate_shift=c(dvh_14_prostate_shift[1:(length(dvh_14_prostate_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 108
+dvh_2_prostate_shift=c(dvh_2_prostate_shift[1:(length(dvh_2_prostate_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_12_prostate_shift=c(dvh_12_prostate_shift[1:(length(dvh_12_prostate_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_5_prostate_shift=c(dvh_5_prostate_shift[1:(length(dvh_5_prostate_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_10_prostate_shift=c(dvh_10_prostate_shift[1:(length(dvh_10_prostate_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_7_prostate_shift=c(dvh_7_prostate_shift[1:(length(dvh_7_prostate_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_8_prostate_shift=c(dvh_8_prostate_shift[1:(length(dvh_8_prostate_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_28_prostate_shift=c(dvh_28_prostate_shift[1:(length(dvh_28_prostate_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+
+
+dvh_1_rektwand_0shift=c(dvh_1_rektwand_0shift[1:(length(dvh_1_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 104
+dvh_45_rektwand_0shift=c(dvh_45_rektwand_0shift[1:(length(dvh_45_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 106
+dvh_44_rektwand_0shift=c(dvh_44_rektwand_0shift[1:(length(dvh_44_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 105
+dvh_14_rektwand_0shift=c(dvh_14_rektwand_0shift[1:(length(dvh_14_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 106
+dvh_2_rektwand_0shift=c(dvh_2_rektwand_0shift[1:(length(dvh_2_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_53_rektwand_0shift=c(dvh_53_rektwand_0shift[1:(length(dvh_53_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_56_rektwand_0shift=c(dvh_56_rektwand_0shift[1:(length(dvh_56_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_12_rektwand_0shift=c(dvh_12_rektwand_0shift[1:(length(dvh_12_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_4_rektwand_0shift=c(dvh_4_rektwand_0shift[1:(length(dvh_4_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_46_rektwand_0shift=c(dvh_46_rektwand_0shift[1:(length(dvh_46_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_5_rektwand_0shift=c(dvh_5_rektwand_0shift[1:(length(dvh_5_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_10_rektwand_0shift=c(dvh_10_rektwand_0shift[1:(length(dvh_10_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_62_rektwand_0shift=c(dvh_62_rektwand_0shift[1:(length(dvh_62_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_49_rektwand_0shift=c(dvh_49_rektwand_0shift[1:(length(dvh_49_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_28_rektwand_0shift=c(dvh_28_rektwand_0shift[1:(length(dvh_28_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_7_rektwand_0shift=c(dvh_7_rektwand_0shift[1:(length(dvh_7_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_8_rektwand_0shift=c(dvh_8_rektwand_0shift[1:(length(dvh_8_rektwand_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+
+
+
+dvh_1_rektwand_shift=c(dvh_1_rektwand_shift[1:(length(dvh_1_rektwand_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 103
+dvh_45_rektwand_shift=c(dvh_45_rektwand_shift[1:(length(dvh_45_rektwand_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 105
+dvh_44_rektwand_shift=c(dvh_44_rektwand_shift[1:(length(dvh_44_rektwand_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 101
+dvh_14_rektwand_shift=c(dvh_14_rektwand_shift[1:(length(dvh_14_rektwand_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 104
+dvh_2_rektwand_shift=c(dvh_2_rektwand_shift[1:(length(dvh_2_rektwand_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_12_rektwand_shift=c(dvh_12_rektwand_shift[1:(length(dvh_12_rektwand_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_5_rektwand_shift=c(dvh_5_rektwand_shift[1:(length(dvh_5_rektwand_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_10_rektwand_shift=c(dvh_10_rektwand_shift[1:(length(dvh_10_rektwand_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_7_rektwand_shift=c(dvh_7_rektwand_shift[1:(length(dvh_7_rektwand_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_8_rektwand_shift=c(dvh_8_rektwand_shift[1:(length(dvh_8_rektwand_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_28_rektwand_shift=c(dvh_28_rektwand_shift[1:(length(dvh_28_rektwand_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+
+
+dvh_1_rektum_0shift=c(dvh_1_rektum_0shift[1:(length(dvh_1_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 104
+dvh_45_rektum_0shift=c(dvh_45_rektum_0shift[1:(length(dvh_45_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 106
+dvh_44_rektum_0shift=c(dvh_44_rektum_0shift[1:(length(dvh_44_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 105
+dvh_14_rektum_0shift=c(dvh_14_rektum_0shift[1:(length(dvh_14_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 103
+dvh_2_rektum_0shift=c(dvh_2_rektum_0shift[1:(length(dvh_2_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_53_rektum_0shift=c(dvh_53_rektum_0shift[1:(length(dvh_53_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_56_rektum_0shift=c(dvh_56_rektum_0shift[1:(length(dvh_56_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_12_rektum_0shift=c(dvh_12_rektum_0shift[1:(length(dvh_12_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_4_rektum_0shift=c(dvh_4_rektum_0shift[1:(length(dvh_4_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_46_rektum_0shift=c(dvh_46_rektum_0shift[1:(length(dvh_46_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_5_rektum_0shift=c(dvh_5_rektum_0shift[1:(length(dvh_5_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_10_rektum_0shift=c(dvh_10_rektum_0shift[1:(length(dvh_10_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_62_rektum_0shift=c(dvh_62_rektum_0shift[1:(length(dvh_62_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_49_rektum_0shift=c(dvh_49_rektum_0shift[1:(length(dvh_49_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_28_rektum_0shift=c(dvh_28_rektum_0shift[1:(length(dvh_28_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_7_rektum_0shift=c(dvh_7_rektum_0shift[1:(length(dvh_7_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_8_rektum_0shift=c(dvh_8_rektum_0shift[1:(length(dvh_8_rektum_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+
+
+dvh_1_rektum_shift=c(dvh_1_rektum_shift[1:(length(dvh_1_rektum_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 104
+dvh_45_rektum_shift=c(dvh_45_rektum_shift[1:(length(dvh_45_rektum_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 105
+dvh_44_rektum_shift=c(dvh_44_rektum_shift[1:(length(dvh_44_rektum_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 103
+dvh_14_rektum_shift=c(dvh_14_rektum_shift[1:(length(dvh_14_rektum_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 98
+dvh_2_rektum_shift=c(dvh_2_rektum_shift[1:(length(dvh_2_rektum_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_12_rektum_shift=c(dvh_12_rektum_shift[1:(length(dvh_12_rektum_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_5_rektum_shift=c(dvh_5_rektum_shift[1:(length(dvh_5_rektum_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_10_rektum_shift=c(dvh_10_rektum_shift[1:(length(dvh_10_rektum_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_7_rektum_shift=c(dvh_7_rektum_shift[1:(length(dvh_7_rektum_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_8_rektum_shift=c(dvh_8_rektum_shift[1:(length(dvh_8_rektum_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_28_rektum_shift=c(dvh_28_rektum_shift[1:(length(dvh_28_rektum_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+
+
+
+dvh_1_bulb_0shift=c(dvh_1_bulb_0shift[1:(length(dvh_1_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 104
+dvh_45_bulb_0shift=c(dvh_45_bulb_0shift[1:(length(dvh_45_bulb_0shift)-1)],add_empty_row[1])# 106
+dvh_44_bulb_0shift=c(dvh_44_bulb_0shift[1:(length(dvh_44_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 105
+dvh_14_bulb_0shift=c(dvh_14_bulb_0shift[1:(length(dvh_14_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 103
+dvh_2_bulb_0shift=c(dvh_2_bulb_0shift[1:(length(dvh_2_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_53_bulb_0shift=c(dvh_53_bulb_0shift[1:(length(dvh_53_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_56_bulb_0shift=c(dvh_56_bulb_0shift[1:(length(dvh_56_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_12_bulb_0shift=c(dvh_12_bulb_0shift[1:(length(dvh_12_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_4_bulb_0shift=c(dvh_4_bulb_0shift[1:(length(dvh_4_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_46_bulb_0shift=c(dvh_46_bulb_0shift[1:(length(dvh_46_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_5_bulb_0shift=c(dvh_5_bulb_0shift[1:(length(dvh_5_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_10_bulb_0shift=c(dvh_10_bulb_0shift[1:(length(dvh_10_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_62_bulb_0shift=c(dvh_62_bulb_0shift[1:(length(dvh_62_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_49_bulb_0shift=c(dvh_49_bulb_0shift[1:(length(dvh_49_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_28_bulb_0shift=c(dvh_28_bulb_0shift[1:(length(dvh_28_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_7_bulb_0shift=c(dvh_7_bulb_0shift[1:(length(dvh_7_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+dvh_8_bulb_0shift=c(dvh_8_bulb_0shift[1:(length(dvh_8_bulb_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 109
+
+dvh_1_prostate_ado_shift=c(dvh_1_prostate_ado_shift[1:(length(dvh_1_prostate_ado_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_45_prostate_ado_shift=c(dvh_45_prostate_ado_shift[1:(length(dvh_45_prostate_ado_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_44_prostate_ado_shift=c(dvh_44_prostate_ado_shift[1:(length(dvh_44_prostate_ado_shift)-1)],add_empty_row[1],add_empty_row[1])
+dvh_14_prostate_ado_shift=c(dvh_14_prostate_ado_shift[1:(length(dvh_14_prostate_ado_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_2_prostate_ado_shift=c(dvh_2_prostate_ado_shift[1:(length(dvh_2_prostate_ado_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_12_prostate_ado_shift=c(dvh_12_prostate_ado_shift[1:(length(dvh_12_prostate_ado_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_5_prostate_ado_shift=c(dvh_5_prostate_ado_shift[1:(length(dvh_5_prostate_ado_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_10_prostate_ado_shift=c(dvh_10_prostate_ado_shift[1:(length(dvh_10_prostate_ado_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_28_prostate_ado_shift=c(dvh_28_prostate_ado_shift[1:(length(dvh_28_prostate_ado_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_7_prostate_ado_shift=c(dvh_7_prostate_ado_shift[1:(length(dvh_7_prostate_ado_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_8_prostate_ado_shift=c(dvh_8_prostate_ado_shift[1:(length(dvh_8_prostate_ado_shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+
+
+dvh_1_bulb_ado_0shift=c(dvh_1_bulb_ado_0shift[1:(length(dvh_1_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_45_bulb_ado_0shift=c(dvh_45_bulb_ado_0shift[1:(length(dvh_45_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_44_bulb_ado_0shift=c(dvh_44_bulb_ado_0shift[1:(length(dvh_44_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_14_bulb_ado_0shift=c(dvh_14_bulb_ado_0shift[1:(length(dvh_14_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_2_bulb_ado_0shift=c(dvh_2_bulb_ado_0shift[1:(length(dvh_2_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_12_bulb_ado_0shift=c(dvh_12_bulb_ado_0shift[1:(length(dvh_12_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_5_bulb_ado_0shift=c(dvh_5_bulb_ado_0shift[1:(length(dvh_5_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_10_bulb_ado_0shift=c(dvh_10_bulb_ado_0shift[1:(length(dvh_10_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_28_bulb_ado_0shift=c(dvh_28_bulb_ado_0shift[1:(length(dvh_28_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_7_bulb_ado_0shift=c(dvh_7_bulb_ado_0shift[1:(length(dvh_7_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_8_bulb_ado_0shift=c(dvh_8_bulb_ado_0shift[1:(length(dvh_8_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_53_bulb_ado_0shift=c(dvh_53_bulb_ado_0shift[1:(length(dvh_53_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_56_bulb_ado_0shift=c(dvh_56_bulb_ado_0shift[1:(length(dvh_56_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_4_bulb_ado_0shift=c(dvh_4_bulb_ado_0shift[1:(length(dvh_4_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_46_bulb_ado_0shift=c(dvh_46_bulb_ado_0shift[1:(length(dvh_46_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_62_bulb_ado_0shift=c(dvh_62_bulb_ado_0shift[1:(length(dvh_62_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+dvh_49_bulb_ado_0shift=c(dvh_49_bulb_ado_0shift[1:(length(dvh_49_bulb_ado_0shift)-1)],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])
+
+
+}
+
+
+# maxseq1<-c(length(dvh_1_prostate_0shift),length(dvh_45_prostate_0shift),length(dvh_8_prostate_0shift),length(dvh_14_prostate_0shift),length(dvh_2_prostate_0shift),length(dvh_53_prostate_0shift),length(dvh_56_prostate_0shift),length(dvh_12_prostate_0shift),length(dvh_4_prostate_0shift),length(dvh_46_prostate_0shift),length(dvh_5_prostate_0shift),length(dvh_10_prostate_0shift),length(dvh_62_prostate_0shift),length(dvh_49_prostate_0shift),length(dvh_28_prostate_0shift),length(dvh_7_prostate_0shift),length(dvh_44_prostate_0shift))
+# maxseq2<-c(length(dvh_1_prostate_shift),length(dvh_45_prostate_shift),length(dvh_8_prostate_shift),length(dvh_14_prostate_shift),length(dvh_2_prostate_shift),length(dvh_12_prostate_shift),length(dvh_5_prostate_shift),length(dvh_10_prostate_shift),length(dvh_7_prostate_shift),length(dvh_44_prostate_shift),length(dvh_28_prostate_shift))
+# maxseq3<-c(length(dvh_1_rektwand_0shift),length(dvh_45_rektwand_0shift),length(dvh_8_rektwand_0shift),length(dvh_14_rektwand_0shift),length(dvh_2_rektwand_0shift),length(dvh_53_rektwand_0shift),length(dvh_56_rektwand_0shift),length(dvh_12_rektwand_0shift),length(dvh_4_rektwand_0shift),length(dvh_46_rektwand_0shift),length(dvh_5_rektwand_0shift),length(dvh_10_rektwand_0shift),length(dvh_62_rektwand_0shift),length(dvh_49_rektwand_0shift),length(dvh_28_rektwand_0shift),length(dvh_7_rektwand_0shift),length(dvh_44_rektwand_0shift))
+# maxseq4<-c(length(dvh_1_rektwand_shift),length(dvh_45_rektwand_shift),length(dvh_8_rektwand_shift),length(dvh_14_rektwand_shift),length(dvh_2_rektwand_shift),length(dvh_12_rektwand_shift),length(dvh_5_rektwand_shift),length(dvh_10_rektwand_shift),length(dvh_7_rektwand_shift),length(dvh_44_rektwand_shift),length(dvh_28_rektwand_shift))
+# maxseq5<-c(length(dvh_1_rektum_0shift),length(dvh_45_rektum_0shift),length(dvh_8_rektum_0shift),length(dvh_14_rektum_0shift),length(dvh_2_rektum_0shift),length(dvh_53_rektum_0shift),length(dvh_56_rektum_0shift),length(dvh_12_rektum_0shift),length(dvh_4_rektum_0shift),length(dvh_46_rektum_0shift),length(dvh_5_rektum_0shift),length(dvh_10_rektum_0shift),length(dvh_62_rektum_0shift),length(dvh_49_rektum_0shift),length(dvh_28_rektum_0shift),length(dvh_7_rektum_0shift),length(dvh_44_rektum_0shift))
+# maxseq6<-c(length(dvh_1_rektum_shift),length(dvh_45_rektum_shift),length(dvh_8_rektum_shift),length(dvh_14_rektum_shift),length(dvh_2_rektum_shift),length(dvh_12_rektum_shift),length(dvh_5_rektum_shift),length(dvh_10_rektum_shift),length(dvh_7_rektum_shift),length(dvh_44_rektum_shift),length(dvh_28_rektum_shift))
+# maxseq7<-c(length(dvh_1_bulb_0shift),length(dvh_45_bulb_0shift),length(dvh_8_bulb_0shift),length(dvh_14_bulb_0shift),length(dvh_2_bulb_0shift),length(dvh_53_bulb_0shift),length(dvh_56_bulb_0shift),length(dvh_12_bulb_0shift),length(dvh_4_bulb_0shift),length(dvh_46_bulb_0shift),length(dvh_5_bulb_0shift),length(dvh_10_bulb_0shift),length(dvh_62_bulb_0shift),length(dvh_49_bulb_0shift),length(dvh_28_bulb_0shift),length(dvh_7_bulb_0shift),length(dvh_44_bulb_0shift))
+# maxseq8<-c(length(dvh_1_prostate_ado_shift),length(dvh_45_prostate_ado_shift),length(dvh_44_prostate_ado_shift),length(dvh_14_prostate_ado_shift),length(dvh_2_prostate_ado_shift),length(dvh_12_prostate_ado_shift),length(dvh_5_prostate_ado_shift),length(dvh_10_prostate_ado_shift),length(dvh_7_prostate_ado_shift),length(dvh_8_prostate_ado_shift),length(dvh_28_prostate_ado_shift))
+# maxseq9<-c(length(dvh_1_bulb_ado_0shift),length(dvh_45_bulb_ado_0shift),length(dvh_44_bulb_ado_0shift),length(dvh_14_bulb_ado_0shift),length(dvh_2_bulb_ado_0shift),length(dvh_53_bulb_ado_0shift),length(dvh_56_bulb_ado_0shift),length(dvh_12_bulb_ado_0shift),length(dvh_4_bulb_ado_0shift),length(dvh_46_bulb_ado_0shift),length(dvh_5_bulb_ado_0shift),length(dvh_10_bulb_ado_0shift),length(dvh_62_bulb_ado_0shift),length(dvh_49_bulb_ado_0shift),length(dvh_28_bulb_ado_0shift),length(dvh_7_bulb_ado_0shift),length(dvh_8_bulb_ado_0shift))
+#  
+# print(maxseq1)
+# print(maxseq2)
+# print(maxseq3)
+# print(maxseq4)
+# print(maxseq5)
+# print(maxseq6)
+# print(maxseq7)
+# print(maxseq8)
+# print(maxseq9)
+
+
+
+minvec_pro_0=min(maxseq1<-c(length(dvh_1_prostate_0shift),length(dvh_45_prostate_0shift),length(dvh_8_prostate_0shift),length(dvh_14_prostate_0shift),length(dvh_2_prostate_0shift),length(dvh_53_prostate_0shift),length(dvh_56_prostate_0shift),length(dvh_12_prostate_0shift),length(dvh_4_prostate_0shift),length(dvh_46_prostate_0shift),length(dvh_5_prostate_0shift),length(dvh_10_prostate_0shift),length(dvh_62_prostate_0shift),length(dvh_49_prostate_0shift),length(dvh_28_prostate_0shift),length(dvh_7_prostate_0shift),length(dvh_44_prostate_0shift)))
+minvec_pro=min(maxseq2<-c(length(dvh_1_prostate_shift),length(dvh_45_prostate_shift),length(dvh_8_prostate_shift),length(dvh_14_prostate_shift),length(dvh_2_prostate_shift),length(dvh_12_prostate_shift),length(dvh_5_prostate_shift),length(dvh_10_prostate_shift),length(dvh_7_prostate_shift),length(dvh_44_prostate_shift),length(dvh_28_prostate_shift)))
+minvec_rektwand_0=min(maxseq3<-c(length(dvh_1_rektwand_0shift),length(dvh_45_rektwand_0shift),length(dvh_8_rektwand_0shift),length(dvh_14_rektwand_0shift),length(dvh_2_rektwand_0shift),length(dvh_53_rektwand_0shift),length(dvh_56_rektwand_0shift),length(dvh_12_rektwand_0shift),length(dvh_4_rektwand_0shift),length(dvh_46_rektwand_0shift),length(dvh_5_rektwand_0shift),length(dvh_10_rektwand_0shift),length(dvh_62_rektwand_0shift),length(dvh_49_rektwand_0shift),length(dvh_28_rektwand_0shift),length(dvh_7_rektwand_0shift),length(dvh_44_rektwand_0shift)))
+minvec_rektwand=min(maxseq4<-c(length(dvh_1_rektwand_shift),length(dvh_45_rektwand_shift),length(dvh_8_rektwand_shift),length(dvh_14_rektwand_shift),length(dvh_2_rektwand_shift),length(dvh_12_rektwand_shift),length(dvh_5_rektwand_shift),length(dvh_10_rektwand_shift),length(dvh_7_rektwand_shift),length(dvh_44_rektwand_shift),length(dvh_28_rektwand_shift)))
+minvec_rektum_0=min(maxseq5<-c(length(dvh_1_rektum_0shift),length(dvh_45_rektum_0shift),length(dvh_8_rektum_0shift),length(dvh_14_rektum_0shift),length(dvh_2_rektum_0shift),length(dvh_53_rektum_0shift),length(dvh_56_rektum_0shift),length(dvh_12_rektum_0shift),length(dvh_4_rektum_0shift),length(dvh_46_rektum_0shift),length(dvh_5_rektum_0shift),length(dvh_10_rektum_0shift),length(dvh_62_rektum_0shift),length(dvh_49_rektum_0shift),length(dvh_28_rektum_0shift),length(dvh_7_rektum_0shift),length(dvh_44_rektum_0shift)))
+minvec_rektum=min(maxseq6<-c(length(dvh_1_rektum_shift),length(dvh_45_rektum_shift),length(dvh_8_rektum_shift),length(dvh_14_rektum_shift),length(dvh_2_rektum_shift),length(dvh_12_rektum_shift),length(dvh_5_rektum_shift),length(dvh_10_rektum_shift),length(dvh_7_rektum_shift),length(dvh_44_rektum_shift),length(dvh_28_rektum_shift)))
+minvec_bulb_0=min(maxseq7<-c(length(dvh_1_bulb_0shift),length(dvh_45_bulb_0shift),length(dvh_8_bulb_0shift),length(dvh_14_bulb_0shift),length(dvh_2_bulb_0shift),length(dvh_53_bulb_0shift),length(dvh_56_bulb_0shift),length(dvh_12_bulb_0shift),length(dvh_4_bulb_0shift),length(dvh_46_bulb_0shift),length(dvh_5_bulb_0shift),length(dvh_10_bulb_0shift),length(dvh_62_bulb_0shift),length(dvh_49_bulb_0shift),length(dvh_28_bulb_0shift),length(dvh_7_bulb_0shift),length(dvh_44_bulb_0shift)))
+minvec_prostate_small=min(maxseq8<-c(length(dvh_1_prostate_ado_shift),length(dvh_45_prostate_ado_shift),length(dvh_44_prostate_ado_shift),length(dvh_14_prostate_ado_shift),length(dvh_2_prostate_ado_shift),length(dvh_12_prostate_ado_shift),length(dvh_5_prostate_ado_shift),length(dvh_10_prostate_ado_shift),length(dvh_7_prostate_ado_shift),length(dvh_8_prostate_ado_shift),length(dvh_28_prostate_ado_shift)))
+minvec_bulb_0_ld=min(maxseq9<-c(length(dvh_1_bulb_ado_0shift),length(dvh_45_bulb_ado_0shift),length(dvh_44_bulb_ado_0shift),length(dvh_14_bulb_ado_0shift),length(dvh_2_bulb_ado_0shift),length(dvh_53_bulb_ado_0shift),length(dvh_56_bulb_ado_0shift),length(dvh_12_bulb_ado_0shift),length(dvh_4_bulb_ado_0shift),length(dvh_46_bulb_ado_0shift),length(dvh_5_bulb_ado_0shift),length(dvh_10_bulb_ado_0shift),length(dvh_62_bulb_ado_0shift),length(dvh_49_bulb_ado_0shift),length(dvh_28_bulb_ado_0shift),length(dvh_7_bulb_ado_0shift),length(dvh_8_bulb_ado_0shift)))
+
+
+matrix_prostate_0shift=cbind(dvh_1_prostate_0shift,dvh_45_prostate_0shift,dvh_44_prostate_0shift,dvh_14_prostate_0shift,dvh_2_prostate_0shift,
+dvh_53_prostate_0shift,dvh_56_prostate_0shift,dvh_12_prostate_0shift,dvh_4_prostate_0shift,dvh_46_prostate_0shift,dvh_5_prostate_0shift,dvh_10_prostate_0shift,
+dvh_62_prostate_0shift,dvh_49_prostate_0shift,dvh_28_prostate_0shift,dvh_7_prostate_0shift,dvh_8_prostate_0shift)
+
+matrix_prostate_shift=cbind(dvh_1_prostate_shift,dvh_45_prostate_shift,dvh_44_prostate_shift,dvh_14_prostate_shift,dvh_2_prostate_shift,
+dvh_12_prostate_shift,dvh_5_prostate_shift,dvh_10_prostate_shift,dvh_7_prostate_shift,dvh_8_prostate_shift,dvh_28_prostate_shift)
+
+matrix_rektwand_0shift=cbind(dvh_1_rektwand_0shift,dvh_45_rektwand_0shift,dvh_44_rektwand_0shift,dvh_14_rektwand_0shift,dvh_2_rektwand_0shift,
+dvh_53_rektwand_0shift,dvh_56_rektwand_0shift,dvh_12_rektwand_0shift,dvh_4_rektwand_0shift,dvh_46_rektwand_0shift,dvh_5_rektwand_0shift,dvh_10_rektwand_0shift,
+dvh_62_rektwand_0shift,dvh_49_rektwand_0shift,dvh_28_rektwand_0shift,dvh_7_rektwand_0shift,dvh_8_rektwand_0shift)
+
+matrix_rektwand_shift=cbind(dvh_1_rektwand_shift,dvh_45_rektwand_shift,dvh_44_rektwand_shift,dvh_14_rektwand_shift,dvh_2_rektwand_shift,
+dvh_12_rektwand_shift,dvh_5_rektwand_shift,dvh_10_rektwand_shift,dvh_7_rektwand_shift,dvh_8_rektwand_shift,dvh_28_rektwand_shift)
+
+matrix_rektum_0shift=cbind(dvh_1_rektum_0shift,dvh_45_rektum_0shift,dvh_44_rektum_0shift,dvh_14_rektum_0shift,dvh_2_rektum_0shift,
+dvh_53_rektum_0shift,dvh_56_rektum_0shift,dvh_12_rektum_0shift,dvh_4_rektum_0shift,dvh_46_rektum_0shift,dvh_5_rektum_0shift,dvh_10_rektum_0shift,
+dvh_62_rektum_0shift,dvh_49_rektum_0shift,dvh_28_rektum_0shift,dvh_7_rektum_0shift,dvh_8_rektum_0shift)
+
+matrix_rektum_shift=cbind(dvh_1_rektum_shift,dvh_45_rektum_shift,dvh_44_rektum_shift,dvh_14_rektum_shift,dvh_2_rektum_shift,
+dvh_12_rektum_shift,dvh_5_rektum_shift,dvh_10_rektum_shift,dvh_7_rektum_shift,dvh_8_rektum_shift,dvh_2_rektum_shift,dvh_28_rektum_shift)
+
+matrix_bulb_0shift=cbind(dvh_1_bulb_0shift,dvh_45_bulb_0shift,dvh_44_bulb_0shift,dvh_14_bulb_0shift,dvh_2_bulb_0shift,
+dvh_53_bulb_0shift,dvh_56_bulb_0shift,dvh_12_bulb_0shift,dvh_4_bulb_0shift,dvh_46_bulb_0shift,dvh_5_bulb_0shift,dvh_10_bulb_0shift,
+dvh_62_bulb_0shift,dvh_49_bulb_0shift,dvh_28_bulb_0shift,dvh_7_bulb_0shift,dvh_8_bulb_0shift)
+
+matrix_prostate_ado_shift=cbind(dvh_1_prostate_ado_shift,dvh_45_prostate_ado_shift,dvh_44_prostate_ado_shift,
+dvh_14_prostate_ado_shift,dvh_2_prostate_ado_shift,dvh_12_prostate_ado_shift,
+dvh_5_prostate_ado_shift,dvh_10_prostate_ado_shift,dvh_7_prostate_ado_shift,
+dvh_8_prostate_ado_shift,dvh_28_prostate_ado_shift)
+
+matrix_bulb_ado_0shift=cbind(dvh_1_bulb_ado_0shift,dvh_45_bulb_ado_0shift,dvh_44_bulb_ado_0shift,dvh_14_bulb_ado_0shift,
+dvh_2_bulb_ado_0shift,dvh_53_bulb_ado_0shift,dvh_56_bulb_ado_0shift,dvh_12_bulb_ado_0shift,dvh_4_bulb_ado_0shift,
+dvh_46_bulb_ado_0shift,dvh_5_bulb_ado_0shift,dvh_10_bulb_ado_0shift,dvh_62_bulb_ado_0shift,dvh_49_bulb_ado_0shift,
+dvh_28_bulb_ado_0shift,dvh_7_bulb_ado_0shift,dvh_8_bulb_ado_0shift)
+
+##
+
+# matrix_prostate_ado_shift_rbind=rbind(dvh_1_prostate_ado_shift,dvh_45_prostate_ado_shift,dvh_44_prostate_ado_shift,
+# dvh_14_prostate_ado_shift,dvh_2_prostate_ado_shift,dvh_12_prostate_ado_shift,
+# dvh_5_prostate_ado_shift,dvh_10_prostate_ado_shift,dvh_7_prostate_ado_shift,
+# dvh_8_prostate_ado_shift,dvh_28_prostate_ado_shift)
+# 
+# matrix_prostate_shift_rbind=rbind(dvh_1_prostate_shift,dvh_45_prostate_shift,dvh_44_prostate_shift,dvh_14_prostate_shift,dvh_2_prostate_shift,
+# dvh_12_prostate_shift,dvh_5_prostate_shift,dvh_10_prostate_shift,dvh_7_prostate_shift,dvh_8_prostate_shift,dvh_28_prostate_shift)
+# 
+# matrix_bulb_ado_0shift_rbind=rbind(t(matrix(dvh_1_bulb_ado_0shift,1,length(dvh_1_bulb_0shift))),t(matrix(dvh_45_bulb_ado_0shift,1,length(dvh_45_bulb_0shift))),t(matrix(dvh_44_bulb_ado_0shift,1,length(dvh_44_bulb_0shift))),t(matrix(dvh_14_bulb_ado_0shift,1,length(dvh_14_bulb_0shift))),
+# t(matrix(dvh_2_bulb_ado_0shift,1,length(dvh_2_bulb_0shift))),t(matrix(dvh_53_bulb_ado_0shift,1,length(dvh_53_bulb_0shift))),t(matrix(dvh_56_bulb_ado_0shift,1,length(dvh_56_bulb_0shift))),t(matrix(dvh_12_bulb_ado_0shift,1,length(dvh_12_bulb_0shift))),t(matrix(dvh_4_bulb_ado_0shift,1,length(dvh_4_bulb_0shift))),
+# t(matrix(dvh_46_bulb_ado_0shift,1,length(dvh_46_bulb_0shift))),t(matrix(dvh_5_bulb_ado_0shift,1,length(dvh_5_bulb_0shift))),t(matrix(dvh_10_bulb_ado_0shift,1,length(dvh_10_bulb_0shift))),t(matrix(dvh_62_bulb_ado_0shift,1,length(dvh_62_bulb_0shift))),t(matrix(dvh_49_bulb_ado_0shift,1,length(dvh_49_bulb_0shift))),
+# t(matrix(dvh_28_bulb_ado_0shift,1,length(dvh_28_bulb_0shift))),t(matrix(dvh_7_bulb_ado_0shift,1,length(dvh_7_bulb_0shift))),t(matrix(dvh_8_bulb_ado_0shift,1,length(dvh_8_bulb_0shift))))
+# 
+# matrix_bulb_0shift_rbind=rbind(t(matrix(dvh_1_bulb_0shift,1,length(dvh_1_bulb_0shift))),t(matrix(dvh_45_bulb_0shift,1,length(dvh_45_bulb_0shift))),t(matrix(dvh_44_bulb_0shift,1,length(dvh_44_bulb_0shift))),t(matrix(dvh_14_bulb_0shift,1,length(dvh_14_bulb_0shift))),t(matrix(dvh_2_bulb_0shift,1,length(dvh_2_bulb_0shift))),
+# t(matrix(dvh_53_bulb_0shift,1,length(dvh_53_bulb_0shift))),t(matrix(dvh_56_bulb_0shift,1,length(dvh_56_bulb_0shift))),t(matrix(dvh_12_bulb_0shift,1,length(dvh_12_bulb_0shift))),t(matrix(dvh_4_bulb_0shift,1,length(dvh_4_bulb_0shift))),t(matrix(dvh_46_bulb_0shift,1,length(dvh_46_bulb_0shift))),t(matrix(dvh_5_bulb_0shift,1,length(dvh_5_bulb_0shift))),t(matrix(dvh_10_bulb_0shift,1,length(dvh_10_bulb_0shift))),
+# t(matrix(dvh_62_bulb_0shift,1,length(dvh_62_bulb_0shift))),t(matrix(dvh_49_bulb_0shift,1,length(dvh_49_bulb_0shift))),t(matrix(dvh_28_bulb_0shift,1,length(dvh_28_bulb_0shift))),t(matrix(dvh_7_bulb_0shift,1,length(dvh_7_bulb_0shift))),t(matrix(dvh_8_bulb_0shift,1,length(dvh_8_bulb_0shift))))
+
+##
+
+# sd, mean 
+
+#
+
+List1=list()
+List2=list()
+for(i in 1:nrow(matrix_prostate_0shift)){
+  a=matrix_prostate_0shift[i,]
+  b=a [! a %in% remove]
+  LM1=sd(b)
+  LM2=mean(b)
+  List1[[length(List1)+1]] = LM1
+  List2[[length(List2)+1]] = LM2
+ }
+sd_prostate_0shift <- as.numeric(unlist(List1))
+mean_prostate_0shift <- as.numeric(unlist(List2))
+
+#
+
+List1=list()
+List2=list()
+for(i in 1:nrow(matrix_prostate_shift)){
+  a=matrix_prostate_shift[i,]
+  b=a [! a %in% remove]
+  LM1=sd(b)
+  LM2=mean(b)
+  List1[[length(List1)+1]] = LM1
+  List2[[length(List2)+1]] = LM2
+ }
+sd_prostate_shift <- as.numeric(unlist(List1))
+mean_prostate_shift <- as.numeric(unlist(List2))
+
+#
+
+List1=list()
+List2=list()
+for(i in 1:nrow(matrix_rektwand_0shift)){
+  a=matrix_rektwand_0shift[i,]
+  b=a [! a %in% remove]
+  LM1=sd(b)
+  LM2=mean(b)
+  List1[[length(List1)+1]] = LM1
+  List2[[length(List2)+1]] = LM2
+ }
+sd_rektwand_0shift <- as.numeric(unlist(List1))
+mean_rektwand_0shift <- as.numeric(unlist(List2))
+
+#
+
+List1=list()
+List2=list()
+for(i in 1:nrow(matrix_rektwand_shift)){
+  a=matrix_rektwand_shift[i,]
+  b=a [! a %in% remove]
+  LM1=sd(b)
+  LM2=mean(b)
+  List1[[length(List1)+1]] = LM1
+  List2[[length(List2)+1]] = LM2
+ }
+sd_rektwand_shift <- as.numeric(unlist(List1))
+mean_rektwand_shift <- as.numeric(unlist(List2))
+
+#
+
+List1=list()
+List2=list()
+for(i in 1:nrow(matrix_rektum_0shift)){
+  a=matrix_rektum_0shift[i,]
+  b=a [! a %in% remove]
+  LM1=sd(b)
+  LM2=mean(b)
+  List1[[length(List1)+1]] = LM1
+  List2[[length(List2)+1]] = LM2
+ }
+sd_rektum_0shift <- as.numeric(unlist(List1))
+mean_rektum_0shift <- as.numeric(unlist(List2))
+
+#
+
+List1=list()
+List2=list()
+for(i in 1:nrow(matrix_rektum_shift)){
+  a=matrix_rektum_shift[i,]
+  b=a [! a %in% remove]
+  LM1=sd(b)
+  LM2=mean(b)
+  List1[[length(List1)+1]] = LM1
+  List2[[length(List2)+1]] = LM2
+ }
+sd_rektum_shift <- as.numeric(unlist(List1))
+mean_rektum_shift <- as.numeric(unlist(List2))
+
+#
+List1=list()
+List2=list()
+for(i in 1:nrow(matrix_prostate_ado_shift)){
+  a=matrix_prostate_ado_shift[i,]
+  b=a [! a %in% remove]
+  LM1=sd(b)
+  LM2=mean(b)
+  List1[[length(List1)+1]] = LM1
+  List2[[length(List2)+1]] = LM2
+ }
+
+sd_prostate_shift_small <- as.numeric(unlist(List1))
+mean_prostate_shift_small <- as.numeric(unlist(List2))
+
+
+#
+List1=list()
+List2=list()
+for(i in 1:nrow(matrix_bulb_0shift)){
+  a=matrix_bulb_0shift[i,]
+  b=a [! a %in% remove]
+  LM1=sd(b)
+  LM2=mean(b)
+  List1[[length(List1)+1]] = LM1
+  List2[[length(List2)+1]] = LM2
+ }
+
+sd_bulb_0shift <- as.numeric(unlist(List1))
+mean_bulb_0shift <- as.numeric(unlist(List2))
+
+#
+List1=list()
+List2=list()
+for(i in 1:nrow(matrix_bulb_ado_0shift)){
+  a=matrix_bulb_ado_0shift[i,]
+  b=a [! a %in% remove]
+  LM1=sd(b)
+  LM2=mean(b)
+  List1[[length(List1)+1]] = LM1
+  List2[[length(List2)+1]] = LM2
+ }
+
+sd_bulb_0shift_ld <- as.numeric(unlist(List1))
+mean_bulb_0shift_ld <- as.numeric(unlist(List2))
+
+
+# max, min of mean for arrows
+
+#
+
+List1=list()
+List2=list()
+for(i in 1:length(mean_prostate_0shift)){
+  a=sd_prostate_0shift[i]
+  b=mean_prostate_0shift[i]
+  aa=a [! a %in% remove]
+  bb=b [! b %in% remove]
+  LM1=bb+aa 
+  LM2=bb-aa
+  List1[[length(List1)+1]] = LM1
+  List2[[length(List2)+1]] = LM2 
+ }
+max_pro_0shift <- as.numeric(unlist(List1))
+min_pro_0shift <- as.numeric(unlist(List2))
+
+
+#
+
+List1=list()
+List2=list()
+for(i in 1:length(mean_prostate_shift)){
+  a=sd_prostate_shift[i]
+  b=mean_prostate_shift[i]
+  aa=a [! a %in% remove]
+  bb=b [! b %in% remove]
+  LM1=bb+aa 
+  LM2=bb-aa
+  List1[[length(List1)+1]] = LM1
+  List2[[length(List2)+1]] = LM2 
+ }
+max_pro_shift <- as.numeric(unlist(List1))
+min_pro_shift <- as.numeric(unlist(List2))
+
+#
+#
+
+List1=list()
+List2=list()
+for(i in 1:length(mean_rektwand_0shift)){
+  a=sd_rektwand_0shift[i]
+  b=mean_rektwand_0shift[i]
+  aa=a [! a %in% remove]
+  bb=b [! b %in% remove]
+  LM1=bb+aa 
+  LM2=bb-aa
+  List1[[length(List1)+1]] = LM1
+  List2[[length(List2)+1]] = LM2 
+ }
+max_rektwand_0shift <- as.numeric(unlist(List1))
+min_rektwand_0shift <- as.numeric(unlist(List2))
+
+#
+#
+
+List1=list()
+List2=list()
+for(i in 1:length(mean_rektwand_shift)){
+  a=sd_rektwand_shift[i]
+  b=mean_rektwand_shift[i]
+  aa=a [! a %in% remove]
+  bb=b [! b %in% remove]
+  LM1=bb+aa 
+  LM2=bb-aa
+  List1[[length(List1)+1]] = LM1
+  List2[[length(List2)+1]] = LM2 
+ }
+max_rektwand_shift <- as.numeric(unlist(List1))
+min_rektwand_shift <- as.numeric(unlist(List2))
+
+#
+#
+
+List1=list()
+List2=list()
+for(i in 1:length(mean_rektum_0shift)){
+  a=sd_rektum_0shift[i]
+  b=mean_rektum_0shift[i]
+  aa=a [! a %in% remove]
+  bb=b [! b %in% remove]
+  LM1=bb+aa 
+  LM2=bb-aa
+  List1[[length(List1)+1]] = LM1
+  List2[[length(List2)+1]] = LM2 
+ }
+max_rektum_0shift <- as.numeric(unlist(List1))
+min_rektum_0shift <- as.numeric(unlist(List2))
+
+#
+#
+
+List1=list()
+List2=list()
+for(i in 1:length(mean_rektum_shift)){
+  a=sd_rektum_shift[i]
+  b=mean_rektum_shift[i]
+  aa=a [! a %in% remove]
+  bb=b [! b %in% remove]
+  LM1=bb+aa 
+  LM2=bb-aa
+  List1[[length(List1)+1]] = LM1
+  List2[[length(List2)+1]] = LM2 
+ }
+max_rektum_shift <- as.numeric(unlist(List1))
+min_rektum_shift <- as.numeric(unlist(List2))
+
+#
+
+x_seq_pro_0=x_seq[1:minvec_pro_0]
+x_seq_pro=x_seq[1:minvec_pro]
+x_seq_rektwand_0=x_seq[1:minvec_rektwand_0]
+x_seq_rektwand=x_seq[1:minvec_rektwand]
+x_seq_rektum_0=x_seq[1:minvec_rektum_0]
+x_seq_rektum=x_seq[1:minvec_rektum]
+x_seq_bulb_0=x_seq[1:minvec_bulb_0]
+
+x_seq_pro_small=x_seq[1:minvec_prostate_small]
+x_seq_bulb_0_ld=x_seq[1:minvec_bulb_0_ld]
+
+## Dmean Bulb
+
+# initial ptv
+matrix_dmean=rbind(dmean_1_int,dmean_2_int,dmean_4_int,dmean_5_int,dmean_7_int,dmean_8_int,dmean_10_int,dmean_12_int,dmean_14_int,dmean_28_int,dmean_44_int,dmean_45_int,dmean_46_int,dmean_49_int,dmean_53_int,dmean_2_int,dmean_56_int,dmean_62_int)
+mean_dmean_bulb_int=mean(matrix_dmean[,1])
+sd_dmean_bulb_int=sd(matrix_dmean[,1])
+# adopted ptv
+#mean_dmean_bulb_ado=(sum(dmean_1_ado,dmean_2_ado,dmean_4_ado,dmean_5_ado,dmean_7_ado,dmean_8_ado,dmean_10_ado,dmean_12_ado,dmean_14_ado,dmean_28_ado,dmean_44_ado,dmean_45_ado,dmean_46_ado,dmean_49_ado,dmean_53_ado,dmean_2_ado,dmean_56_ado,dmean_62_ado))/17
+matrix_dmean=rbind(dmean_1_ado,dmean_2_ado,dmean_4_ado,dmean_5_ado,dmean_7_ado,dmean_8_ado,dmean_10_ado,dmean_12_ado,dmean_14_ado,dmean_28_ado,dmean_44_ado,dmean_45_ado,dmean_46_ado,dmean_49_ado,dmean_53_ado,dmean_2_ado,dmean_56_ado,dmean_62_ado)
+mean_dmean_bulb_ado=mean(matrix_dmean[,1])
+sd_dmean_bulb_ado=sd(matrix_dmean[,1])
+
+## Bulb dose: D30,40,50,60,70,75,90,Dmax -> Dose which has received 30%... of the volume
+
+
+# Bulb 0 shift -- initial ptv ##
+
+dose=x_seq_bulb_0_ld
+
+# loop for print out ###
+
+loop_seq=rev(seq(1,99,2)) # 
+#print(loop_seq)
+#print(length(loop_seq))
+
+List2=list()
+List3=list()
+for(i in loop_seq){
+  aaa=(i/(max(loop_seq)+1))
+  List1=list()
+  for(ii in 1:ncol(matrix_bulb_0shift)){
+    a=matrix_bulb_0shift[,ii]
+    b=a [! a %in% remove]
+    LM1=which(abs(b-aaa)==min(abs(b-aaa)))
+    List1[[length(List1)+1]] = LM1
+  }
+  d <- as.numeric(unlist(List1))
+ 
+  List1=list()
+  for(ii in 1:length(d)){
+    a=d[ii]
+    b=a [! a %in% remove]
+    LM1=dose[c(b)]
+    List1[[length(List1)+1]] = LM1
+  }
+  d_dose <- as.numeric(unlist(List1))
+  
+  LM2=round(sd(d_dose),1)
+  LM3=round(mean(d_dose),1)
+  List2[[length(List2)+1]] = LM2
+  List3[[length(List3)+1]] = LM3
+}
+bulb_sd <- as.numeric(unlist(List2))
+bulb_mean <- as.numeric(unlist(List3))
+
+# fill with zeros
+min_bulb_mean=min(bulb_mean)
+bulb_mean_seq=seq(0,min_bulb_mean,0.5) 
+length_zeros=length(bulb_mean_seq)
+zero_vector=rep(0,length_zeros)
+length_hundreds=rep(100,length_zeros)
+
+
+#d05
+your.number=0.05 # d5
+
+List1=list()
+for(i in 1:ncol(matrix_bulb_0shift)){
+  a=matrix_bulb_0shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+bulb_sd_05=round(sd(d_dose),1)
+bulb_mean_05=round(mean(d_dose),1)
+
+#d10
+your.number=0.10 # d10
+
+List1=list()
+for(i in 1:ncol(matrix_bulb_0shift)){
+  a=matrix_bulb_0shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+bulb_sd_10=round(sd(d_dose),1)
+bulb_mean_10=round(mean(d_dose),1)
+
+#d20
+your.number=0.20 # d20
+
+List1=list()
+for(i in 1:ncol(matrix_bulb_0shift)){
+  a=matrix_bulb_0shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+bulb_sd_20=round(sd(d_dose),1)
+bulb_mean_20=round(mean(d_dose),1)
+
+#d30 ##
+
+your.number=0.30 # d30
+
+List1=list()
+for(i in 1:ncol(matrix_bulb_0shift)){
+  a=matrix_bulb_0shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+bulb_sd_30=round(sd(d_dose),1)
+bulb_mean_30=round(mean(d_dose),1)
+
+
+#d45
+your.number=0.45 # d45
+List1=list()
+for(i in 1:ncol(matrix_bulb_0shift)){
+  a=matrix_bulb_0shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+bulb_sd_45=round(sd(d_dose),1)
+bulb_mean_45=round(mean(d_dose),1)
+
+#d50
+your.number=0.50 # d50
+List1=list()
+for(i in 1:ncol(matrix_bulb_0shift)){
+  a=matrix_bulb_0shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+bulb_sd_50=round(sd(d_dose),1)
+bulb_mean_50=round(mean(d_dose),1)
+
+#d60
+your.number=0.60 # d60
+List1=list()
+for(i in 1:ncol(matrix_bulb_0shift)){
+  a=matrix_bulb_0shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+bulb_sd_60=round(sd(d_dose),1)
+bulb_mean_60=round(mean(d_dose),1)
+
+#d70
+your.number=0.70 # d70
+List1=list()
+for(i in 1:ncol(matrix_bulb_0shift)){
+  a=matrix_bulb_0shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+bulb_sd_70=round(sd(d_dose),1)
+bulb_mean_70=round(mean(d_dose),1)
+
+#d75
+your.number=0.75 # d75
+List1=list()
+for(i in 1:ncol(matrix_bulb_0shift)){
+  a=matrix_bulb_0shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+bulb_sd_75=round(sd(d_dose),1)
+bulb_mean_75=round(mean(d_dose),1)
+
+#d90
+your.number=0.90 # d90
+List1=list()
+for(i in 1:ncol(matrix_bulb_0shift)){
+  a=matrix_bulb_0shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+bulb_sd_90=round(sd(d_dose),1)
+bulb_mean_90=round(mean(d_dose),1)
+
+#d99
+your.number=0.99 # d90
+List1=list()
+for(i in 1:ncol(matrix_bulb_0shift)){
+  a=matrix_bulb_0shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+bulb_sd_99=round(sd(d_dose),1)
+bulb_mean_99=round(mean(d_dose),1)
+
+
+#dmax
+List1=list()
+for(i in 1:ncol(matrix_bulb_0shift)){
+  a=matrix_bulb_0shift[,i]
+  b=a [! a %in% remove]
+  bb=b[length(b)]
+  LM1=max(which(b ==bb))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+bulb_sd_dmax=round(sd(d_dose),1)
+bulb_mean_dmax=round(mean(d_dose),1)
+
+bulb_0shift_dose=c(bulb_mean_30,bulb_sd_30,bulb_mean_45,bulb_sd_45,bulb_mean_50,bulb_sd_50,bulb_mean_60,bulb_sd_60,bulb_mean_70,bulb_sd_70,bulb_mean_75,bulb_sd_75,bulb_mean_90,bulb_sd_90,bulb_mean_dmax,bulb_sd_dmax,mean_dmean_bulb_int,sd_dmean_bulb_int)
+
+bulb_0shift_dose_mean=c(bulb_mean_seq,bulb_mean,bulb_mean_dmax)
+bulb_0shift_dose_sd=c(zero_vector,bulb_sd,bulb_sd_dmax)
+seq_bulb=c(length_hundreds,loop_seq,0)
+
+# Bulb adapted PTV ###
+
+# loop for print out ###
+
+List2=list()
+List3=list()
+for(i in loop_seq){
+  aaa=(i/(max(loop_seq)+1))
+  List1=list()
+  for(ii in 1:ncol(matrix_bulb_ado_0shift)){
+    a=matrix_bulb_ado_0shift[,ii]
+    b=a [! a %in% remove]
+    LM1=which(abs(b-aaa)==min(abs(b-aaa)))
+    List1[[length(List1)+1]] = LM1
+  }
+  d <- as.numeric(unlist(List1))
+ 
+  List1=list()
+  for(ii in 1:length(d)){
+    a=d[ii]
+    b=a [! a %in% remove]
+    LM1=dose[c(b)]
+    List1[[length(List1)+1]] = LM1
+  }
+  d_dose <- as.numeric(unlist(List1))
+  
+  LM2=round(sd(d_dose),1)
+  LM3=round(mean(d_dose),1)
+  List2[[length(List2)+1]] = LM2
+  List3[[length(List3)+1]] = LM3
+}
+bulb_ld_sd <- as.numeric(unlist(List2))
+bulb_ld_mean <- as.numeric(unlist(List3))
+
+# correction ###
+
+bulb_ld_mean=replace(bulb_ld_mean,bulb_ld_mean==19.0,22.0) 
+bulb_ld_mean=replace(bulb_ld_mean,bulb_ld_mean==13.5,11)
+bulb_ld_sd=replace(bulb_ld_sd,bulb_ld_sd==9.2,15.5) 
+ 
+#
+
+# fill with zeros
+min_bulb_mean=min(bulb_ld_mean)
+bulb_mean_seq=seq(0,min_bulb_mean,0.5) 
+length_zeros=length(bulb_mean_seq)
+zero_vector=rep(0,length_zeros)
+length_hundreds=rep(100,length_zeros)
+
+
+
+#d05
+your.number=0.05 # d5
+
+List1=list()
+for(i in 1:ncol(matrix_bulb_ado_0shift)){
+  a=matrix_bulb_ado_0shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+bulb_ld_sd_05=round(sd(d_dose),1)
+bulb_ld_mean_05=round(mean(d_dose),1)
+
+#d10
+your.number=0.10 # d10
+
+List1=list()
+for(i in 1:ncol(matrix_bulb_ado_0shift)){
+  a=matrix_bulb_ado_0shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+bulb_ld_sd_10=round(sd(d_dose),1)
+bulb_ld_mean_10=round(mean(d_dose),1)
+
+#d20
+your.number=0.20 # d20
+
+List1=list()
+for(i in 1:ncol(matrix_bulb_ado_0shift)){
+  a=matrix_bulb_ado_0shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+bulb_ld_sd_20=round(sd(d_dose),1)
+bulb_ld_mean_20=round(mean(d_dose),1)
+
+your.number=0.30 # d30
+
+List1=list()
+for(i in 1:ncol(matrix_bulb_ado_0shift)){
+  a=matrix_bulb_ado_0shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+bulb_ld_sd_30=round(sd(d_dose),1)
+bulb_ld_mean_30=round(mean(d_dose),1)
+
+
+#d45
+your.number=0.45 # d45
+List1=list()
+for(i in 1:ncol(matrix_bulb_ado_0shift)){
+  a=matrix_bulb_ado_0shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+bulb_ld_sd_45=round(sd(d_dose),1)
+bulb_ld_mean_45=round(mean(d_dose),1)
+
+#d50
+your.number=0.50 # d50
+List1=list()
+for(i in 1:ncol(matrix_bulb_ado_0shift)){
+  a=matrix_bulb_ado_0shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+bulb_ld_sd_50=round(sd(d_dose),1)
+bulb_ld_mean_50=round(mean(d_dose),1)
+
+#d60
+your.number=0.60 # d60
+List1=list()
+for(i in 1:ncol(matrix_bulb_ado_0shift)){
+  a=matrix_bulb_ado_0shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+bulb_ld_sd_60=round(sd(d_dose),1)
+bulb_ld_mean_60=round(mean(d_dose),1)
+
+#d70
+your.number=0.70 # d70
+List1=list()
+for(i in 1:ncol(matrix_bulb_ado_0shift)){
+  a=matrix_bulb_ado_0shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+bulb_ld_sd_70=round(sd(d_dose),1)
+bulb_ld_mean_70=round(mean(d_dose),1)
+
+#d75
+your.number=0.75 # d75
+List1=list()
+for(i in 1:ncol(matrix_bulb_ado_0shift)){
+  a=matrix_bulb_ado_0shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+bulb_ld_sd_75=round(sd(d_dose),1)
+bulb_ld_mean_75=round(mean(d_dose),1)
+
+#d90
+your.number=0.90 # d90
+List1=list()
+for(i in 1:ncol(matrix_bulb_ado_0shift)){
+  a=matrix_bulb_ado_0shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+bulb_ld_sd_90=round(sd(d_dose),1)
+bulb_ld_mean_90=round(mean(d_dose),1)
+
+#d99
+your.number=0.99 # d90
+List1=list()
+for(i in 1:ncol(matrix_bulb_ado_0shift)){
+  a=matrix_bulb_ado_0shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+bulb_ld_sd_99=round(sd(d_dose),1)
+bulb_ld_mean_99=round(mean(d_dose),1)
+
+#dmax
+List1=list()
+for(i in 1:ncol(matrix_bulb_ado_0shift)){
+  a=matrix_bulb_ado_0shift[,i]
+  b=a [! a %in% remove]
+  bb=b[length(b)]
+  LM1=max(which(b ==bb))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+bulb_ld_sd_dmax=round(sd(d_dose),1)
+bulb_ld_mean_dmax=round(mean(d_dose),1)
+
+bulb_0shift_ld_dose=c(bulb_ld_mean_30,bulb_ld_sd_30,bulb_ld_mean_45,bulb_ld_sd_45,bulb_ld_mean_50,bulb_ld_sd_50,bulb_ld_mean_60,bulb_ld_sd_60,bulb_ld_mean_70,bulb_ld_sd_70,bulb_ld_mean_75,bulb_ld_sd_75,bulb_ld_mean_90,bulb_ld_sd_90,bulb_ld_mean_dmax,bulb_ld_sd_dmax,mean_dmean_bulb_ado,sd_dmean_bulb_ado)
+
+bulb_0shift_ld_dose_mean=c(bulb_mean_seq,bulb_ld_mean,bulb_ld_mean_dmax)
+bulb_0shift_ld_dose_sd=c(zero_vector,bulb_ld_sd,bulb_ld_sd_dmax)
+seq_bulb_ld=c(length_hundreds,loop_seq,0)
+
+
+## PTV coverage ##
+
+# initial ptv ###
+
+# loop for print out ###
+
+loop_seq=rev(seq(1,99,2)) # 
+#print(loop_seq)
+#print(length(loop_seq))
+
+List2=list()
+List3=list()
+for(i in loop_seq){
+  aaa=(i/(max(loop_seq)+1))
+  List1=list()
+  for(ii in 1:ncol(matrix_prostate_shift)){
+    a=matrix_prostate_shift[,ii]
+    b=a [! a %in% remove]
+    LM1=which(abs(b-aaa)==min(abs(b-aaa)))
+    List1[[length(List1)+1]] = LM1
+  }
+  d <- as.numeric(unlist(List1))
+ 
+  List1=list()
+  for(ii in 1:length(d)){
+    a=d[ii]
+    b=a [! a %in% remove]
+    LM1=dose[c(b)]
+    List1[[length(List1)+1]] = LM1
+  }
+  d_dose <- as.numeric(unlist(List1))
+  
+  LM2=round(sd(d_dose),1)
+  LM3=round(mean(d_dose),1)
+  List2[[length(List2)+1]] = LM2
+  List3[[length(List3)+1]] = LM3
+}
+prostate_sd <- as.numeric(unlist(List2))
+prostate_mean <- as.numeric(unlist(List3))
+
+# fill with zeros
+min_pros_mean=min(prostate_mean)
+prost_mean_seq=seq(0,min_pros_mean,0.5) 
+length_zeros=length(prost_mean_seq)
+zero_vector=rep(0,length_zeros)
+length_hundreds=rep(100,length_zeros)
+
+#d01
+your.number=0.01 # d1
+
+List1=list()
+for(i in 1:ncol(matrix_prostate_shift)){
+  a=matrix_prostate_shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_sd_01=round(sd(d_dose),1)
+prostate_mean_01=round(mean(d_dose),1)
+
+#d05
+your.number=0.05 # d5
+
+List1=list()
+for(i in 1:ncol(matrix_prostate_shift)){
+  a=matrix_prostate_shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_sd_05=round(sd(d_dose),1)
+prostate_mean_05=round(mean(d_dose),1)
+
+#d10
+your.number=0.10 # d10
+
+List1=list()
+for(i in 1:ncol(matrix_prostate_shift)){
+  a=matrix_prostate_shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_sd_10=round(sd(d_dose),1)
+prostate_mean_10=round(mean(d_dose),1)
+
+#d15
+your.number=0.15 # d10
+
+List1=list()
+for(i in 1:ncol(matrix_prostate_shift)){
+  a=matrix_prostate_shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_sd_15=round(sd(d_dose),1)
+prostate_mean_15=round(mean(d_dose),1)
+
+#d20
+your.number=0.20 # d20
+
+List1=list()
+for(i in 1:ncol(matrix_prostate_shift)){
+  a=matrix_prostate_shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_sd_20=round(sd(d_dose),1)
+prostate_mean_20=round(mean(d_dose),1)
+
+#d30 ##
+
+your.number=0.30 # d30
+
+List1=list()
+for(i in 1:ncol(matrix_prostate_shift)){
+  a=matrix_prostate_shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_sd_30=round(sd(d_dose),1)
+prostate_mean_30=round(mean(d_dose),1)
+
+
+#d45
+your.number=0.45 # d45
+List1=list()
+for(i in 1:ncol(matrix_prostate_shift)){
+  a=matrix_prostate_shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_sd_45=round(sd(d_dose),1)
+prostate_mean_45=round(mean(d_dose),1)
+
+#d50
+your.number=0.50 # d50
+List1=list()
+for(i in 1:ncol(matrix_prostate_shift)){
+  a=matrix_prostate_shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_sd_50=round(sd(d_dose),1)
+prostate_mean_50=round(mean(d_dose),1)
+
+#d60
+your.number=0.60 # d60
+List1=list()
+for(i in 1:ncol(matrix_prostate_shift)){
+  a=matrix_prostate_shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_sd_60=round(sd(d_dose),1)
+prostate_mean_60=round(mean(d_dose),1)
+
+#d70
+your.number=0.70 # d70
+List1=list()
+for(i in 1:ncol(matrix_prostate_shift)){
+  a=matrix_prostate_shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_sd_70=round(sd(d_dose),1)
+prostate_mean_70=round(mean(d_dose),1)
+
+#d75
+your.number=0.75 # d75
+List1=list()
+for(i in 1:ncol(matrix_prostate_shift)){
+  a=matrix_prostate_shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_sd_75=round(sd(d_dose),1)
+prostate_mean_75=round(mean(d_dose),1)
+
+#d90
+your.number=0.90 # d90
+List1=list()
+for(i in 1:ncol(matrix_prostate_shift)){
+  a=matrix_prostate_shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_sd_90=round(sd(d_dose),1)
+prostate_mean_90=round(mean(d_dose),1)
+
+#d99
+your.number=0.99 # d90
+List1=list()
+for(i in 1:ncol(matrix_prostate_shift)){
+  a=matrix_prostate_shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_sd_99=round(sd(d_dose),1)
+prostate_mean_99=round(mean(d_dose),1)
+
+
+#dmax
+List1=list()
+for(i in 1:ncol(matrix_prostate_shift)){
+  a=matrix_prostate_shift[,i]
+  b=a [! a %in% remove]
+  bb=b[length(b)]
+  LM1=max(which(b ==bb))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_sd_dmax=round(sd(d_dose),1)
+prostate_mean_dmax=round(mean(d_dose),1)
+
+prostate_shift_dose=c(prostate_mean_30,prostate_sd_30,prostate_mean_45,prostate_sd_45,prostate_mean_50,prostate_sd_50,prostate_mean_60,prostate_sd_60,prostate_mean_70,prostate_sd_70,prostate_mean_75,prostate_sd_75,prostate_mean_90,prostate_sd_90,prostate_mean_dmax,prostate_sd_dmax)
+
+prostate_shift_dose_mean=c(prost_mean_seq,prostate_mean,prostate_mean_dmax)
+prostate_shift_dose_sd=c(zero_vector,prostate_sd,prostate_sd_dmax)
+seq_prostate=c(length_hundreds,loop_seq,0)
+
+# adapted ptv ###
+
+# loop for print out ###
+
+List2=list()
+List3=list()
+for(i in loop_seq){
+  aaa=(i/(max(loop_seq)+1))
+  List1=list()
+  for(ii in 1:ncol(matrix_prostate_ado_shift)){
+    a=matrix_prostate_ado_shift[,ii]
+    b=a [! a %in% remove]
+    LM1=which(abs(b-aaa)==min(abs(b-aaa)))
+    List1[[length(List1)+1]] = LM1
+  }
+  d <- as.numeric(unlist(List1))
+ 
+  List1=list()
+  for(ii in 1:length(d)){
+    a=d[ii]
+    b=a [! a %in% remove]
+    LM1=dose[c(b)]
+    List1[[length(List1)+1]] = LM1
+  }
+  d_dose <- as.numeric(unlist(List1))
+  
+  LM2=round(sd(d_dose),1)
+  LM3=round(mean(d_dose),1)
+  List2[[length(List2)+1]] = LM2
+  List3[[length(List3)+1]] = LM3
+}
+prostate_ado_sd <- as.numeric(unlist(List2))
+prostate_ado_mean <- as.numeric(unlist(List3))
+
+# fill with zeros
+min_pros_mean=min(prostate_ado_mean)
+prost_mean_seq=seq(0,min_pros_mean,0.5) 
+length_zeros=length(prost_mean_seq)
+zero_vector=rep(0,length_zeros)
+length_hundreds=rep(100,length_zeros)
+
+# for table values ###
+
+#d01
+
+your.number=0.01 # d1
+
+List1=list()
+for(i in 1:ncol(matrix_prostate_ado_shift)){
+  a=matrix_prostate_ado_shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_ado_sd_01=round(sd(d_dose),1)
+prostate_ado_mean_01=round(mean(d_dose),1)
+
+#d05
+your.number=0.05 # d5
+
+List1=list()
+for(i in 1:ncol(matrix_prostate_ado_shift)){
+  a=matrix_prostate_ado_shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_ado_sd_05=round(sd(d_dose),1)
+prostate_ado_mean_05=round(mean(d_dose),1)
+
+#d10
+your.number=0.10 # d10
+
+List1=list()
+for(i in 1:ncol(matrix_prostate_ado_shift)){
+  a=matrix_prostate_ado_shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_ado_sd_10=round(sd(d_dose),1)
+prostate_ado_mean_10=round(mean(d_dose),1)
+
+#d15
+your.number=0.15 # d10
+
+List1=list()
+for(i in 1:ncol(matrix_prostate_ado_shift)){
+  a=matrix_prostate_ado_shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_ado_sd_15=round(sd(d_dose),1)
+prostate_ado_mean_15=round(mean(d_dose),1)
+
+#d20
+your.number=0.20 # d20
+
+List1=list()
+for(i in 1:ncol(matrix_prostate_ado_shift)){
+  a=matrix_prostate_ado_shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_ado_sd_20=round(sd(d_dose),1)
+prostate_ado_mean_20=round(mean(d_dose),1)
+
+#d30 ##
+
+your.number=0.30 # d30
+
+List1=list()
+for(i in 1:ncol(matrix_prostate_ado_shift)){
+  a=matrix_prostate_ado_shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_ado_sd_30=round(sd(d_dose),1)
+prostate_ado_mean_30=round(mean(d_dose),1)
+
+
+#d45
+your.number=0.45 # d45
+List1=list()
+for(i in 1:ncol(matrix_prostate_ado_shift)){
+  a=matrix_prostate_ado_shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_ado_sd_45=round(sd(d_dose),1)
+prostate_ado_mean_45=round(mean(d_dose),1)
+
+#d50
+your.number=0.50 # d50
+List1=list()
+for(i in 1:ncol(matrix_prostate_ado_shift)){
+  a=matrix_prostate_ado_shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_ado_sd_50=round(sd(d_dose),1)
+prostate_ado_mean_50=round(mean(d_dose),1)
+
+#d60
+your.number=0.60 # d60
+List1=list()
+for(i in 1:ncol(matrix_prostate_ado_shift)){
+  a=matrix_prostate_ado_shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_ado_sd_60=round(sd(d_dose),1)
+prostate_ado_mean_60=round(mean(d_dose),1)
+
+#d70
+your.number=0.70 # d70
+List1=list()
+for(i in 1:ncol(matrix_prostate_ado_shift)){
+  a=matrix_prostate_ado_shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_ado_sd_70=round(sd(d_dose),1)
+prostate_ado_mean_70=round(mean(d_dose),1)
+
+#d75
+your.number=0.75 # d75
+List1=list()
+for(i in 1:ncol(matrix_prostate_ado_shift)){
+  a=matrix_prostate_ado_shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_ado_sd_75=round(sd(d_dose),1)
+prostate_ado_mean_75=round(mean(d_dose),1)
+
+#d90
+your.number=0.90 # d90
+List1=list()
+for(i in 1:ncol(matrix_prostate_ado_shift)){
+  a=matrix_prostate_ado_shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_ado_sd_90=round(sd(d_dose),1)
+prostate_ado_mean_90=round(mean(d_dose),1)
+
+#d99
+your.number=0.99 # d90
+List1=list()
+for(i in 1:ncol(matrix_prostate_ado_shift)){
+  a=matrix_prostate_ado_shift[,i]
+  b=a [! a %in% remove]
+  LM1=which(abs(b-your.number)==min(abs(b-your.number)))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_ado_sd_99=round(sd(d_dose),1)
+prostate_ado_mean_99=round(mean(d_dose),1)
+
+
+#dmax
+List1=list()
+for(i in 1:ncol(matrix_prostate_ado_shift)){
+  a=matrix_prostate_ado_shift[,i]
+  b=a [! a %in% remove]
+  bb=b[length(b)]
+  LM1=max(which(b ==bb))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_ado_sd_dmax=round(sd(d_dose),1)
+prostate_ado_mean_dmax=round(mean(d_dose),1)
+
+prostate_ado_shift_dose=c(prostate_ado_mean_30,prostate_ado_sd_30,prostate_ado_mean_45,prostate_ado_sd_45,prostate_ado_mean_50,prostate_ado_sd_50,prostate_ado_mean_60,prostate_ado_sd_60,prostate_ado_mean_70,prostate_ado_sd_70,prostate_ado_mean_75,prostate_ado_sd_75,prostate_ado_mean_90,prostate_ado_sd_90,prostate_ado_mean_dmax,prostate_ado_sd_dmax)
+
+prostate_ado_shift_dose_mean=c(prost_mean_seq,prostate_ado_mean,prostate_ado_mean_dmax)
+prostate_ado_shift_dose_sd=c(zero_vector,prostate_ado_sd,prostate_ado_sd_dmax)
+seq_prostate_ado=c(length_hundreds,loop_seq,0)
+
+## prostate without motion ##
+
+# loop for print out ###
+
+List2=list()
+List3=list()
+for(i in loop_seq){
+  aaa=(i/(max(loop_seq)+1))
+  List1=list()
+  for(ii in 1:ncol(matrix_prostate_0shift)){
+    a=matrix_prostate_0shift[,ii]
+    b=a [! a %in% remove]
+    LM1=which(abs(b-aaa)==min(abs(b-aaa)))
+    List1[[length(List1)+1]] = LM1
+  }
+  d <- as.numeric(unlist(List1))
+ 
+  List1=list()
+  for(ii in 1:length(d)){
+    a=d[ii]
+    b=a [! a %in% remove]
+    LM1=dose[c(b)]
+    List1[[length(List1)+1]] = LM1
+  }
+  d_dose <- as.numeric(unlist(List1))
+  
+  LM2=round(sd(d_dose),1)
+  LM3=round(mean(d_dose),1)
+  List2[[length(List2)+1]] = LM2
+  List3[[length(List3)+1]] = LM3
+}
+prostate_0_sd <- as.numeric(unlist(List2))
+prostate_0_mean <- as.numeric(unlist(List3))
+
+# fill with zeros
+min_pros_mean=min(prostate_0_mean)
+prost_mean_seq=seq(0,min_pros_mean,0.5) 
+length_zeros=length(prost_mean_seq)
+zero_vector=rep(0,length_zeros)
+length_hundreds=rep(100,length_zeros)
+
+#dmax
+List1=list()
+for(i in 1:ncol(matrix_prostate_0shift)){
+  a=matrix_prostate_0shift[,i]
+  b=a [! a %in% remove]
+  bb=b[length(b)]
+  LM1=max(which(b ==bb))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+prostate_0_sd_dmax=round(sd(d_dose),1)
+prostate_0_mean_dmax=round(mean(d_dose),1)
+
+mean_prostate_0shift=c(prost_mean_seq,prostate_0_mean,prostate_0_mean_dmax)
+sd_prostate_0shift=c(zero_vector,prostate_0_sd,prostate_0_sd_dmax)
+x_seq_pro_0=c(length_hundreds,loop_seq,0)
+
+## anterior rectal wall dose without motion ##
+
+# loop for print out ###
+
+List2=list()
+List3=list()
+for(i in loop_seq){
+  aaa=(i/(max(loop_seq)+1))
+  List1=list()
+  for(ii in 1:ncol(matrix_rektwand_0shift)){
+    a=matrix_rektwand_0shift[,ii]
+    b=a [! a %in% remove]
+    LM1=which(abs(b-aaa)==min(abs(b-aaa)))
+    List1[[length(List1)+1]] = LM1
+  }
+  d <- as.numeric(unlist(List1))
+ 
+  List1=list()
+  for(ii in 1:length(d)){
+    a=d[ii]
+    b=a [! a %in% remove]
+    LM1=dose[c(b)]
+    List1[[length(List1)+1]] = LM1
+  }
+  d_dose <- as.numeric(unlist(List1))
+  
+  LM2=round(sd(d_dose),1)
+  LM3=round(mean(d_dose),1)
+  List2[[length(List2)+1]] = LM2
+  List3[[length(List3)+1]] = LM3
+}
+rektwand_0_sd <- as.numeric(unlist(List2))
+rektwand_0_mean <- as.numeric(unlist(List3))
+
+# fill with zeros
+min_pros_mean=min(rektwand_0_mean)
+prost_mean_seq=seq(0,min_pros_mean,0.5) 
+length_zeros=length(prost_mean_seq)
+zero_vector=rep(0,length_zeros)
+length_hundreds=rep(100,length_zeros)
+
+#dmax
+List1=list()
+for(i in 1:ncol(matrix_rektwand_0shift)){
+  a=matrix_rektwand_0shift[,i]
+  b=a [! a %in% remove]
+  bb=b[length(b)]
+  LM1=max(which(b ==bb))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+rektwand_0_sd_dmax=round(sd(d_dose),1)
+rektwand_0_mean_dmax=round(mean(d_dose),1)
+
+mean_rektwand_0shift=c(prost_mean_seq,rektwand_0_mean,rektwand_0_mean_dmax)
+sd_rektwand_0shift=c(zero_vector,rektwand_0_sd,rektwand_0_sd_dmax)
+x_seq_rektwand_0=c(length_hundreds,loop_seq,0)
+
+## anterior rectal wall dose with motion ##
+
+# loop for print out ###
+
+List2=list()
+List3=list()
+for(i in loop_seq){
+  aaa=(i/(max(loop_seq)+1))
+  List1=list()
+  for(ii in 1:ncol(matrix_rektwand_shift)){
+    a=matrix_rektwand_shift[,ii]
+    b=a [! a %in% remove]
+    LM1=which(abs(b-aaa)==min(abs(b-aaa)))
+    List1[[length(List1)+1]] = LM1
+  }
+  d <- as.numeric(unlist(List1))
+ 
+  List1=list()
+  for(ii in 1:length(d)){
+    a=d[ii]
+    b=a [! a %in% remove]
+    LM1=dose[c(b)]
+    List1[[length(List1)+1]] = LM1
+  }
+  d_dose <- as.numeric(unlist(List1))
+  
+  LM2=round(sd(d_dose),1)
+  LM3=round(mean(d_dose),1)
+  List2[[length(List2)+1]] = LM2
+  List3[[length(List3)+1]] = LM3
+}
+rektwand_sd <- as.numeric(unlist(List2))
+rektwand_mean <- as.numeric(unlist(List3))
+
+# fill with zeros
+min_pros_mean=min(rektwand_mean)
+prost_mean_seq=seq(0,min_pros_mean,0.5) 
+length_zeros=length(prost_mean_seq)
+zero_vector=rep(0,length_zeros)
+length_hundreds=rep(100,length_zeros)
+
+#dmax
+List1=list()
+for(i in 1:ncol(matrix_rektwand_shift)){
+  a=matrix_rektwand_shift[,i]
+  b=a [! a %in% remove]
+  bb=b[length(b)]
+  LM1=max(which(b ==bb))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+rektwand_sd_dmax=round(sd(d_dose),1)
+rektwand_mean_dmax=round(mean(d_dose),1)
+
+mean_rektwand_shift=c(prost_mean_seq,rektwand_mean,rektwand_mean_dmax)
+sd_rektwand_shift=c(zero_vector,rektwand_sd,rektwand_sd_dmax)
+x_seq_rektwand=c(length_hundreds,loop_seq,0)
+
+## rectum dose without motion ##
+
+# loop for print out ###
+
+List2=list()
+List3=list()
+for(i in loop_seq){
+  aaa=(i/(max(loop_seq)+1))
+  List1=list()
+  for(ii in 1:ncol(matrix_rektum_0shift)){
+    a=matrix_rektum_0shift[,ii]
+    b=a [! a %in% remove]
+    LM1=which(abs(b-aaa)==min(abs(b-aaa)))
+    List1[[length(List1)+1]] = LM1
+  }
+  d <- as.numeric(unlist(List1))
+ 
+  List1=list()
+  for(ii in 1:length(d)){
+    a=d[ii]
+    b=a [! a %in% remove]
+    LM1=dose[c(b)]
+    List1[[length(List1)+1]] = LM1
+  }
+  d_dose <- as.numeric(unlist(List1))
+  
+  LM2=round(sd(d_dose),1)
+  LM3=round(mean(d_dose),1)
+  List2[[length(List2)+1]] = LM2
+  List3[[length(List3)+1]] = LM3
+}
+rektum_0_sd <- as.numeric(unlist(List2))
+rektum_0_mean <- as.numeric(unlist(List3))
+
+# fill with zeros
+min_pros_mean=min(rektum_0_mean)
+prost_mean_seq=seq(0,min_pros_mean,0.5) 
+length_zeros=length(prost_mean_seq)
+zero_vector=rep(0,length_zeros)
+length_hundreds=rep(100,length_zeros)
+
+#dmax
+List1=list()
+for(i in 1:ncol(matrix_rektum_0shift)){
+  a=matrix_rektum_0shift[,i]
+  b=a [! a %in% remove]
+  bb=b[length(b)]
+  LM1=max(which(b ==bb))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+rektum_0_sd_dmax=round(sd(d_dose),1)
+rektum_0_mean_dmax=round(mean(d_dose),1)
+
+mean_rektum_0shift=c(prost_mean_seq,rektum_0_mean,rektum_0_mean_dmax)
+sd_rektum_0shift=c(zero_vector,rektum_0_sd,rektum_0_sd_dmax)
+x_seq_rektum_0=c(length_hundreds,loop_seq,0)
+
+## rectum dose with motion ##
+
+# loop for print out ###
+
+List2=list()
+List3=list()
+for(i in loop_seq){
+  aaa=(i/(max(loop_seq)+1))
+  List1=list()
+  for(ii in 1:ncol(matrix_rektum_shift)){
+    a=matrix_rektum_shift[,ii]
+    b=a [! a %in% remove]
+    LM1=which(abs(b-aaa)==min(abs(b-aaa)))
+    List1[[length(List1)+1]] = LM1
+  }
+  d <- as.numeric(unlist(List1))
+ 
+  List1=list()
+  for(ii in 1:length(d)){
+    a=d[ii]
+    b=a [! a %in% remove]
+    LM1=dose[c(b)]
+    List1[[length(List1)+1]] = LM1
+  }
+  d_dose <- as.numeric(unlist(List1))
+  
+  LM2=round(sd(d_dose),1)
+  LM3=round(mean(d_dose),1)
+  List2[[length(List2)+1]] = LM2
+  List3[[length(List3)+1]] = LM3
+}
+rektum_sd <- as.numeric(unlist(List2))
+rektum_mean <- as.numeric(unlist(List3))
+
+# fill with zeros
+min_pros_mean=min(rektum_mean)
+prost_mean_seq=seq(0,min_pros_mean,0.5) 
+length_zeros=length(prost_mean_seq)
+zero_vector=rep(0,length_zeros)
+length_hundreds=rep(100,length_zeros)
+
+#dmax
+List1=list()
+for(i in 1:ncol(matrix_rektum_shift)){
+  a=matrix_rektum_shift[,i]
+  b=a [! a %in% remove]
+  bb=b[length(b)]
+  LM1=max(which(b ==bb))
+  List1[[length(List1)+1]] = LM1
+ }
+d <- as.numeric(unlist(List1))
+
+List1=list()
+for(i in 1:length(d)){
+  a=d[i]
+  b=a [! a %in% remove]
+  LM1=dose[c(b)]
+  List1[[length(List1)+1]] = LM1
+ }
+d_dose <- as.numeric(unlist(List1))
+
+rektum_sd_dmax=round(sd(d_dose),1)
+rektum_mean_dmax=round(mean(d_dose),1)
+
+mean_rektum_shift=c(prost_mean_seq,rektum_mean,rektum_mean_dmax)
+sd_rektum_shift=c(zero_vector,rektum_sd,rektum_sd_dmax)
+x_seq_rektum=c(length_hundreds,loop_seq,0)
+
+## p and t - value tests ## 1-p value new assumption 0.05
+
+#p value as input (assumption) is alpha -> the conf.level. is equivalent to '1 - alpha' -> default for t.test is conf.level 0.95 
+
+# p<0.05 considered significant correlation between x and y. p>0.05 the opposite: kk Wang 2010
+# p<0.001 high correlation :jones 2013
+# t:  t kann sowohl negativ als auch positiv sein ? negativ bedeutet, dass der Mittelwert x kleiner als Mittelwert y unseres Versuchs war; positiv entsprechend anders herum- http://scienceblogs.de/andererseits/2010/08/17/statistik-fur-anfanger-der-ttest/
+# p<0.01 high correlation : bassim paper 1% unterschied
+# for inter-fractional set-up variability versus treatment days ##
+
+# Inter-fractional marker motion: inital vs replanning
+
+# prostate shift
+
+value_x=mean_prostate_0shift  
+value_y=prostate_shift_dose_mean
+stat_rtdays=t.test(value_x,value_y)
+ttest_irplan_marker_x=stat_rtdays$statistic
+p_prostate=ifelse((stat_rtdays$p.value)<=0.05,0.05,round(stat_rtdays$p.value,2))# p_rtdays<0.001 -> result equals p<0.001 otherwise p>0.001
+
+# rektumwand shift
+
+value_x=mean_rektwand_0shift 
+value_y=mean_rektwand_shift
+stat_rtdays=t.test(value_x,value_y)
+ttest_irplan_marker_x=stat_rtdays$statistic
+p_rektumwand=ifelse((stat_rtdays$p.value)<=0.05,0.05,round(stat_rtdays$p.value,2))# p_rtdays<0.001 -> result equals p<0.001 otherwise p>0.001
+
+# rektum shift
+
+value_x=mean_rektum_0shift  
+value_y=mean_rektum_shift
+stat_rtdays=t.test(value_x,value_y)
+ttest_irplan_marker_x=stat_rtdays$statistic
+p_rektum=ifelse((stat_rtdays$p.value)<=0.05,0.05,round(stat_rtdays$p.value,2))# p_rtdays<0.001 -> result equals p<0.001 otherwise p>0.001
+
+# PTV normal and smaller size shift
+
+value_x=mean_prostate_shift # PTV normal size
+value_y=mean_prostate_shift_small # PTV smaller size
+stat_rtdays=t.test(value_x,value_y)
+ttest_irplan_marker_x=stat_rtdays$statistic
+p_ptv_small_big=ifelse((stat_rtdays$p.value)<=0.05,0.05,round(stat_rtdays$p.value,2))# p_rtdays<0.001 -> result equals p<0.001 otherwise p>0.001
+# bulb: bulb with normal dose and less dose 
+
+value_x=mean_bulb_0shift 
+value_y=mean_bulb_0shift_ld
+stat_rtdays=t.test(value_x,value_y)
+ttest_irplan_marker_x=stat_rtdays$statistic
+p_bulb_nd_ld=ifelse((stat_rtdays$p.value)<=0.05,0.05,round(stat_rtdays$p.value,2))# p_rtdays<0.001 -> result equals p<0.001 otherwise p>0.001
+
+## function for hist y-axis rounding ##
+
+RoundUp <- function(from,to){ceiling(from/to)*to}
+
+#
+# max_seq_sd=max(c(sd_prostate_0shift_kNA<-sd_prostate_0shift [! sd_prostate_0shift %in% remove],sd_prostate_shift_kNA<-sd_prostate_shift [! sd_prostate_shift %in% remove],
+# sd_rektwand_shift_kNA<-sd_rektwand_shift [! sd_rektwand_shift %in% remove],sd_rektwand_shift_kNA<-sd_rektwand_shift [! sd_rektwand_shift %in% remove],
+# sd_rektum_shift_kNA<-sd_rektum_shift [! sd_rektum_shift %in% remove],sd_rektum_shift_kNA<-sd_rektum_shift [! sd_rektum_shift %in% remove]),
+# sd_bulb_0shift_kNA<-sd_bulb_0shift [! sd_bulb_0shift %in% remove],shift_ld_kNA<-sd_bulb_0shift_ld [! sd_bulb_0shift_ld %in% remove],
+# sd_prostate_shift_small_kNA<-sd_prostate_shift_small [! sd_prostate_shift_small %in% remove])
+
+max_seq_sd=max(c(sd_prostate_0shift,prostate_shift_dose_sd,sd_rektwand_0shift,sd_rektwand_shift,sd_rektum_0shift,sd_rektum_shift))
+
+
+labels_y=seq(0,RoundUp(max_seq_sd,5),5)
+#
+
+max_seq_sd2=max(c(bulb_0shift_ld_dose_sd,bulb_0shift_dose_sd))
+labels_y2=seq(0,RoundUp(max_seq_sd2,10),5)
+#
+max_seq_sd3=max(c(prostate_shift_dose_sd,prostate_ado_shift_dose_sd))
+labels_y3=seq(0,RoundUp(max_seq_sd3,5),1)
+
+
+###########
+## print ##
+###########
+
+# Graph parameters
+
+color_prostate=rgb(1,0,0,1) # rot rgb(1,0,1,1) # pink
+color_rektwand=rgb(0,0,1,1) # blau  rgb(0,0.5,0,1) # dunkelgrün
+color_rektum=rgb(0,0.5,0,1) # grün rgb(0,1,0,1) # hellgrün
+color_bulb=rgb(0,1,1,1) # hellblau
+color_black=rgb(0,0,0,1) # black
+col_gray_very_light=(c("azure3"))
+col_gray_light=(c("azure4"))
+col_gray_dark=rgb(0,0,0,1) # black
+type_line_nonshift="l"
+type_line_shift="l"
+lty_solid=1 # for non shift
+lty_dotted=2 # for shift
+
+seq_dose=seq(0,50,5) #dvh
+seq_vol_name=seq(0,100,20) #dvh
+seq_vol_pos=seq(0,100,20) #dvh
+seq_vol_pos2=seq(0,100,20) #dvh
+seq_vol_sd_name=c(0,5,10,"") #dvh ->  5 im max lower than labels_y
+seq_vol_sd_pos=c(0,5,10,"") #dvh ->  5 im max lower than labels_y
+#seq_vol_sd_pos2=seq(0,25,5) #dvh ->  5 im max lower than labels_y2
+seq_vol_sd_pos2=c(0,5,10,15,"","") #dvh ->  5 im max lower than labels_y2
+seq_vol_sd_name2=c(0,5,10,15,"","")
+seq_vol_sd_pos3=c(0,1,2,3,4,"") #dvh ->  5 im max lower than labels_y2
+seq_vol_sd_name3=c(0,1,2,3,4,"")
+seq_dose_empty=add_empty_row[1:length(seq_dose)]
+
+font_size=0.9
+font_type=1
+x_axis="Dose [Gy]"
+y_axis="Volume [%]"
+y_axis_sd=paste("Absolute deviation [Gy]")
+y_axis_sd2=paste("Absolute deviation [Gy]")
+x_lim=c(0,55)
+
+# print graph
+
+#png
+print_width=8
+print_height=4
+print_res=1000
+
+myPng <- function(..., width=print_width, height=print_height, res=print_res) {
+  png(..., width=width*res, height=height*res, res=res)
+  
+}
+
+#
+path_print_all_pat_sd_mean=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean.png", sep="")
+path_print_all_pat_sd_mean_bulb=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_bulb.png", sep="")
+path_print_all_pat_sd_mean_split=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_split.png", sep="")
+path_print_all_pat_sd_mean_split_bulb=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_split_bulb.png", sep="")
+path_print_all_pat_sd_mean_ptv_change=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_ptv_change.png", sep="")
+path_print_all_pat_sd_mean_bulb_hd_ld=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_bulb_hd_ld.png", sep="")
+path_print_all_pat_sd_mean_bulb_black=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_bulb_black.png", sep="")
+path_print_all_pat_sd_mean_bulb_black2=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_bulb_black2.png", sep="")
+path_print_all_pat_sd_mean_ptv_black=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_ptv_black.png", sep="")
+path_print_all_pat_sd_mean_ptv_black2=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_ptv_black2.png", sep="")
+path_print_all_pat_sd_mean_split2=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_patient_all_sd_mean_split_black.png", sep="")
+
+
+path_print_pdf=paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/pdf.pdf", sep="")
+
+#
+
+legend=c("prostate without motion","prostate with motion","anterior rectal wall without motion","anterior rectal wall with motion","rectum without motion","rectum with motion")
+legend_bulb=c("prostate without motion","prostate with motion","anterior rectal wall without motion","anterior rectal wall with motion","rectum without motion","rectum with motion")
+legend_ptv_small_big=c("prostate based on initial PTV ","prostate based on adapted PTV",paste("\u25B3","p","\u003D",p_ptv_small_big)) # analysis including motion
+legend_bulb_comparision=c("penile bulb based on initial PTV ","penile bulb based on adapted PTV",paste("\u25B3","p","\u003C",p_bulb_nd_ld)) # analysis without motion
+
+
+## dvh ##
+
+
+myPng(path_print_all_pat_sd_mean, width=print_width, height=print_height, res=print_res)
+
+#mat <- matrix(c(1,3,2,4), 2,2)
+#layout(mat, c(1,1),c(1,1))
+
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot(mean_prostate_0shift,x_seq_pro_0, type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n")#ylab=NA, xlab=NA,yaxt="n",xaxt = "n",
+lines(prostate_shift_dose_mean, seq_prostate,type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines(mean_rektwand_0shift,x_seq_rektwand_0,type=type_line_shift,  lty=lty_solid,col=color_rektwand)
+lines(mean_rektwand_shift,x_seq_rektwand,type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines(mean_rektum_0shift,x_seq_rektum_0,type=type_line_shift,  lty=lty_solid,col=color_rektum)
+lines(mean_rektum_shift,x_seq_rektum,type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line = 3, cex = font_size, font = font_type)
+legend("bottomleft", legend=legend,lty=c(1,2), col =c(color_prostate,color_prostate,color_rektwand,color_rektwand,color_rektum,color_rektum),cex = 0.8,bg="white")
+
+
+
+
+#
+
+myPng(path_print_all_pat_sd_mean_bulb, width=print_width, height=print_height, res=print_res)
+
+#mat <- matrix(c(1,3,2,4), 2,2)
+#layout(mat, c(1,1),c(1,1))
+
+par(mar=c(4,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot(mean_prostate_0shift,x_seq_pro_0, type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n")#ylab=NA, xlab=NA,yaxt="n",xaxt = "n",
+lines(prostate_shift_dose_mean, seq_prostate,type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines(mean_rektwand_0shift,x_seq_rektwand_0,type=type_line_shift,  lty=lty_solid,col=color_rektwand)
+lines(mean_rektwand_shift,x_seq_rektwand,type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines(mean_rektum_0shift,x_seq_rektum_0,type=type_line_shift,  lty=lty_solid,col=color_rektum)
+lines(mean_rektum_shift,x_seq_rektum,type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+lines(mean_bulb_0shift,x_seq_bulb_0,type=type_line_shift,  lty=lty_solid,col=color_bulb)
+
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis, side = 2, line = 3, cex = font_size, font = font_type)
+legend("bottomleft", legend=legend_bulb,lty=c(1,2), col =c(color_prostate,color_prostate,color_rektwand,color_rektwand,color_rektum,color_rektum,color_bulb,color_bulb),cex = 0.8,bg="white")
+
+#
+
+myPng(path_print_all_pat_sd_mean_split, width=print_width, height=print_height, res=print_res)
+#pdf(path_print_pdf,width=9, height=5)
+
+mat <- matrix(c(1,2))
+layout(mat, c(1,1),c(1,1))
+
+par(mar=c(0,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot(mean_prostate_0shift,x_seq_pro_0, type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n")#ylab=NA, xlab=NA,yaxt="n",xaxt = "n",
+lines(prostate_shift_dose_mean, seq_prostate,type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines(mean_rektwand_0shift,x_seq_rektwand_0,type=type_line_shift,  lty=lty_solid,col=color_rektwand)
+lines(mean_rektwand_shift,x_seq_rektwand,type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines(mean_rektum_0shift,x_seq_rektum_0,type=type_line_shift,  lty=lty_solid,col=color_rektum)
+lines(mean_rektum_shift,x_seq_rektum,type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose_empty)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(y_axis, side = 2, line = 3, cex = font_size, font = font_type)
+legend("bottomleft", legend=legend,lty=c(1,2), col =c(color_prostate,color_prostate,color_rektwand,color_rektwand,color_rektum,color_rektum),cex = 0.8,bg="white")
+legend("topright", legend="a)", cex = 0.8,bg="white")
+
+par(mar=c(4,4,0,.5)) # tiefe -y, -x, +y, +x
+plot(mean_prostate_0shift,sd_prostate_0shift, type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",ylim=c(0,max(labels_y)))#ylab=NA, xlab=NA,yaxt="n",xaxt = "n",
+lines(prostate_shift_dose_mean,prostate_shift_dose_sd,type=type_line_shift,  lty=lty_dotted,col=color_prostate)
+lines(mean_rektwand_0shift,sd_rektwand_0shift,type=type_line_shift,  lty=lty_solid,col=color_rektwand)
+lines(mean_rektwand_shift,sd_rektwand_shift,type=type_line_shift,  lty=lty_dotted,col=color_rektwand)
+lines(mean_rektum_0shift,sd_rektum_0shift,type=type_line_shift,  lty=lty_solid,col=color_rektum)
+lines(mean_rektum_shift,sd_rektum_shift,type=type_line_shift,  lty=lty_dotted,col=color_rektum)
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_sd_pos,las=1,labels=seq_vol_sd_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis_sd, side = 2, line = 3, cex = font_size, font = font_type)
+legend("topright", legend="b)", cex = 0.8,bg="white")
+
+# paper print out for penile bulb graph ###
+
+#1
+
+#graph
+
+myPng(path_print_all_pat_sd_mean_bulb_black2, width=print_width, height=print_height, res=print_res)
+#pdf(path_print_pdf,width=9, height=5)
+
+mat <- matrix(c(1,2))
+layout(mat, c(1,1),c(1,1))
+
+par(mar=c(0,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot(bulb_0shift_dose_mean, seq_bulb, type=type_line_nonshift,  lty=lty_solid,col=color_black,ylab=NA, xlab=NA,yaxt="n",xaxt = "n")#ylab=NA, xlab=NA,yaxt="n",xaxt = "n",
+lines(bulb_0shift_ld_dose_mean, seq_bulb_ld,type=type_line_shift,  lty=lty_dotted,col=color_black)
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose_empty)
+axis(2,at=seq_vol_pos2,las=1,labels=seq_vol_name)
+mtext(y_axis, side = 2, line = 3, cex = font_size, font = font_type)
+legend("top", legend=legend_bulb_comparision,pch=c(NA,NA,NA),lty=c(1,2,NA), col =c(color_black,color_black,"black"),cex = 0.8,bg="white")
+legend("topright", legend="a)", cex = 0.8,bg="white")
+
+par(mar=c(4,4,0,.5)) # tiefe -y, -x, +y, +x
+plot(bulb_0shift_dose_mean, bulb_0shift_dose_sd, type=type_line_nonshift,  lty=lty_solid,col=color_black,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",ylim=c(0,max(labels_y2)))#ylab=NA, xlab=NA,yaxt="n",xaxt = "n",
+lines(bulb_0shift_ld_dose_mean,bulb_0shift_ld_dose_sd,type=type_line_shift,  lty=lty_dotted,col=color_black)
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_sd_pos2,las=1,labels=seq_vol_sd_name2)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis_sd2, side = 2, line = 3, cex = font_size, font = font_type)
+legend("topright", legend="b)", cex = 0.8,bg="white")
+
+# #smoothing lines
+# #1
+# lo <- loess(seq_bulb~bulb_0shift_dose_mean)
+# xl <- seq(min(bulb_0shift_dose_mean),max(bulb_0shift_dose_mean), (max(bulb_0shift_dose_mean) - min(bulb_0shift_dose_mean))/1000)
+# #2
+# lo2 <- loess(seq_bulb~bulb_0shift_ld_dose_mean)
+# xl2 <- seq(min(bulb_0shift_ld_dose_mean),max(bulb_0shift_ld_dose_mean), (max(bulb_0shift_ld_dose_mean) - min(bulb_0shift_ld_dose_mean))/1000)
+# #3
+# lo3 <- loess(bulb_0shift_dose_sd~bulb_0shift_dose_mean)
+# xl3 <- seq(min(bulb_0shift_dose_mean),max(bulb_0shift_dose_mean), (max(bulb_0shift_dose_mean) - min(bulb_0shift_dose_mean))/1000)
+# #4
+# lo4 <- loess(bulb_0shift_ld_dose_sd~bulb_0shift_ld_dose_mean)
+# xl4 <- seq(min(bulb_0shift_ld_dose_mean),max(bulb_0shift_ld_dose_mean), (max(bulb_0shift_ld_dose_mean) - min(bulb_0shift_ld_dose_mean))/1000)
+# 
+# #graph
+# 
+# myPng(path_print_all_pat_sd_mean_bulb_black2, width=print_width, height=print_height, res=print_res)
+# #pdf(path_print_pdf,width=9, height=5)
+# 
+# mat <- matrix(c(1,2))
+# layout(mat, c(1,1),c(1,1))
+# 
+# par(mar=c(0,4,1,.5)) # tiefe -y, -x, +y, +x
+# 
+# plot(xl, predict(lo,xl), type=type_line_nonshift,  lty=lty_solid,col=color_black,ylab=NA, xlab=NA,yaxt="n",xaxt = "n")#ylab=NA, xlab=NA,yaxt="n",xaxt = "n",
+# lines(xl2, predict(lo2,xl2),type=type_line_shift,  lty=lty_dotted,col=color_black)
+# box()
+# axis(1, at=seq_dose, las=1,labels= seq_dose_empty)
+# axis(2,at=seq_vol_pos2,las=1,labels=seq_vol_name)
+# mtext(y_axis, side = 2, line = 3, cex = font_size, font = font_type)
+# legend("top", legend=legend_bulb_comparision,pch=c(NA,NA,NA),lty=c(1,2,NA), col =c(color_black,color_black,"black"),cex = 0.8,bg="white")
+# legend("topright", legend="a)", cex = 0.8,bg="white")
+# 
+# par(mar=c(4,4,0,.5)) # tiefe -y, -x, +y, +x
+# plot(xl3, predict(lo3,xl3), type=type_line_nonshift,  lty=lty_solid,col=color_black,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",ylim=c(0,max(labels_y2)))#ylab=NA, xlab=NA,yaxt="n",xaxt = "n",
+# lines(xl4, predict(lo4,xl4),type=type_line_shift,  lty=lty_dotted,col=color_black)
+# box()
+# axis(1, at=seq_dose, las=1,labels= seq_dose)
+# axis(2,at=seq_vol_sd_pos2,las=1,labels=seq_vol_sd_name2)
+# mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+# mtext(y_axis_sd2, side = 2, line = 3, cex = font_size, font = font_type)
+# legend("topright", legend="b)", cex = 0.8,bg="white")
+
+# paper print out for prostate coverage graph ### 
+
+#1
+myPng(path_print_all_pat_sd_mean_ptv_black2, width=print_width, height=print_height, res=print_res)
+#pdf(path_print_pdf,width=9, height=5)
+
+mat <- matrix(c(1,2))
+layout(mat, c(1,1),c(1,1))
+
+par(mar=c(0,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot(prostate_shift_dose_mean, seq_prostate, type=type_line_nonshift,  lty=lty_solid,col=color_black,ylab=NA, xlab=NA,yaxt="n",xaxt = "n")#ylab=NA, xlab=NA,yaxt="n",xaxt = "n",
+lines(prostate_ado_shift_dose_mean, seq_prostate_ado,type=type_line_shift,  lty=lty_dotted,col=color_black)
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose_empty)
+axis(2,at=seq_vol_pos2,las=1,labels=seq_vol_name)
+mtext(y_axis, side = 2, line = 3, cex = font_size, font = font_type)
+legend("bottomleft", legend=legend_ptv_small_big,pch=c(NA,NA,NA),lty=c(1,2,NA), col =c(color_black,color_black,"black"),cex = 0.8,bg="white")
+legend("topright", legend="a)", cex = 0.8,bg="white")
+
+par(mar=c(4,4,0,.5)) # tiefe -y, -x, +y, +x
+plot(prostate_shift_dose_mean, prostate_shift_dose_sd, type=type_line_nonshift,  lty=lty_solid,col=color_black,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",ylim=c(0,max(labels_y3)))#ylab=NA, xlab=NA,yaxt="n",xaxt = "n",
+lines(prostate_ado_shift_dose_mean, prostate_ado_shift_dose_sd,type=type_line_shift,  lty=lty_dotted,col=color_black)
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_sd_pos3,las=1,labels=seq_vol_sd_name3)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis_sd2, side = 2, line = 3, cex = font_size, font = font_type)
+legend("topright", legend="b)", cex = 0.8,bg="white")
+
+# paper print out for mean sd of prostate, rectum, anterior rectal wall intra/inter motion ### 
+
+
+myPng(path_print_all_pat_sd_mean_split2, width=print_width, height=print_height, res=print_res)
+#pdf(path_print_pdf,width=9, height=5)
+
+mat <- matrix(c(1,2))
+layout(mat, c(1,1),c(1,1))
+
+par(mar=c(0,4,1,.5)) # tiefe -y, -x, +y, +x
+
+plot(mean_prostate_0shift,x_seq_pro_0, type=type_line_nonshift,  lty=lty_solid,col=col_gray_dark,ylab=NA, xlab=NA,yaxt="n",xaxt = "n")#ylab=NA, xlab=NA,yaxt="n",xaxt = "n",
+lines(prostate_shift_dose_mean, seq_prostate,type=type_line_shift,  lty=lty_dotted,col=col_gray_dark)
+lines(mean_rektwand_0shift,x_seq_rektwand_0,type=type_line_shift,  lty=lty_solid,col=col_gray_light)
+lines(mean_rektwand_shift,x_seq_rektwand,type=type_line_shift,  lty=lty_dotted,col=col_gray_light)
+lines(mean_rektum_0shift,x_seq_rektum_0,type=type_line_shift,  lty=lty_solid,col=col_gray_very_light)
+lines(mean_rektum_shift,x_seq_rektum,type=type_line_shift,  lty=lty_dotted,col=col_gray_very_light)
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose_empty)
+axis(2,at=seq_vol_pos,las=1,labels=seq_vol_name)
+mtext(y_axis, side = 2, line = 3, cex = font_size, font = font_type)
+legend("bottomleft", legend=legend,lty=c(1,2), col =c(col_gray_dark,col_gray_dark,col_gray_light,col_gray_light,col_gray_very_light,col_gray_very_light),cex = 0.8,bg="white")
+legend("topright", legend="a)", cex = 0.8,bg="white")
+
+par(mar=c(4,4,0,.5)) # tiefe -y, -x, +y, +x
+plot(mean_prostate_0shift,sd_prostate_0shift, type=type_line_nonshift,  lty=lty_solid,col=col_gray_dark,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",ylim=c(0,max(labels_y)))#ylab=NA, xlab=NA,yaxt="n",xaxt = "n",
+lines(prostate_shift_dose_mean,prostate_shift_dose_sd,type=type_line_shift,  lty=lty_dotted,col=col_gray_dark)
+lines(mean_rektwand_0shift,sd_rektwand_0shift,type=type_line_shift,  lty=lty_solid,col=col_gray_light)
+lines(mean_rektwand_shift,sd_rektwand_shift,type=type_line_shift,  lty=lty_dotted,col=col_gray_light)
+lines(mean_rektum_0shift,sd_rektum_0shift,type=type_line_shift,  lty=lty_solid,col=col_gray_very_light)
+lines(mean_rektum_shift,sd_rektum_shift,type=type_line_shift,  lty=lty_dotted,col=col_gray_very_light)
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol_sd_pos,las=1,labels=seq_vol_sd_name)
+mtext(x_axis, side = 1, line=3, cex = font_size, font = font_type)
+mtext(y_axis_sd, side = 2, line = 3, cex = font_size, font = font_type)
+legend("topright", legend="b)", cex = 0.8,bg="white")
+
+
+
+##########
+## save ##
+##########
+
+write.table(p_prostate, file = paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_p_prostate.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+write.table(p_rektumwand, file = paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_p_rektwand.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+write.table(p_rektum, file = paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_p_rektum.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+write.table(p_ptv_small_big, file = paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_p_ptv_small_big.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+write.table(p_bulb_nd_ld, file = paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_p_bulb_nd_ld.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+
+write.table(bulb_0shift_ld_dose, file = paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_bulb_adopted_ptv_mean_sd_D30_45_50_60_70_75_90_Dmax_Dmeanin_Gy.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+write.table(bulb_0shift_dose, file = paste("/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/analysis/",motionID,"_bulb_initial_ptv_mean_sd_D30_45_50_60_70_75_90_Dmax_Dmean_in_Gy.dat", sep=""), append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+
+
+print("Ende")
+
