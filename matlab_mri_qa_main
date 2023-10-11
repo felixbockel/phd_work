@@ -1,0 +1,2028 @@
+clear all
+close all
+clc
+tic;
+%% Input %% 
+
+inputvalue='/home/boeckefx/Documents/MATLAB/PHD/DICOM_data';%  Type in 'name' of main folder ...('.../name'); 
+name_of_csv_file='MRI_QA.csv';
+write_excel='continue'; % 2 conditions: 'new' write excel from scratch (recommented if new parameters needs to be analyzed) or 'continue' new data as follow up
+name_of_protocol_file='mri_protocol.csv';
+delete_last_measurement='keep';% 'keep' it will keep last measurement in the protocol and 'delete' will delete the last measurement in the protocol before running the ACR analysis
+%
+% Bedingung:%
+%
+% Main Folder / Sub Folder / Dicom Images
+% Dicom Images: MRI
+% Before program starts to run Dicom Images it must be sent to 24Stein and saved into Matlab Folder
+% Main folder name: ...'ACR_Phantom'...
+% Subfolder name: ...'localizer_ausgewertet'... or ...'t1_ausgewertet'... or ...'t2_ausgewertet'...
+% Number of images in Subfolder: localizer- 1, t1- 11, t2- 22
+% Image size localizer:
+% Image size t2:
+% Image size t1:
+% Program detects an error if there are other files from Folder "/DICOM_data" already opened by another application. To avoid this error message close this file and leave this folder before running the program
+
+%% Read, Save Folder %%
+
+switch delete_last_measurement
+           
+            case 'keep'
+               
+            case 'delete'  
+                
+                load('ex1.mat', 'cop_ex1'); 
+                cop_ex1=cop_ex1(1:end-1,:);  
+                cop_ex_txt=cop_ex1(2:end,:);
+                filename = 'ex1.mat';
+                save(filename)
+                
+                phd_file='/home/boeckefx/Documents/MATLAB';
+                sourcefile=strcat(phd_file,'/','ex1.mat'); 
+                statusmovefile=movefile(sourcefile,inputvalue);
+
+                phd_file='/home/boeckefx/Documents/MATLAB/PHD';
+                sourcefile=strcat(phd_file,'/','ex1.mat'); 
+                statusmovefile=movefile(sourcefile,inputvalue);
+                
+            otherwise
+               
+                warning('Unexpected Input. Input has to be either "keep" or "delete". Algorithm stopped running.')
+                
+           
+end
+
+loop_count_folder=0;
+% Main Folder
+mainfile=dir(inputvalue);
+mainfile(1:2)=[]; % first two char files are without any modality information, can be deleted
+l_folder=length(mainfile); % number of files in main folder
+
+for count_folder=1:l_folder
+    
+    read_out_data_gr1=0;
+    folder_t2=[];
+    folder_t1=[];
+    folder_localizer=[]; 
+    localizer_1=0;
+    t2_1=0;
+    t1_1=0;
+    find_rightfolder=strfind(mainfile(count_folder).name,'ACR_Phantom');
+    
+    
+    if find_rightfolder > 0
+        
+       subfile_name=strcat(inputvalue,'/',mainfile(count_folder).name);
+       subfile=dir(subfile_name);
+       subfile(1:2)=[];
+       l_file=length(subfile); 
+      
+       switch delete_last_measurement
+                      
+            case 'keep'
+               
+            case 'delete'  
+                
+             
+            otherwise
+               
+               break
+           
+       end
+        
+       switch write_excel
+           
+            case 'new'
+               
+            case 'continue'  
+                
+               load('ex1.mat', 'cop_ex1'); % ex1.mat needs to be defined in the same folder as MRI_qa.m file
+               name_of_mainfile=mainfile(count_folder).name;
+               [~,~,index] = find(strcmp(cop_ex1,name_of_mainfile));
+
+
+               if index == 1
+
+                   folder_analysed=1;
+               else 
+                   folder_analysed=0;
+               end
+               
+            otherwise
+               
+                warning('Unexpected Input. Input has to be either "new" or "continue". Algorithm stopped running.')
+                break
+           
+       end      
+       
+       for count_file=1:l_file
+
+                    switch write_excel
+
+                        case 'new'
+                            
+                            find_localizer=strfind(subfile(count_file).name,'localizer_ausgewertet');
+                            find_t1=strfind(subfile(count_file).name,'t1_ausgewertet');
+                            find_t2=strfind(subfile(count_file).name,'t2_ausgewertet');
+
+                            if find_localizer > 0
+                               right_folder_localizer=subfile(count_file).name;
+                               folder_localizer=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_localizer);
+                               localizer_1=1;
+                            end
+
+                            if find_t1 > 0
+                               right_folder_t1=subfile(count_file).name;
+                               folder_t1=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t1);
+                               t1_1=1;
+                            end
+
+                            if find_t2 > 0
+                               right_folder_t2=subfile(count_file).name;
+                               folder_t2=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2);
+                               t2_1=1;
+                            end
+                            
+
+                        case 'continue'
+                            
+                            if folder_analysed==1
+                               break 
+
+                            else
+                                
+                               find_localizer=strfind(subfile(count_file).name,'localizer_ausgewertet');
+                               find_t1=strfind(subfile(count_file).name,'t1_ausgewertet');
+                               find_t2=strfind(subfile(count_file).name,'t2_ausgewertet');
+
+                               if find_localizer > 0
+                                  right_folder_localizer=subfile(count_file).name;
+                                  folder_localizer=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_localizer);
+                                  localizer_1=1;
+                               end
+
+                               if find_t1 > 0
+                                  right_folder_t1=subfile(count_file).name;
+                                  folder_t1=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t1);
+                                  t1_1=1;
+                               end
+
+                               if find_t2 > 0
+                                  right_folder_t2=subfile(count_file).name;
+                                  folder_t2=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2);
+                                  t2_1=1;
+                               end
+
+                           end
+
+                   end
+
+        end     
+            
+    
+    %% MR Dicom Localizer auswerten %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    if folder_localizer > 0 
+        read_out_data_gr1=read_out_data_gr1+1;
+        dicom_localizer=dir(folder_localizer);
+        dicom_localizer(1:2)=[];
+        l_localizer=length(dicom_localizer); 
+        localizer_image=char(dicom_localizer(1, 1).name);  
+        localizer_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_localizer,'/',localizer_image);
+        dicom=dicomread(localizer_path); 
+        %figure;imshow(dicom,[]);
+        %% Skalierung, scaling
+       
+        dicom(dicom<100)=0;
+        dicom(dicom>=100)=1;
+        %figure;imshow(dicom,[]);
+        [row,col]=size(dicom);
+        %% Geometry: Calculation length_1   
+            for i=1:col
+                length_phantom(1,i)=length(find(dicom(:,i)==1));                
+            end
+            
+           dicom_info=dicominfo(localizer_path); % DICOM image will be read out
+           FOV=char(dicom_info.Private_0051_100c);
+           FOV=FOV(9:end);
+           FOV_num=double(str2double(FOV)); 
+           image_size=double(dicom_info.Rows);
+           resolution=image_size./FOV_num; % resolution: pixel per mm      
+           actual_length_1=14.8; % actual_length_1 of ACR-Phantom
+           actual_pixel_length=(actual_length_1.*10.*resolution)-((actual_length_1.*10.*resolution).*0.01); % 1% value variation is allowed to take in account  
+           length_phantom(length_phantom<actual_pixel_length)=[];
+           mean_phantom_size=double(mean(length_phantom));     
+           length_of_phantom=(mean_phantom_size./resolution)./10; % length in cm
+           percent_variation_length_phantom=((abs(length_of_phantom-actual_length_1)).*100)./actual_length_1;
+           % 2 Werte protokollieren
+      
+    end
+    %% MR Dicom t1 auswerten %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    if folder_t1 > 0 
+        read_out_data_gr1=read_out_data_gr1+1;
+        dicom_t1=dir(folder_t1);
+        dicom_t1(1:2)=[];
+      %% Geometry: Calculation length_2_3_4_5_mean of 2-5
+        
+        %l_t1=length(dicom_t1); % für for schleife
+        t1_image=char(dicom_t1(3, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t1,'/',t1_image);
+        dicom=dicomread(t_path); 
+        T_image=1;
+        [perc_var_mean_len_phan,mean_length_19,percent_variation_length5_phantom,length5_of_phantom,percent_variation_length4_phantom,length4_of_phantom,percent_variation_length3_phantom,length3_of_phantom,percent_variation_length2_phantom,length2_of_phantom]=Geometry(dicom,t_path,T_image); 
+        %figure;imshow(dicom,[]);
+
+      %% High Contrast Spatial Resolution
+        
+        t1_image=char(dicom_t1(1, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t1,'/',t1_image);
+        dicom=dicomread(t_path);
+        T_image=1;
+        [hcsr_test_x_1,hcsr_test_y_1,hcsr_test_x_2,hcsr_test_y_2,hcsr_test_x_3,hcsr_test_y_3,hscr_x_1,hscr_y_1,hscr_x_2,hscr_y_2,hscr_x_3,hscr_y_3]=HCSR(dicom,T_image);    
+        %figure;imshow(dicom,[]);
+        
+      %% Slice Thickness Accuray
+        
+        t1_image=char(dicom_t1(1, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t1,'/',t1_image);
+        dicom=dicomread(t_path);
+        T_image=1;
+        [sta_test,slice_thickness]=STA(dicom,t_path,T_image);%% segmentate image out of image box and analysis
+        %figure;imshow(dicom,[]);
+    
+      %% Slice Position Accuray
+        
+        % Image 1
+        t1_image=char(dicom_t1(1, 1).name); 
+        t1_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t1,'/',t1_image);
+        dicom=dicomread(t1_path);
+        T_image=1;
+        spa_dist_mm=SPA_segment_box_analysis(dicom,t1_path,T_image);
+        spa_dist_mm_1_t1=spa_dist_mm;
+        
+        % Image 2
+        t1_image2=char(dicom_t1(6, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t1,'/',t1_image2);
+        dicom=dicomread(t_path);
+        T_image=1;
+        spa_dist_mm=SPA_segment_box_analysis(dicom,t1_path,T_image);
+        spa_dist_mm_2_t1=spa_dist_mm;
+        
+        spa_dist_summary=spa_dist_mm_1_t1+spa_dist_mm_2_t1;
+        
+        if spa_dist_mm_1_t1>spa_dist_mm_2_t1
+            perc_div_spa_dist_aapm_t1=100*(1-(spa_dist_mm_2_t1/spa_dist_mm_1_t1));
+        else
+            perc_div_spa_dist_aapm_t1=100*(1-(spa_dist_mm_1_t1/spa_dist_mm_2_t1));
+        end
+        
+        if spa_dist_summary<5.0 % Empfehlung ist unter 4 zu bleiben, damit LCOD- test beeinträchtig wird (Quelle: ACR_Guide) 
+              spa_test='spa test passed';
+        else
+              spa_test='spa test failed';
+        end
+        
+      %% Image Intensity Uniformity (PIU)
+        
+        t1_image=char(dicom_t1(4, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t1,'/',t1_image);
+        dicom=dicomread(t_path);
+        T_image=1;
+        [piu_test,piu]=PIU_minmaxsmallcircle(dicom,t_path,T_image);
+        piu_1=piu;
+        piu_test_1=piu_test;
+        
+        t1_image2=char(dicom_t1(9, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t1,'/',t1_image2);
+        dicom=dicomread(t_path);
+        T_image=1;
+        [piu_test,piu]=PIU_minmaxsmallcircle(dicom,t_path,T_image);
+        piu_2=piu;
+        piu_test_2=piu_test;
+        %figure;imshow(dicom,[]);
+        %figure;imshow(dicom2,[]);
+        
+      %% Percent-Signal Ghosting 
+      
+        t1_image=char(dicom_t1(4, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t1,'/',t1_image);
+        dicom=dicomread(t_path); 
+        T_image=1;
+        %figure;imshow(dicom,[]);
+        [psg,psg_test]=PSG(dicom,t_path,T_image);
+        psg_1=psg;
+        psg_test_1=psg_test;
+ 
+        t1_image2=char(dicom_t1(9, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t1,'/',t1_image2);
+        dicom=dicomread(t_path);
+        T_image=1;
+        [psg,psg_test]=PSG(dicom,t_path,T_image);
+        psg_2=psg;
+        psg_test_2=psg_test;
+        
+      %% Low Contrast Object Detectability 
+      
+        t1_image=char(dicom_t1(6, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t1,'/',t1_image);
+        dicom=dicomread(t_path);
+        start_spokes=0.1555; % Winkelstart für image 6
+        %figure;imshow(dicom,[]);
+        T_image=1;
+        [stokes_passed_1,stokes2_passed_1,dist_total_max1]=LCOD(dicom,start_spokes,T_image);
+        
+        t1_image=char(dicom_t1(11, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t1,'/',t1_image);
+        dicom=dicomread(t_path); 
+        start_spokes=0.1000; % Winkelstart für image 11
+        %figure;imshow(dicom,[]);
+        [stokes_passed_2,stokes2_passed_2,dist_total_max2]=LCOD(dicom,start_spokes,T_image);
+        
+        t1_image=char(dicom_t1(5, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t1,'/',t1_image);
+        dicom=dicomread(t_path);
+        start_spokes=0.0500; % Winkelstart für image 5
+        %figure;imshow(dicom,[]);
+        [stokes_passed_3,stokes2_passed_3,dist_total_max3]=LCOD(dicom,start_spokes,T_image);
+        
+        t1_image=char(dicom_t1(10, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t1,'/',t1_image);
+        dicom=dicomread(t_path);
+        start_spokes=0.0000; % Winkelstart für image 10
+        %figure;imshow(dicom,[]);
+        [stokes_passed_4,stokes2_passed_4,dist_total_max4]=LCOD(dicom,start_spokes,T_image);
+        
+        LCOD_value=stokes_passed_1+stokes_passed_2+stokes_passed_3+stokes_passed_4;
+        
+        dist_total_max_t1=[dist_total_max1,dist_total_max2,dist_total_max3,dist_total_max4];
+        
+        LCOD_value2=stokes2_passed_1+stokes2_passed_2+stokes2_passed_3+stokes2_passed_4;
+
+        if LCOD_value>=36 || LCOD_value2>=36
+               LCOD_test='LCOD test passed';
+        else
+               LCOD_test='LCOD test failed';
+        end
+        
+       %% Signal to noise ratio 
+      
+        t1_image=char(dicom_t1(4, 1).name);  
+        t_path_1=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t1,'/',t1_image);
+        dicom_1=dicomread(t_path_1);      
+        %figure;imshow(dicom_1,[]);
+  
+        t1_image2=char(dicom_t1(9, 1).name);  
+        t_path_2=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t1,'/',t1_image2);
+        dicom_2=dicomread(t_path_2);
+        %figure;imshow(dicom_2,[]);
+        T_image=1;
+        [SNR_1,SNR_2,SNR_3_1,SNR_3_2,SNR_3]=SNR_test(dicom_1,t_path_1,dicom_2,t_path_2,T_image);
+        SNR_t1_1=SNR_1;
+        SNR_t1_2=SNR_2;
+        SNR_t1_3_1=SNR_3_1;
+        SNR_t1_3_2=SNR_3_2;
+        SNR_t1_3=SNR_3;
+        
+        
+    end
+    
+    %% MR Dicom T2, TE 20 auswerten %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    if folder_t2 > 0 
+        read_out_data_gr1=read_out_data_gr1+1;
+        dicom_t2=dir(folder_t2);
+        dicom_t2(1:2)=[];
+     %% Geometry: Calculation length_2_3_4_5_mean of 2-5
+        
+        t2_image=char(dicom_t2(5, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image);
+        dicom=dicomread(t_path); 
+        T_image=2;
+        [perc_var_mean_len_phan_t2_20,mean_length_19_t2_20,percent_variation_length5_phantom_t2_20,length5_of_phantom_t2_20,percent_variation_length4_phantom_t2_20,length4_of_phantom_t2_20,percent_variation_length3_phantom_t2_20,length3_of_phantom_t2_20,percent_variation_length2_phantom_t2_20,length2_of_phantom_t2_20]=Geometry(dicom,t_path,T_image); 
+        %figure;imshow(dicom,[]);
+
+      %% High Contrast Spatial Resolution
+        
+        t2_image=char(dicom_t2(1, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image);
+        dicom=dicomread(t_path);
+        T_image=2;
+        [hcsr_test_x_1_t2_20,hcsr_test_y_1_t2_20,hcsr_test_x_2_t2_20,hcsr_test_y_2_t2_20,hcsr_test_x_3_t2_20,hcsr_test_y_3_t2_20,hscr_x_1_t2_20,hscr_y_1_t2_20,hscr_x_2_t2_20,hscr_y_2_t2_20,hscr_x_3_t2_20,hscr_y_3_t2_20]=HCSR(dicom,T_image);    
+        %figure;imshow(dicom,[]);        %figure;imshow(dicom,[]);
+        
+      %% Slice Thickness Accuray
+        
+        t2_image=char(dicom_t2(1, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image);
+        dicom=dicomread(t_path);
+        T_image=2;
+        [sta_test_t2_20,slice_thickness_t2_20]=STA(dicom,t_path,T_image);%% segmentate image out of image box and analysis
+        %figure;imshow(dicom,[]);
+    
+      %% Slice Position Accuray
+        
+        % Image 1
+        t2_image=char(dicom_t2(1, 1).name); 
+        t1_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image);
+        dicom=dicomread(t1_path);
+        T_image=2;
+        spa_dist_mm=SPA_segment_box_analysis(dicom,t1_path,T_image);
+        spa_dist_mm_1_t2_20=spa_dist_mm;
+        
+        % Image 2
+        t2_image2=char(dicom_t2(11, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image2);
+        dicom=dicomread(t_path);
+        T_image=2;
+        spa_dist_mm=SPA_segment_box_analysis(dicom,t1_path,T_image);
+        spa_dist_mm_2_t2_20=spa_dist_mm;
+        
+        spa_dist_summary_t2_20=spa_dist_mm_1_t2_20+spa_dist_mm_2_t2_20;
+        
+        if spa_dist_mm_1_t2_20>spa_dist_mm_2_t2_20
+            perc_div_spa_dist_aapm_t2_20=100*(1-(spa_dist_mm_2_t2_20/spa_dist_mm_1_t2_20));
+        else
+            perc_div_spa_dist_aapm_t2_20=100*(1-(spa_dist_mm_1_t2_20/spa_dist_mm_2_t2_20));
+        end
+        
+        
+        if spa_dist_summary_t2_20<5.0 % Empfehlung ist unter 4 zu bleiben, damit LCOD- test beeinträchtig wird (Quelle: ACR_Guide)
+              spa_test_t2_20='spa test passed';
+        else
+              spa_test_t2_20='spa test failed';
+        end
+        
+      %% Image Intensity Uniformity (PIU)
+        
+        t2_image=char(dicom_t2(7, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image);
+        dicom=dicomread(t_path); 
+        T_image=2;
+        [piu_test,piu]=PIU_minmaxsmallcircle(dicom,t_path,T_image);
+        piu_1_t2_20=piu;
+        piu_test_1_t2_20=piu_test;
+        
+        t2_image2=char(dicom_t2(17, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image2);
+        dicom=dicomread(t_path);
+        T_image=2;
+        [piu_test,piu]=PIU_minmaxsmallcircle(dicom,t_path,T_image);
+        piu_2_t2_20=piu;
+        piu_test_2_t2_20=piu_test;
+        %figure;imshow(dicom,[]);
+        %figure;imshow(dicom2,[]);
+        
+      %% Percent-Signal Ghosting 
+      
+        t2_image=char(dicom_t2(7, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image);
+        dicom=dicomread(t_path); 
+        T_image=2;
+        [psg,psg_test]=PSG(dicom,t_path,T_image); %figure;imshow(dicom,[]);
+        psg_1_t2_20=psg;
+        psg_test_1_t2_20=psg_test;
+ 
+        t2_image2=char(dicom_t2(17, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image2);
+        T_image=2;
+        [psg,psg_test]=PSG(dicom,t_path,T_image);
+        psg_2_t2_20=psg;
+        psg_test_2_t2_20=psg_test;
+        
+      %% Low Contrast Object Detectability 
+      
+        t2_image=char(dicom_t2(11, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image);
+        dicom=dicomread(t_path);
+        start_spokes=0.1555; % Winkelstart für image 6
+        %figure;imshow(dicom,[]);
+        T_image=2;
+        [stokes_passed_1,stokes2_passed_1,dist_total_max1]=LCOD(dicom,start_spokes,T_image);
+        
+        t2_image=char(dicom_t2(21, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image);
+        dicom=dicomread(t_path); 
+        start_spokes=0.1000; % Winkelstart für image 11
+        %figure;imshow(dicom,[]);
+        [stokes_passed_2,stokes2_passed_2,dist_total_max2]=LCOD(dicom,start_spokes,T_image);
+        
+        t2_image=char(dicom_t2(9, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image);
+        dicom=dicomread(t_path);
+        start_spokes=0.0500; % Winkelstart für image 5
+        %figure;imshow(dicom,[]);
+        [stokes_passed_3,stokes2_passed_3,dist_total_max3]=LCOD(dicom,start_spokes,T_image);
+        
+        t2_image=char(dicom_t2(19, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image);
+        dicom=dicomread(t_path);
+        start_spokes=0.0000; % Winkelstart für image 10
+        %figure;imshow(dicom,[]);
+        [stokes_passed_4,stokes2_passed_4,dist_total_max4]=LCOD(dicom,start_spokes,T_image);
+        
+        LCOD_value_t2_20=stokes_passed_1+stokes_passed_2+stokes_passed_3+stokes_passed_4;
+        
+        dist_total_max_t2_20=[dist_total_max1,dist_total_max2,dist_total_max3,dist_total_max4];
+
+        LCOD_value2_t2_20=stokes2_passed_1+stokes2_passed_2+stokes2_passed_3+stokes2_passed_4;
+
+        if LCOD_value_t2_20>=36 || LCOD_value2_t2_20>=36
+               LCOD_test_t2_20='LCOD test passed';
+        else
+               LCOD_test_t2_20='LCOD test failed';
+        end
+        
+       %% Signal to noise ratio 
+      
+        t2_image=char(dicom_t2(7, 1).name);  
+        t_path_1=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image);
+        dicom_1=dicomread(t_path_1);      
+        %figure;imshow(dicom_1,[]);
+  
+        t2_image2=char(dicom_t2(17, 1).name);  
+        t_path_2=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image2);
+        dicom_2=dicomread(t_path_2);
+        %figure;imshow(dicom_2,[]);
+        T_image=2;
+        [SNR_1,SNR_2,SNR_3_1,SNR_3_2,SNR_3]=SNR_test(dicom_1,t_path_1,dicom_2,t_path_2,T_image);
+        SNR_t2_20_1=SNR_1;
+        SNR_t2_20_2=SNR_2;
+        SNR_t2_20_3_1=SNR_3_1;
+        SNR_t2_20_3_2=SNR_3_2;
+        SNR_t2_20_3=SNR_3;
+        
+      %% MR Dicom T2, TE 80 auswerten %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+     %% Geometry: Calculation length_2_3_4_5_mean of 2-5
+        
+        t2_image=char(dicom_t2(6, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image);
+        dicom=dicomread(t_path); 
+        T_image=2;
+        [perc_var_mean_len_phan_t2_80,mean_length_19_t2_80,percent_variation_length5_phantom_t2_80,length5_of_phantom_t2_80,percent_variation_length4_phantom_t2_80,length4_of_phantom_t2_80,percent_variation_length3_phantom_t2_80,length3_of_phantom_t2_80,percent_variation_length2_phantom_t2_80,length2_of_phantom_t2_80]=Geometry(dicom,t_path,T_image); 
+        %figure;imshow(dicom,[]);
+
+      %% High Contrast Spatial Resolution
+        
+        t2_image=char(dicom_t2(2, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image);
+        dicom=dicomread(t_path);
+        T_image=2;
+        [hcsr_test_x_1_t2_80,hcsr_test_y_1_t2_80,hcsr_test_x_2_t2_80,hcsr_test_y_2_t2_80,hcsr_test_x_3_t2_80,hcsr_test_y_3_t2_80,hscr_x_1_t2_80,hscr_y_1_t2_80,hscr_x_2_t2_80,hscr_y_2_t2_80,hscr_x_3_t2_80,hscr_y_3_t2_80]=HCSR(dicom,T_image);    
+        %figure;imshow(dicom,[]);       
+        
+      %% Slice Thickness Accuray
+        
+        t2_image=char(dicom_t2(2, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image);
+        dicom=dicomread(t_path);
+        T_image=2;
+        [sta_test_t2_80,slice_thickness_t2_80]=STA(dicom,t_path,T_image);%% segmentate image out of image box and analysis
+        %figure;imshow(dicom,[]);
+    
+      %% Slice Position Accuray
+        
+        % Image 1
+        t2_image=char(dicom_t2(2, 1).name); 
+        t1_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image);
+        dicom=dicomread(t1_path);
+        T_image=2;
+        spa_dist_mm=SPA_segment_box_analysis(dicom,t1_path,T_image);
+        spa_dist_mm_1_t2_80=spa_dist_mm;
+        
+        % Image 2
+        t2_image2=char(dicom_t2(12, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image2);
+        dicom=dicomread(t_path);
+        T_image=2;
+        spa_dist_mm=SPA_segment_box_analysis(dicom,t1_path,T_image);
+        spa_dist_mm_2_t2_80=spa_dist_mm;
+        
+        spa_dist_summary_t2_80=spa_dist_mm_1_t2_80+spa_dist_mm_2_t2_80;
+        
+        if spa_dist_mm_1_t2_80>spa_dist_mm_2_t2_80
+            perc_div_spa_dist_aapm_t2_80=100*(1-(spa_dist_mm_2_t2_80/spa_dist_mm_1_t2_80));
+        else
+            perc_div_spa_dist_aapm_t2_80=100*(1-(spa_dist_mm_1_t2_80/spa_dist_mm_2_t2_80));
+        end
+        
+        if spa_dist_summary_t2_80<5.0 % Empfehlung ist unter 4 zu bleiben, damit LCOD- test beeinträchtig wird (Quelle: ACR_Guide) 
+              spa_test_t2_80='spa test passed';
+        else
+              spa_test_t2_80='spa test failed';
+        end
+        
+      %% Image Intensity Uniformity (PIU)
+        
+        t2_image=char(dicom_t2(8, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image);
+        dicom=dicomread(t_path); 
+        T_image=2;
+        [piu_test,piu]=PIU_minmaxsmallcircle(dicom,t_path,T_image);
+        piu_1_t2_80=piu;
+        piu_test_1_t2_80=piu_test;
+        
+        t2_image2=char(dicom_t2(18, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image2);
+        dicom=dicomread(t_path);
+        T_image=2;
+        [piu_test,piu]=PIU_minmaxsmallcircle(dicom,t_path,T_image);
+        piu_2_t2_80=piu;
+        piu_test_2_t2_80=piu_test;
+        %figure;imshow(dicom,[]);
+        %figure;imshow(dicom2,[]);
+        
+      %% Percent-Signal Ghosting 
+      
+        t2_image=char(dicom_t2(8, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image);
+        dicom=dicomread(t_path); 
+        T_image=2;
+        [psg,psg_test]=PSG(dicom,t_path,T_image); %figure;imshow(dicom,[]);
+        psg_1_t2_80=psg;
+        psg_test_1_t2_80=psg_test;
+ 
+        t2_image2=char(dicom_t2(18, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image2);
+        T_image=2;
+        [psg,psg_test]=PSG(dicom,t_path,T_image);
+        psg_2_t2_80=psg;
+        psg_test_2_t2_80=psg_test;
+        
+      %% Low Contrast Object Detectability 
+      
+        t2_image=char(dicom_t2(12, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image);
+        dicom=dicomread(t_path);
+        start_spokes=0.1555; % Winkelstart für image 6
+        %figure;imshow(dicom,[]);
+        T_image=2;
+        [stokes_passed_1,stokes2_passed_1,dist_total_max1]=LCOD(dicom,start_spokes,T_image);
+        
+        t2_image=char(dicom_t2(22, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image);
+        dicom=dicomread(t_path); 
+        start_spokes=0.1000; % Winkelstart für image 11
+        %figure;imshow(dicom,[]);
+        [stokes_passed_2,stokes2_passed_2,dist_total_max2]=LCOD(dicom,start_spokes,T_image);
+        
+        t2_image=char(dicom_t2(10, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image);
+        dicom=dicomread(t_path);
+        start_spokes=0.0500; % Winkelstart für image 5
+        %figure;imshow(dicom,[]);
+        [stokes_passed_3,stokes2_passed_3,dist_total_max3]=LCOD(dicom,start_spokes,T_image);
+        
+        t2_image=char(dicom_t2(20, 1).name);  
+        t_path=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image);
+        dicom=dicomread(t_path);
+        start_spokes=0.0000; % Winkelstart für image 10
+        %figure;imshow(dicom,[]);
+        [stokes_passed_4,stokes2_passed_4,dist_total_max4]=LCOD(dicom,start_spokes,T_image);
+        
+        LCOD_value_t2_80=stokes_passed_1+stokes_passed_2+stokes_passed_3+stokes_passed_4;
+        
+        dist_total_max_t2_80=[dist_total_max1,dist_total_max2,dist_total_max3,dist_total_max4];
+
+        LCOD_value2_t2_80=stokes2_passed_1+stokes2_passed_2+stokes2_passed_3+stokes2_passed_4;
+
+        if LCOD_value_t2_80>=36 || LCOD_value2_t2_80>=36
+               LCOD_test_t2_80='LCOD test passed';
+        else
+               LCOD_test_t2_80='LCOD test failed';
+        end
+        
+       %% Signal to noise ratio 
+      
+        t2_image=char(dicom_t2(8, 1).name);  
+        t_path_1=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image);
+        dicom_1=dicomread(t_path_1);      
+        %figure;imshow(dicom_1,[]);
+  
+        t2_image2=char(dicom_t2(18, 1).name);  
+        t_path_2=strcat(inputvalue,'/',mainfile(count_folder).name,'/',right_folder_t2,'/',t2_image2);
+        dicom_2=dicomread(t_path_2);
+        %figure;imshow(dicom_2,[]);
+        T_image=2;        
+        [SNR_1,SNR_2,SNR_3_1,SNR_3_2,SNR_3]=SNR_test(dicom_1,t_path_1,dicom_2,t_path_2,T_image);
+        SNR_t2_80_1=SNR_1;
+        SNR_t2_80_2=SNR_2;
+        SNR_t2_80_3_1=SNR_3_1;
+        SNR_t2_80_3_2=SNR_3_2;
+        SNR_t2_80_3=SNR_3;
+        
+        
+    end
+        %% save up results %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                
+                if read_out_data_gr1>0 % just need condition to get in
+                    
+                %d=[];rows=[];col=[];col1=[];
+                loop_count_folder=loop_count_folder+1;
+                
+                % save up mixed data type cell matrix into a text.file %%
+
+                % The ability to save a cell array with both strings and numbers using a single function
+                  col1={'';
+                        
+                        'localizer';
+                        '';
+                       
+                        't1';
+                        '';
+                        '';
+                        '';
+%                         '';
+%                         '';
+%                         '';
+%                         '';
+%                         '';
+%                         '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';                       
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        ''; 
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';                        
+                        '';
+                        '';
+                        '';                        
+                        '';
+                        '';
+                        
+                        't2_20';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+%                         '';
+%                         '';
+%                         '';
+%                         '';
+%                         '';
+%                         '';
+                        '';
+                        '';
+                        '';
+                        '';                       
+                        '';
+                        '';                      
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        ''; 
+                        '';
+                        '';
+                        '';                        
+                        '';
+                        '';
+                        
+                        't2_80';
+                        '';
+                        '';
+                        '';
+%                         '';
+%                         '';
+%                         '';
+%                         '';
+%                         '';
+%                         '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        ''; 
+                        '';                      
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';                        
+                        '';
+                        '';
+                        '';                        
+                        '';
+                        '';
+                        
+                        };
+                
+                
+                col={'ACR Phantom Test Name';
+                    
+                        'localizer_geometry_length_of_phantom [14.80]';
+                        'localizer_geometry_percent_variation_length_phantom [%]';
+                       
+                        
+                        't1_geometry_mean_length [19.0]';
+                        't1_geometry_perc_var_mean_len_phan [%]';
+%                         't1_hcsr_test_x_1 [>0]';
+%                         't1_hcsr_test_y_1 [>0]';
+%                         't1_hcsr_test_x_2 [>0]';
+%                         't1_hcsr_test_y_2 [>0]';
+%                         't1_hcsr_test_x_3 [>0]';
+%                         't1_hcsr_test_y_3 [>0]';
+                        't1_hscr_x_1';
+                        't1_hscr_y_1';
+                        't1_hscr_x_2';
+                        't1_hscr_y_2';
+                        't1_hscr_x_3';
+                        't1_hscr_y_3';
+                        't1_sta_test';
+                        't1_sta_slice_thickness [4.3-5.7 mm]';                       
+                        't1_spa_dist_mm_1 [<2.5 mm]';
+                        't1_spa_dist_mm_2 [<2.5 mm]';
+                        't1_spa_perc_aapm [<10 %]';
+                        't1_spa_test';                        
+                        't1_pui [>87.5]';
+                        't1_pui_test';
+                        't1_pui2 [>87.5]';
+                        't1_pui_test2';
+                        't1_psg_1 [<2.5%]';
+                        't1_psg_test_1';
+                        't1_psg_2 [<2.5%]';
+                        't1_psg_test_2';
+                        't1_LCOD_value [>36]';
+                        't1_LCOD_value2 [>36]';
+                        't1_LCOD_test';                        
+                        't1_SNR_1';
+                        't1_SNR_2';
+                        'SNR_t1_3_1';
+                        'SNR_t1_3_2';
+                        'SNR_t1_3';
+                        
+                        
+                        't2_20_geometry_mean_length [19.0]';
+                        't2_20_geometry_perc_var_mean_len_phan [%]';
+%                         't2_20_hcsr_test_x_1 [>0]';
+%                         't2_20_hcsr_test_y_1 [>0]';
+%                         't2_20_hcsr_test_x_2 [>0]';
+%                         't2_20_hcsr_test_y_2 [>0]';
+%                         't2_20_hcsr_test_x_3 [>0]';
+%                         't2_20_hcsr_test_y_3 [>0]';
+                        't2_20_hscr_x_1';
+                        't2_20_hscr_y_1';
+                        't2_20_hscr_x_2';
+                        't2_20_hscr_y_2';
+                        't2_20_hscr_x_3';
+                        't2_20_hscr_y_3';
+                        't2_20_sta_test';
+                        't2_20_sta_slice_thickness [4.3-5.7 mm]';                       
+                        't2_20_spa_dist_mm_1 [<2.5 mm]';
+                        't2_20_spa_dist_mm_2 [<2.5 mm]';
+                        't2_20_spa_perc_aapm [<10 %]';
+                        't2_20_spa_test';                        
+                        't2_20_pui [>87.5]';
+                        't2_20_pui_test';
+                        't2_20_pui2 [>87.5]';
+                        't2_20_pui_test2';
+                        't2_20_psg_1 [<2.5%]';
+                        't2_20_psg_test_1';
+                        't2_20_psg_2 [<2.5%]';
+                        't2_20_psg_test_2';
+                        't2_20_LCOD_value [>36]';
+                        't2_20_LCOD_value2 [>36]';
+                        't2_20_LCOD_test';                        
+                        't2_20_SNR_1';
+                        't2_20_SNR_2';
+                        'SNR_t2_20_3_1';
+                        'SNR_t2_20_3_2';
+                        'SNR_t2_20_3';
+                        
+                        't2_80_geometry_mean_length [19.0]';
+                        't2_80_geometry_perc_var_mean_len_phan [%]';
+%                         't2_80_hcsr_test_x_1 [>0]';
+%                         't2_80_hcsr_test_y_1 [>0]';
+%                         't2_80_hcsr_test_x_2 [>0]';
+%                         't2_80_hcsr_test_y_2 [>0]';
+%                         't2_80_hcsr_test_x_3 [>0]';
+%                         't2_80_hcsr_test_y_3 [>0]';
+                        't2_80_hscr_x_1';
+                        't2_80_hscr_y_1';
+                        't2_80_hscr_x_2';
+                        't2_80_hscr_y_2';
+                        't2_80_hscr_x_3';
+                        't2_80_hscr_y_3';
+                        't2_80_sta_test';
+                        't2_80_sta_slice_thickness [4.3-5.7 mm]';                       
+                        't2_80_spa_dist_mm_1 [<2.5 mm]';
+                        't2_80_spa_dist_mm_2 [<2.5 mm]';
+                        't2_80_spa_perc_aapm [<10 %]';
+                        't2_80_spa_test';                        
+                        't2_80_pui [>87.5]';
+                        't2_80_pui_test';
+                        't2_80_pui2 [>87.5]';
+                        't2_80_pui_test2';
+                        't2_80_psg_1 [<2.5%]';
+                        't2_80_psg_test_1';
+                        't2_80_psg_2 [<2.5%]';
+                        't2_80_psg_test_2';
+                        't2_80_LCOD_value [>36]';
+                        't2_80_LCOD_value2 [>36]';
+                        't2_80_LCOD_test';                        
+                        't2_80_SNR_1';
+                        't2_80_SNR_2';
+                        'SNR_t2_80_3_1';
+                        'SNR_t2_80_3_2';
+                        'SNR_t2_80_3';
+                        
+                        };
+
+                if localizer_1>0 && t1_1>0 && t2_1>0
+                    
+                    rows={mainfile(count_folder).name;
+                    
+                        length_of_phantom;
+                        percent_variation_length_phantom;
+                        
+                        
+                        mean_length_19;
+                        perc_var_mean_len_phan;
+%                         hcsr_test_x_1';
+%                         hcsr_test_y_1';
+%                         hcsr_test_x_2';
+%                         hcsr_test_y_2';
+%                         hcsr_test_x_3';
+%                         hcsr_test_y_3';
+                        hscr_x_1;
+                        hscr_y_1;
+                        hscr_x_2;
+                        hscr_y_2;
+                        hscr_x_3;
+                        hscr_y_3;
+                        sta_test;
+                        slice_thickness;                     
+                        spa_dist_mm_1_t1;
+                        spa_dist_mm_2_t1;
+                        perc_div_spa_dist_aapm_t1;
+                        spa_test;                        
+                        piu_1;
+                        piu_test_1;
+                        piu_2;
+                        piu_test_2;
+                        psg_1;
+                        psg_test_1;
+                        psg_2;
+                        psg_test_2;
+                        LCOD_value;
+                        LCOD_value2;
+                        LCOD_test;
+                        SNR_t1_1;
+                        SNR_t1_2;
+                        SNR_t1_3_1;
+                        SNR_t1_3_2;
+                        SNR_t1_3;
+                        
+                        mean_length_19_t2_20;
+                        perc_var_mean_len_phan_t2_20;
+%                         hcsr_test_x_1_t2_20';
+%                         hcsr_test_y_1_t2_20';
+%                         hcsr_test_x_2_t2_20';
+%                         hcsr_test_y_2_t2_20';
+%                         hcsr_test_x_3_t2_20';
+%                         hcsr_test_y_3_t2_20';
+                        hscr_x_1_t2_20;
+                        hscr_y_1_t2_20;
+                        hscr_x_2_t2_20;
+                        hscr_y_2_t2_20;
+                        hscr_x_3_t2_20;
+                        hscr_y_3_t2_20;
+                        sta_test_t2_20;
+                        slice_thickness_t2_20;                     
+                        spa_dist_mm_1_t2_20;
+                        spa_dist_mm_2_t2_20;
+                        perc_div_spa_dist_aapm_t2_20;
+                        spa_test_t2_20;                        
+                        piu_1_t2_20;
+                        piu_test_1_t2_20;
+                        piu_2_t2_20;
+                        piu_test_2_t2_20;
+                        psg_1_t2_20;
+                        psg_test_1_t2_20;
+                        psg_2_t2_20;
+                        psg_test_2_t2_20;
+                        LCOD_value_t2_20;
+                        LCOD_value2_t2_20;
+                        LCOD_test_t2_20;
+                        SNR_t2_20_1;
+                        SNR_t2_20_2;
+                        SNR_t2_20_3_1;
+                        SNR_t2_20_3_2;
+                        SNR_t2_20_3;
+                        
+                        mean_length_19_t2_80';
+                        perc_var_mean_len_phan_t2_80;
+%                         hcsr_test_x_1_t2_80';
+%                         hcsr_test_y_1_t2_80';
+%                         hcsr_test_x_2_t2_80';
+%                         hcsr_test_y_2_t2_80';
+%                         hcsr_test_x_3_t2_80';
+%                         hcsr_test_y_3_t2_80';
+                        hscr_x_1_t2_80;
+                        hscr_y_1_t2_80;
+                        hscr_x_2_t2_80;
+                        hscr_y_2_t2_80;
+                        hscr_x_3_t2_80;
+                        hscr_y_3_t2_80;
+                        sta_test_t2_80;
+                        slice_thickness_t2_80;                                            
+                        spa_dist_mm_1_t2_80;
+                        spa_dist_mm_2_t2_80;
+                        perc_div_spa_dist_aapm_t2_80;
+                        spa_test_t2_80;                        
+                        piu_1_t2_80;
+                        piu_test_1_t2_80;
+                        piu_2_t2_80;
+                        piu_test_2_t2_80;
+                        psg_1_t2_80;
+                        psg_test_1_t2_80;
+                        psg_2_t2_80;
+                        psg_test_2_t2_80;
+                        LCOD_value_t2_80;
+                        LCOD_value2_t2_80;
+                        LCOD_test_t2_80;
+                        SNR_t2_80_1;
+                        SNR_t2_80_2;
+                        SNR_t2_80_3_1;
+                        SNR_t2_80_3_2;
+                        SNR_t2_80_3;
+                        
+                        };
+                    
+                
+                
+                elseif localizer_1 && t1_1>0 
+                    
+                    rows={mainfile(count_folder).name;
+                    
+                        length_of_phantom;
+                        percent_variation_length_phantom;
+                        
+                        
+                        mean_length_19;
+                        perc_var_mean_len_phan;
+%                         hcsr_test_x_1';
+%                         hcsr_test_y_1';
+%                         hcsr_test_x_2';
+%                         hcsr_test_y_2';
+%                         hcsr_test_x_3';
+%                         hcsr_test_y_3';
+                        hscr_x_1;
+                        hscr_y_1;
+                        hscr_x_2;
+                        hscr_y_2;
+                        hscr_x_3;
+                        hscr_y_3;
+                        sta_test;
+                        slice_thickness;                     
+                        spa_dist_mm_1_t1;
+                        spa_dist_mm_2_t1;
+                        perc_div_spa_dist_aapm_t1;
+                        spa_test;                        
+                        piu_1;
+                        piu_test_1;
+                        piu_2;
+                        piu_test_2;
+                        psg_1;
+                        psg_test_1;
+                        psg_2;
+                        psg_test_2;
+                        LCOD_value;
+                        LCOD_value2;
+                        LCOD_test;
+                        SNR_t1_1;
+                        SNR_t1_2;
+                        SNR_t1_3_1;
+                        SNR_t1_3_2;
+                        SNR_t1_3;
+                        
+                       ''; 
+                       ''; 
+%                         hcsr_test_x_1_t2_20';
+%                         hcsr_test_y_1_t2_20';
+%                         hcsr_test_x_2_t2_20';
+%                         hcsr_test_y_2_t2_20';
+%                         hcsr_test_x_3_t2_20';
+%                         hcsr_test_y_3_t2_20';
+                       ''; 
+                       ''; 
+                       ''; 
+                       ''; 
+                       ''; 
+                       ''; 
+                       ''; 
+                       '';                    
+                       ''; 
+                       ''; 
+                       '';  
+                       '';                         
+                       '';  
+                       ''; 
+                       ''; 
+                       '';  
+                       ''; 
+                       ''; 
+                       ''; 
+                       ''; 
+                       ''; 
+                       '';
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       '';
+                       '';
+                        
+                       '';
+                       '';
+%                         hcsr_test_x_1_t2_80';
+%                         hcsr_test_y_1_t2_80';
+%                         hcsr_test_x_2_t2_80';
+%                         hcsr_test_y_2_t2_80';
+%                         hcsr_test_x_3_t2_80';
+%                         hcsr_test_y_3_t2_80';
+                       ''; 
+                       '';
+                       '';
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       '';                                           
+                       '';
+                       '';
+                       '';
+                       '';                      
+                       '';
+                       ''; 
+                       '';
+                       ''; 
+                       ''; 
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       '';
+                       '';
+                       '';
+                        };
+                    
+                                
+                elseif localizer_1>0 && t2_1>0
+                    
+                    rows={mainfile(count_folder).name;
+                    
+                        length_of_phantom;
+                        percent_variation_length_phantom;
+                                              
+                        ''; 
+                        ''; 
+%                         hcsr_test_x_1_t2_20';
+%                         hcsr_test_y_1_t2_20';
+%                         hcsr_test_x_2_t2_20';
+%                         hcsr_test_y_2_t2_20';
+%                         hcsr_test_x_3_t2_20';
+%                         hcsr_test_y_3_t2_20';
+                        ''; 
+                        ''; 
+                        ''; 
+                        ''; 
+                        ''; 
+                        ''; 
+                        ''; 
+                        '';                    
+                        ''; 
+                        ''; 
+                        '';  
+                        '';                         
+                        '';  
+                        ''; 
+                        ''; 
+                        '';  
+                        ''; 
+                        ''; 
+                        ''; 
+                        ''; 
+                        ''; 
+                        '';
+                        ''; 
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        
+                        mean_length_19_t2_20;
+                        perc_var_mean_len_phan_t2_20;
+%                         hcsr_test_x_1_t2_20';
+%                         hcsr_test_y_1_t2_20';
+%                         hcsr_test_x_2_t2_20';
+%                         hcsr_test_y_2_t2_20';
+%                         hcsr_test_x_3_t2_20';
+%                         hcsr_test_y_3_t2_20';
+                        hscr_x_1_t2_20;
+                        hscr_y_1_t2_20;
+                        hscr_x_2_t2_20;
+                        hscr_y_2_t2_20;
+                        hscr_x_3_t2_20;
+                        hscr_y_3_t2_20;
+                        sta_test_t2_20;
+                        slice_thickness_t2_20;                     
+                        spa_dist_mm_1_t2_20;
+                        spa_dist_mm_2_t2_20;
+                        perc_div_spa_dist_aapm_t2_20;
+                        spa_test_t2_20;                        
+                        piu_1_t2_20;
+                        piu_test_1_t2_20;
+                        piu_2_t2_20;
+                        piu_test_2_t2_20;
+                        psg_1_t2_20;
+                        psg_test_1_t2_20;
+                        psg_2_t2_20;
+                        psg_test_2_t2_20;
+                        LCOD_value_t2_20;
+                        LCOD_value2_t2_20;
+                        LCOD_test_t2_20;
+                        SNR_t2_20_1;
+                        SNR_t2_20_2;
+                        SNR_t2_20_3_1;
+                        SNR_t2_20_3_2;
+                        SNR_t2_20_3;
+                        
+                        mean_length_19_t2_80';
+                        perc_var_mean_len_phan_t2_80;
+%                         hcsr_test_x_1_t2_80';
+%                         hcsr_test_y_1_t2_80';
+%                         hcsr_test_x_2_t2_80';
+%                         hcsr_test_y_2_t2_80';
+%                         hcsr_test_x_3_t2_80';
+%                         hcsr_test_y_3_t2_80';
+                        hscr_x_1_t2_80;
+                        hscr_y_1_t2_80;
+                        hscr_x_2_t2_80;
+                        hscr_y_2_t2_80;
+                        hscr_x_3_t2_80;
+                        hscr_y_3_t2_80;
+                        sta_test_t2_80;
+                        slice_thickness_t2_80;                                            
+                        spa_dist_mm_1_t2_80;
+                        spa_dist_mm_2_t2_80;
+                        perc_div_spa_dist_aapm_t2_80;
+                        spa_test_t2_80;                        
+                        piu_1_t2_80;
+                        piu_test_1_t2_80;
+                        piu_2_t2_80;
+                        piu_test_2_t2_80;
+                        psg_1_t2_80;
+                        psg_test_1_t2_80;
+                        psg_2_t2_80;
+                        psg_test_2_t2_80;
+                        LCOD_value_t2_80;
+                        LCOD_value2_t2_80;
+                        LCOD_test_t2_80;
+                        SNR_t2_80_1;
+                        SNR_t2_80_2;
+                        SNR_t2_80_3_1;
+                        SNR_t2_80_3_2;
+                        SNR_t2_80_3;
+                        };
+                    
+                                
+                elseif localizer_1>0 
+                    
+                    rows={mainfile(count_folder).name;
+                    
+                        length_of_phantom;
+                        percent_variation_length_phantom;
+                        
+                        
+                       ''; 
+                       ''; 
+%                         hcsr_test_x_1_t2_20';
+%                         hcsr_test_y_1_t2_20';
+%                         hcsr_test_x_2_t2_20';
+%                         hcsr_test_y_2_t2_20';
+%                         hcsr_test_x_3_t2_20';
+%                         hcsr_test_y_3_t2_20';
+                       ''; 
+                       ''; 
+                       ''; 
+                       ''; 
+                       ''; 
+                       ''; 
+                       ''; 
+                       '';                    
+                       ''; 
+                       ''; 
+                       '';  
+                       '';                         
+                       '';  
+                       ''; 
+                       ''; 
+                       '';  
+                       ''; 
+                       ''; 
+                       ''; 
+                       ''; 
+                       ''; 
+                       '';
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       '';
+                       '';
+                        
+                       '';
+                       '';
+%                         hcsr_test_x_1_t2_80';
+%                         hcsr_test_y_1_t2_80';
+%                         hcsr_test_x_2_t2_80';
+%                         hcsr_test_y_2_t2_80';
+%                         hcsr_test_x_3_t2_80';
+%                         hcsr_test_y_3_t2_80';
+                       ''; 
+                       '';
+                       '';
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       '';                                           
+                       '';
+                       '';
+                       '';
+                       '';                      
+                       '';
+                       ''; 
+                       '';
+                       ''; 
+                       ''; 
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       '';
+                       '';
+                       '';
+                       
+                       '';
+                       '';
+%                         hcsr_test_x_1_t2_80';
+%                         hcsr_test_y_1_t2_80';
+%                         hcsr_test_x_2_t2_80';
+%                         hcsr_test_y_2_t2_80';
+%                         hcsr_test_x_3_t2_80';
+%                         hcsr_test_y_3_t2_80';
+                       ''; 
+                       '';
+                       '';
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       '';                                           
+                       '';
+                       '';
+                       '';
+                       '';                      
+                       '';
+                       ''; 
+                       '';
+                       ''; 
+                       ''; 
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       '';
+                       '';
+                       '';
+                       
+                        };
+                    
+                
+                elseif t1_1>0 && t2_1>0
+                    
+                    rows={mainfile(count_folder).name;
+                    
+                        '';
+                        '';
+                        
+                        
+                        mean_length_19;
+                        perc_var_mean_len_phan;
+%                         hcsr_test_x_1';
+%                         hcsr_test_y_1';
+%                         hcsr_test_x_2';
+%                         hcsr_test_y_2';
+%                         hcsr_test_x_3';
+%                         hcsr_test_y_3';
+                        hscr_x_1;
+                        hscr_y_1;
+                        hscr_x_2;
+                        hscr_y_2;
+                        hscr_x_3;
+                        hscr_y_3;
+                        sta_test;
+                        slice_thickness;                     
+                        spa_dist_mm_1_t1;
+                        spa_dist_mm_2_t1;
+                        perc_div_spa_dist_aapm_t1;
+                        spa_test;                        
+                        piu_1;
+                        piu_test_1;
+                        piu_2;
+                        piu_test_2;
+                        psg_1;
+                        psg_test_1;
+                        psg_2;
+                        psg_test_2;
+                        LCOD_value;
+                        LCOD_value2;
+                        LCOD_test;
+                        SNR_t1_1;
+                        SNR_t1_2;
+                        SNR_t1_3_1;
+                        SNR_t1_3_2;
+                        SNR_t1_3;
+                        
+                        mean_length_19_t2_20;
+                        perc_var_mean_len_phan_t2_20;
+%                         hcsr_test_x_1_t2_20';
+%                         hcsr_test_y_1_t2_20';
+%                         hcsr_test_x_2_t2_20';
+%                         hcsr_test_y_2_t2_20';
+%                         hcsr_test_x_3_t2_20';
+%                         hcsr_test_y_3_t2_20';
+                        hscr_x_1_t2_20;
+                        hscr_y_1_t2_20;
+                        hscr_x_2_t2_20;
+                        hscr_y_2_t2_20;
+                        hscr_x_3_t2_20;
+                        hscr_y_3_t2_20;
+                        sta_test_t2_20;
+                        slice_thickness_t2_20;                     
+                        spa_dist_mm_1_t2_20;
+                        spa_dist_mm_2_t2_20;
+                        perc_div_spa_dist_aapm_t2_20;
+                        spa_test_t2_20;                        
+                        piu_1_t2_20;
+                        piu_test_1_t2_20;
+                        piu_2_t2_20;
+                        piu_test_2_t2_20;
+                        psg_1_t2_20;
+                        psg_test_1_t2_20;
+                        psg_2_t2_20;
+                        psg_test_2_t2_20;
+                        LCOD_value_t2_20;
+                        LCOD_value2_t2_20;
+                        LCOD_test_t2_20;
+                        SNR_t2_20_1;
+                        SNR_t2_20_2;
+                        SNR_t2_20_3_1;
+                        SNR_t2_20_3_2;
+                        SNR_t2_20_3;
+                        
+                        mean_length_19_t2_80';
+                        perc_var_mean_len_phan_t2_80;
+%                         hcsr_test_x_1_t2_80';
+%                         hcsr_test_y_1_t2_80';
+%                         hcsr_test_x_2_t2_80';
+%                         hcsr_test_y_2_t2_80';
+%                         hcsr_test_x_3_t2_80';
+%                         hcsr_test_y_3_t2_80';
+                        hscr_x_1_t2_80;
+                        hscr_y_1_t2_80;
+                        hscr_x_2_t2_80;
+                        hscr_y_2_t2_80;
+                        hscr_x_3_t2_80;
+                        hscr_y_3_t2_80;
+                        sta_test_t2_80;
+                        slice_thickness_t2_80;                                            
+                        spa_dist_mm_1_t2_80;
+                        spa_dist_mm_2_t2_80;
+                        perc_div_spa_dist_aapm_t2_80;
+                        spa_test_t2_80;                        
+                        piu_1_t2_80;
+                        piu_test_1_t2_80;
+                        piu_2_t2_80;
+                        piu_test_2_t2_80;
+                        psg_1_t2_80;
+                        psg_test_1_t2_80;
+                        psg_2_t2_80;
+                        psg_test_2_t2_80;
+                        LCOD_value_t2_80;
+                        LCOD_value2_t2_80;
+                        LCOD_test_t2_80;
+                        SNR_t2_80_1;
+                        SNR_t2_80_2;
+                        SNR_t2_80_3_1;
+                        SNR_t2_80_3_2;
+                        SNR_t2_80_3;
+                        };
+                    
+                elseif t1_1>0 
+                    
+                    rows={mainfile(count_folder).name;
+                    
+                       '';
+                       '';
+                        
+                        
+                        mean_length_19;
+                        perc_var_mean_len_phan;
+%                         hcsr_test_x_1';
+%                         hcsr_test_y_1';
+%                         hcsr_test_x_2';
+%                         hcsr_test_y_2';
+%                         hcsr_test_x_3';
+%                         hcsr_test_y_3';
+                        hscr_x_1;
+                        hscr_y_1;
+                        hscr_x_2;
+                        hscr_y_2;
+                        hscr_x_3;
+                        hscr_y_3;
+                        sta_test;
+                        slice_thickness;                     
+                        spa_dist_mm_1_t1;
+                        spa_dist_mm_2_t1;
+                        perc_div_spa_dist_aapm_t1;
+                        spa_test;                        
+                        piu_1;
+                        piu_test_1;
+                        piu_2;
+                        piu_test_2;
+                        psg_1;
+                        psg_test_1;
+                        psg_2;
+                        psg_test_2;
+                        LCOD_value;
+                        LCOD_value2;
+                        LCOD_test;
+                        SNR_t1_1;
+                        SNR_t1_2;
+                        SNR_t1_3_1;
+                        SNR_t1_3_2;
+                        SNR_t1_3;
+                        
+                       '';
+                       '';
+%                         hcsr_test_x_1_t2_80';
+%                         hcsr_test_y_1_t2_80';
+%                         hcsr_test_x_2_t2_80';
+%                         hcsr_test_y_2_t2_80';
+%                         hcsr_test_x_3_t2_80';
+%                         hcsr_test_y_3_t2_80';
+                       ''; 
+                       '';
+                       '';
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       '';                                           
+                       '';
+                       '';
+                       '';
+                       '';                      
+                       '';
+                       ''; 
+                       '';
+                       ''; 
+                       ''; 
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       '';
+                       '';
+                       '';
+                       
+                       '';
+                       '';
+%                         hcsr_test_x_1_t2_80';
+%                         hcsr_test_y_1_t2_80';
+%                         hcsr_test_x_2_t2_80';
+%                         hcsr_test_y_2_t2_80';
+%                         hcsr_test_x_3_t2_80';
+%                         hcsr_test_y_3_t2_80';
+                       ''; 
+                       '';
+                       '';
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       '';                                           
+                       '';
+                       '';
+                       '';
+                       '';                      
+                       '';
+                       ''; 
+                       '';
+                       ''; 
+                       ''; 
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       '';
+                       '';
+                       '';
+                        
+                        };
+                    
+                               
+                elseif t2_1>0
+                    
+                    rows={mainfile(count_folder).name;
+                    
+                       '';
+                       ''; 
+                                                
+                       '';
+                       '';
+%                         hcsr_test_x_1_t2_80';
+%                         hcsr_test_y_1_t2_80';
+%                         hcsr_test_x_2_t2_80';
+%                         hcsr_test_y_2_t2_80';
+%                         hcsr_test_x_3_t2_80';
+%                         hcsr_test_y_3_t2_80';
+                       ''; 
+                       '';
+                       '';
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       '';                                           
+                       '';
+                       '';
+                       '';
+                       '';                      
+                       '';
+                       ''; 
+                       '';
+                       ''; 
+                       ''; 
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       ''; 
+                       '';
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       '';
+                        
+                        mean_length_19_t2_20;
+                        perc_var_mean_len_phan_t2_20;
+%                         hcsr_test_x_1_t2_20';
+%                         hcsr_test_y_1_t2_20';
+%                         hcsr_test_x_2_t2_20';
+%                         hcsr_test_y_2_t2_20';
+%                         hcsr_test_x_3_t2_20';
+%                         hcsr_test_y_3_t2_20';
+                        hscr_x_1_t2_20;
+                        hscr_y_1_t2_20;
+                        hscr_x_2_t2_20;
+                        hscr_y_2_t2_20;
+                        hscr_x_3_t2_20;
+                        hscr_y_3_t2_20;
+                        sta_test_t2_20;
+                        slice_thickness_t2_20;                     
+                        spa_dist_mm_1_t2_20;
+                        spa_dist_mm_2_t2_20;
+                        perc_div_spa_dist_aapm_t2_20;
+                        spa_test_t2_20;                        
+                        piu_1_t2_20;
+                        piu_test_1_t2_20;
+                        piu_2_t2_20;
+                        piu_test_2_t2_20;
+                        psg_1_t2_20;
+                        psg_test_1_t2_20;
+                        psg_2_t2_20;
+                        psg_test_2_t2_20;
+                        LCOD_value_t2_20;
+                        LCOD_value2_t2_20;
+                        LCOD_test_t2_20;
+                        SNR_t2_20_1;
+                        SNR_t2_20_2;
+                        SNR_t2_20_3_1;
+                        SNR_t2_20_3_2;
+                        SNR_t2_20_3;
+                        
+                        mean_length_19_t2_80';
+                        perc_var_mean_len_phan_t2_80;
+%                         hcsr_test_x_1_t2_80';
+%                         hcsr_test_y_1_t2_80';
+%                         hcsr_test_x_2_t2_80';
+%                         hcsr_test_y_2_t2_80';
+%                         hcsr_test_x_3_t2_80';
+%                         hcsr_test_y_3_t2_80';
+                        hscr_x_1_t2_80;
+                        hscr_y_1_t2_80;
+                        hscr_x_2_t2_80;
+                        hscr_y_2_t2_80;
+                        hscr_x_3_t2_80;
+                        hscr_y_3_t2_80;
+                        sta_test_t2_80;
+                        slice_thickness_t2_80;                                            
+                        spa_dist_mm_1_t2_80;
+                        spa_dist_mm_2_t2_80;
+                        perc_div_spa_dist_aapm_t2_80;
+                        spa_test_t2_80;                        
+                        piu_1_t2_80;
+                        piu_test_1_t2_80;
+                        piu_2_t2_80;
+                        piu_test_2_t2_80;
+                        psg_1_t2_80;
+                        psg_test_1_t2_80;
+                        psg_2_t2_80;
+                        psg_test_2_t2_80;
+                        LCOD_value_t2_80;
+                        LCOD_value2_t2_80;
+                        LCOD_test_t2_80;
+                        SNR_t2_80_1;
+                        SNR_t2_80_2;
+                        SNR_t2_80_3_1;
+                        SNR_t2_80_3_2;
+                        SNR_t2_80_3;
+                        
+                        };
+                else
+                    
+                       rows={mainfile(count_folder).name;
+                    
+                       '';
+                       ''; 
+                                               
+                       '';
+                       '';
+%                         hcsr_test_x_1_t2_80';
+%                         hcsr_test_y_1_t2_80';
+%                         hcsr_test_x_2_t2_80';
+%                         hcsr_test_y_2_t2_80';
+%                         hcsr_test_x_3_t2_80';
+%                         hcsr_test_y_3_t2_80';
+                       ''; 
+                       '';
+                       '';
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       '';                                           
+                       '';
+                       '';
+                       '';
+                       '';                      
+                       '';
+                       ''; 
+                       '';
+                       ''; 
+                       ''; 
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       ''; 
+                       '';
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       '';
+                       
+                       '';
+                       '';
+%                         hcsr_test_x_1_t2_80';
+%                         hcsr_test_y_1_t2_80';
+%                         hcsr_test_x_2_t2_80';
+%                         hcsr_test_y_2_t2_80';
+%                         hcsr_test_x_3_t2_80';
+%                         hcsr_test_y_3_t2_80';
+                       ''; 
+                       '';
+                       '';
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       '';                                           
+                       '';
+                       '';
+                       '';
+                       '';                      
+                       '';
+                       ''; 
+                       '';
+                       ''; 
+                       ''; 
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       '';
+                       '';
+                       '';
+                       
+                       '';
+                       '';
+%                         hcsr_test_x_1_t2_80';
+%                         hcsr_test_y_1_t2_80';
+%                         hcsr_test_x_2_t2_80';
+%                         hcsr_test_y_2_t2_80';
+%                         hcsr_test_x_3_t2_80';
+%                         hcsr_test_y_3_t2_80';
+                       ''; 
+                       '';
+                       '';
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       '';                                           
+                       '';
+                       '';
+                       '';
+                       '';                      
+                       '';
+                       ''; 
+                       '';
+                       ''; 
+                       ''; 
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       ''; 
+                       '';
+                       '';
+                       '';
+                       '';
+                       '';
+                       '';
+                        
+                        };
+                    
+                    
+                    
+                end
+                
+
+
+                    if loop_count_folder==1
+                        
+                        ex1 = [col1';col']; % Cell array 
+                        
+                    end
+                    
+                        [ex1_row,~]=size(ex1);
+                        d=ex1_row+1;
+                        ex1(d,:)=rows'; % Cell array
+                        ex_txt(d-1,:)=rows';
+
+                end
+
+
+     end
+
+
+end
+
+%% Create Export. file %%
+
+switch write_excel
+           
+    case 'new'
+
+        cop_ex1=ex1;
+        cop_ex_txt=ex_txt;
+        filename = 'ex1.mat';
+        save(filename)
+        
+    case 'continue'
+        
+        
+        cop_ex1=[cop_ex1;ex_txt(2:end,:)]; % run as 'new' or to be able to run in 'contiue' mode you need to get new input 
+        cop_ex_txt=[cop_ex1(2:end,:);ex_txt(2:end,:)];
+        filename = 'ex1.mat';
+        save(filename)        
+                            
+end
+
+%% Save and Export as csv. data %%
+
+
+ex2 = cellfun(@ex_func,cop_ex1,'UniformOutput',0); % it is a cell array
+cell2csv(name_of_csv_file, ex2, ';', '.') % name the csv.file
+
+phd_file='/home/boeckefx/Documents/MATLAB';
+sourcefile=strcat(phd_file,'/',name_of_csv_file); 
+statusmovefile=movefile(sourcefile,inputvalue);
+
+phd_file='/home/boeckefx/Documents/MATLAB/PHD';
+sourcefile=strcat(phd_file,'/',name_of_csv_file); 
+statusmovefile=movefile(sourcefile,inputvalue);
+
+
+phd_file='/home/boeckefx/Documents/MATLAB';
+sourcefile=strcat(phd_file,'/','ex1.mat'); 
+statusmovefile=movefile(sourcefile,inputvalue);
+
+phd_file='/home/boeckefx/Documents/MATLAB/PHD';
+sourcefile=strcat(phd_file,'/','ex1.mat'); 
+statusmovefile=movefile(sourcefile,inputvalue);
+
+
+%% Save and Export as .txt data for R analysis%%
+
+ex3 = cellfun(@ex_func,cop_ex_txt,'UniformOutput',0); % it is a cell array
+cell2csv('r_mri_qa', ex3, '\t', '.') % name the csv.file
+
+phd_file='/home/boeckefx/Documents/MATLAB';
+sourcefile=strcat(phd_file,'/','r_mri_qa'); 
+statusmovefile=movefile(sourcefile,inputvalue);
+
+phd_file='/home/boeckefx/Documents/MATLAB/PHD';
+sourcefile=strcat(phd_file,'/','r_mri_qa'); 
+statusmovefile=movefile(sourcefile,inputvalue);
+
+%% Analysis %%
+% als m_file realisiert "bar_plots_MRI_QA" 
+
+%% Protocol %%
+dauer_protocol=mri_qa_protocol(inputvalue,name_of_protocol_file);
+
+%% time of process %%
+t=toc;
+dauer=datestr(datenum(0,0,0,0,0,t),'HH:MM:SS');% hours:minutes:seconds
