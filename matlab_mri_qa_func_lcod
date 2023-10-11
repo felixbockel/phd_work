@@ -1,0 +1,278 @@
+function [stokes_passed,stokes2_passed,dist_total_max]=LCOD(dicom,start_spokes,T_image)     
+
+        if T_image == 1
+  
+            [center,radius]=imfindcircles(dicom,[51 150]); % find any circle inside of that image
+            
+        elseif T_image == 2
+             
+            [center,radius]=imfindcircles(dicom,[30 60]); % find any circle inside of that image
+          
+        end
+
+        
+        % segmentation of inner circle
+        
+        [row,~]=size(dicom); % it is necessary that row and col have same length
+        [rr,cc] = meshgrid(1:row);
+        circle = sqrt((rr-center(1,1)).^2+(cc-center(1,2)).^2)<=radius; % create circle with same size and location; radius must be in pixels
+        circle_double=+circle; % convert circle from logical to double 
+        dicom_double=double(dicom);       
+        area_roi_large=circle_double.*dicom_double;
+        
+        %figure;imshow(area_roi_large,[])
+ 
+        
+        dist_spoke=0.2016;
+        spokes_5=[start_spokes,start_spokes+dist_spoke,start_spokes+(2*dist_spoke),start_spokes+(3*dist_spoke),start_spokes+(4*dist_spoke)]; % each image has 10 spokes- each profile includes two spokes
+        %angles_12=[0.0055,0.0110,0.0165,0.022,0.0275,0.0330,-0.0055,-0.0110,-0.0165,-0.022,-0.0275,-0.0330]; % for each spoke 12 profiles with 1° difference
+        angles_22=[0.0055,0.00825,0.0110,0.01375,0.0165,0.01925,0.022,0.02475,0.0275,0.03025,0.0330,-0.0055,-0.00825,-0.0110,-0.01375,-0.0165,-0.01925,-0.022,-0.02475,-0.0275,-0.03025,-0.0330]; % for each spoke 12 profiles with 1° difference
+        iteration=0;
+        
+        for i=spokes_5
+            
+            for d=angles_22
+                
+                % Bild drehen
+                I=area_roi_large;
+                % Skalierung, scaling
+                I(I>1)=1;
+                dx=0;
+                dy=0;
+                alpha=i+d; % alpha=0.1555 Spoke 1 auf Nullpkt; alpha=[-1...1]; alle alpha=0,2016 das nächste Spoke; alpha=0,0056 == 1°; alpha=0.25 == -45° and alpha=0.75 == +45°
+                I_move =rotrans2(I,area_roi_large,dx,dy,alpha);
+                %figure;imshow(I_move,[]);
+                iteration=iteration+1;
+                store_profiles(:,iteration)=I_move(:,round(center(1,1))); % 11 Lines for each spoke with 1 degree difference of each
+                 
+            end
+            
+        end
+        
+        [row,~]=size(store_profiles);
+        e=0;
+        lines_22=1:22;
+        col_iteration=[0,22,44,66,88];
+        %lines_12=1:12;
+        %col_iteration=[0,12,24,36,48];
+        
+        for col_i=col_iteration
+            
+            e=e+1;
+            
+            for row_i=1:row
+                
+                    profile_max(e,row_i)=max(store_profiles(row_i,(col_i+lines_22)));
+
+            end
+        end
+        
+        % there must be 5 profiles- it gets now extended to 10 (10 spokes)
+        if T_image == 1
+  
+                profile_1=profile_max(1,:);
+                profile_1(profile_1==0)=[];
+                profile_1=profile_1(9:end-20);
+                profile_length=length(profile_1);
+                profile_1=profile_1(1:round(profile_length/2));
+                profile=profile_1;
+                range=0;%% range 0 == get profiles 1-5 and range 1 == get profiles 6-10 
+                [dist_gr0_profile_1,image_gr0_2_1,dist_total1]=LCOD_fit_substract(profile,range,T_image);
+
+                profile_2=profile_max(2,:);
+                profile_2(profile_2==0)=[];
+                profile_2=profile_2(9:end-20);
+                profile_length=length(profile_2);
+                profile_2=profile_2(1:round(profile_length/2));
+                profile=profile_2;
+                [dist_gr0_profile_2,image_gr0_2_2,dist_total2]=LCOD_fit_substract(profile,range,T_image);
+
+                profile_3=profile_max(3,:);
+                profile_3(profile_3==0)=[];
+                profile_3=profile_3(9:end-20);
+                profile_length=length(profile_3);
+                profile_3=profile_3(1:round(profile_length/2));
+                profile=profile_3;
+                [dist_gr0_profile_3,image_gr0_2_3,dist_total3]=LCOD_fit_substract(profile,range,T_image);
+
+                profile_4=profile_max(4,:);
+                profile_4(profile_4==0)=[];
+                profile_4=profile_4(9:end-20);
+                profile_length=length(profile_4);
+                profile_4=profile_4(1:round(profile_length/2));
+                profile=profile_4;
+                [dist_gr0_profile_4,image_gr0_2_4,dist_total4]=LCOD_fit_substract(profile,range,T_image);
+
+                profile_5=profile_max(5,:);
+                profile_5(profile_5==0)=[];
+                profile_5=profile_5(9:end-20);
+                profile_length=length(profile_5);
+                profile_5=profile_5(1:round(profile_length/2));
+                profile=profile_5;
+                [dist_gr0_profile_5,image_gr0_2_5,dist_total5]=LCOD_fit_substract(profile,range,T_image);
+
+                profile_6=profile_max(1,:);
+                profile_6(profile_6==0)=[];
+                profile_6=profile_6(35:end-9);
+                profile_length=length(profile_6);
+                profile_6=profile_6(round(profile_length/2):end);
+                profile=profile_6;
+                range=1;
+                [dist_gr0_profile_6,image_gr0_2_6,dist_total6]=LCOD_fit_substract(profile,range,T_image);
+
+                profile_7=profile_max(2,:);
+                profile_7(profile_7==0)=[];
+                profile_7=profile_7(35:end-9);
+                profile_length=length(profile_7);
+                profile_7=profile_7(round(profile_length/2):end);
+                profile=profile_7;
+                [dist_gr0_profile_7,image_gr0_2_7,dist_total7]=LCOD_fit_substract(profile,range,T_image);
+
+                profile_8=profile_max(3,:);
+                profile_8(profile_8==0)=[];
+                profile_8=profile_8(35:end-9);
+                profile_length=length(profile_8);
+                profile_8=profile_8(round(profile_length/2):end);
+                profile=profile_8;
+                [dist_gr0_profile_8,image_gr0_2_8,dist_total8]=LCOD_fit_substract(profile,range,T_image);
+
+                profile_9=profile_max(4,:);
+                profile_9(profile_9==0)=[];
+                profile_9=profile_9(35:end-9);
+                profile_length=length(profile_9);
+                profile_9=profile_9(round(profile_length/2):end);
+                profile=profile_9;
+                [dist_gr0_profile_9,image_gr0_2_9,dist_total9]=LCOD_fit_substract(profile,range,T_image);
+
+                profile_10=profile_max(5,:);
+                profile_10(profile_10==0)=[];
+                profile_10=profile_10(35:end-9);
+                profile_length=length(profile_10);
+                profile_10=profile_10(round(profile_length/2):end);
+                profile=profile_10;
+                [dist_gr0_profile_10,image_gr0_2_10,dist_total10]=LCOD_fit_substract(profile,range,T_image);
+            
+        elseif T_image == 2
+             
+                profile_1=profile_max(1,:);
+                profile_1(profile_1==0)=[];
+                profile_1=profile_1(5:end-10);
+                profile_length=length(profile_1);
+                profile_1=profile_1(1:round(profile_length/2));
+                profile=profile_1;
+                range=0;%% range 0 == get profiles 1-5 and range 1 == get profiles 6-10 
+                [dist_gr0_profile_1,image_gr0_2_1,dist_total1]=LCOD_fit_substract(profile,range,T_image);
+
+                profile_2=profile_max(2,:);
+                profile_2(profile_2==0)=[];
+                profile_2=profile_2(5:end-10);
+                profile_length=length(profile_2);
+                profile_2=profile_2(1:round(profile_length/2));
+                profile=profile_2;
+                [dist_gr0_profile_2,image_gr0_2_2,dist_total2]=LCOD_fit_substract(profile,range,T_image);
+
+                profile_3=profile_max(3,:);
+                profile_3(profile_3==0)=[];
+                profile_3=profile_3(5:end-10);
+                profile_length=length(profile_3);
+                profile_3=profile_3(1:round(profile_length/2));
+                profile=profile_3;
+                [dist_gr0_profile_3,image_gr0_2_3,dist_total3]=LCOD_fit_substract(profile,range,T_image);
+
+                profile_4=profile_max(4,:);
+                profile_4(profile_4==0)=[];
+                profile_4=profile_4(5:end-10);
+                profile_length=length(profile_4);
+                profile_4=profile_4(1:round(profile_length/2));
+                profile=profile_4;
+                [dist_gr0_profile_4,image_gr0_2_4,dist_total4]=LCOD_fit_substract(profile,range,T_image);
+
+                profile_5=profile_max(5,:);
+                profile_5(profile_5==0)=[];
+                profile_5=profile_5(5:end-10);
+                profile_length=length(profile_5);
+                profile_5=profile_5(1:round(profile_length/2));
+                profile=profile_5;
+                [dist_gr0_profile_5,image_gr0_2_5,dist_total5]=LCOD_fit_substract(profile,range,T_image);
+
+                profile_6=profile_max(1,:);
+                profile_6(profile_6==0)=[];
+                profile_6=profile_6(18:end-3);
+                profile_length=length(profile_6);
+                profile_6=profile_6(round(profile_length/2):end);
+                profile=profile_6;
+                range=1;
+                [dist_gr0_profile_6,image_gr0_2_6,dist_total6]=LCOD_fit_substract(profile,range,T_image);
+
+                profile_7=profile_max(2,:);
+                profile_7(profile_7==0)=[];
+                profile_7=profile_7(18:end-3);
+                profile_length=length(profile_7);
+                profile_7=profile_7(round(profile_length/2):end);
+                profile=profile_7;
+                [dist_gr0_profile_7,image_gr0_2_7,dist_total7]=LCOD_fit_substract(profile,range,T_image);
+
+                profile_8=profile_max(3,:);
+                profile_8(profile_8==0)=[];
+                profile_8=profile_8(18:end-3);
+                profile_length=length(profile_8);
+                profile_8=profile_8(round(profile_length/2):end);
+                profile=profile_8;
+                [dist_gr0_profile_8,image_gr0_2_8,dist_total8]=LCOD_fit_substract(profile,range,T_image);
+
+                profile_9=profile_max(4,:);
+                profile_9(profile_9==0)=[];
+                profile_9=profile_9(18:end-3);
+                profile_length=length(profile_9);
+                profile_9=profile_9(round(profile_length/2):end);
+                profile=profile_9;
+                [dist_gr0_profile_9,image_gr0_2_9,dist_total9]=LCOD_fit_substract(profile,range,T_image);
+
+                profile_10=profile_max(5,:);
+                profile_10(profile_10==0)=[];
+                profile_10=profile_10(18:end-3);
+                profile_length=length(profile_10);
+                profile_10=profile_10(round(profile_length/2):end);
+                profile=profile_10;
+                [dist_gr0_profile_10,image_gr0_2_10,dist_total10]=LCOD_fit_substract(profile,range,T_image);
+          
+        end
+    
+        dist_total=[dist_gr0_profile_1,dist_gr0_profile_2,dist_gr0_profile_3,dist_gr0_profile_4,dist_gr0_profile_5,dist_gr0_profile_6,dist_gr0_profile_7,dist_gr0_profile_8,dist_gr0_profile_9,dist_gr0_profile_10];
+        dist_total(dist_total>0)=1;
+        dist_total(dist_total<0)=0;
+        
+        dist_total_max=[dist_total1,dist_total2,dist_total3,dist_total4,dist_total5,dist_total6,dist_total7,dist_total8,dist_total9,dist_total10];
+        
+        dist_total_2threshold=[image_gr0_2_1,image_gr0_2_2,image_gr0_2_3,image_gr0_2_4,image_gr0_2_5,image_gr0_2_6,image_gr0_2_7,image_gr0_2_8,image_gr0_2_9,image_gr0_2_10];
+        dist_total_2threshold(dist_total_2threshold>0)=1;
+        dist_total_2threshold(dist_total_2threshold<0)=0;
+             
+        [~,col]=size(dist_total);
+        d=0;
+        stokes_passed=0;
+        
+        for i=1:col
+            ones_3=sum(dist_total(:,i));
+            
+            if ones_3==3
+                d=d+1;
+                stokes_passed=d;
+                
+            end
+        end
+        
+        [~,col]=size(dist_total_2threshold);
+        d=0;
+        stokes2_passed=0;
+        ones_3=[];
+        
+        for i=1:col
+            ones_3=sum(dist_total_2threshold(:,i));
+            
+            if ones_3==3
+                d=d+1;
+                stokes2_passed=d;
+                
+            end
+        end
