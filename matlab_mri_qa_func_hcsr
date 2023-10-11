@@ -1,0 +1,342 @@
+%% find right Images out of Image Box
+function [hcsr_test_x_1,hcsr_test_y_1,hcsr_test_x_2,hcsr_test_y_2,hcsr_test_x_3,hcsr_test_y_3,hscr_x_1,hscr_y_1,hscr_x_2,hscr_y_2,hscr_x_3,hscr_y_3]=HCSR(dicom,T_image)
+            
+            if T_image == 1 % T1
+                
+                dicom_image=dicom(300:365,145:365); % Box 
+            
+            elseif T_image == 2 % T2
+                
+                dicom_image=dicom(150:182,72:182); % Box 
+                
+            end
+            
+            [row,col]=size(dicom_image);         
+
+            % differentiate images vertically 
+            for i=1:col
+                  dist_image(1,i)=length(find(dicom_image(:,i)<200));
+            end
+
+            find_dist_images=find(dist_image<row);
+
+            [~,col]=size(find_dist_images);
+
+            d=0;
+            e=0;
+            f=0;
+            
+            clear images_matrix
+            
+            for i=1:col %for schleife, um einzelne bilder in einer matrix zu unterscheiden
+
+                 d=d+1;
+
+                 if d == 1
+                      e=1;
+                      f=1;
+                      images_matrix(e,f)=find_dist_images(1,i);
+                      
+                 elseif d == find_dist_images(1,i)
+                      f=f+1;
+                      images_matrix(e,f)=find_dist_images(1,i);
+                 else 
+                     e=e+1;
+                     f=1;
+                     images_matrix(e,f)=find_dist_images(1,i);
+                 end
+
+                 d=find_dist_images(:,i);
+            end
+
+            [row,~]=size(images_matrix);
+            d=0;
+            im_matrix_max_row_prior=0;
+            
+            
+  
+            for i=1:row %  ist der abstand von row zu row mind %%%% angenommener Schwellwert==6 %%%%, dann muss row current und post zusammengehören%%
+
+                d=d+1;
+                find_gr0=find(images_matrix(i,:)>0);
+                im_matrix_max_row=max(images_matrix(i,find_gr0));
+                im_matrix_min_row=min(images_matrix(i,find_gr0));
+                
+                if d>1
+                                 
+                    if im_matrix_max_row_prior+6>im_matrix_min_row % Schwellwert 6
+                        
+                        
+                        gg=images_matrix(i-1,:);
+                        gg(gg==0)=[];
+                        gg2=images_matrix(i,:);
+                        gg2(gg2==0)=[];
+                        memorize_row=[gg,gg2];
+                        [~,col_im_matrix]=size(images_matrix);
+                        [~,col_memorize_row]=size(memorize_row);
+                        
+                        if col_memorize_row<col_im_matrix
+                            
+                            difference_im_matrix=col_im_matrix-col_memorize_row;
+                            
+                            for difference=difference_im_matrix
+                                
+                                memorize_row(1,end+difference)=0;
+                                
+                            end
+                            
+                            images_matrix(i,:)=memorize_row;
+                            images_matrix(i-1,:)=0;
+                            
+                            
+                        else
+                            
+                            ggg=memorize_row(1,1:col_im_matrix);
+                            images_matrix(i,:)=ggg;
+                            images_matrix(i-1,:)=0;
+                                            
+                        end
+                        
+                    end
+          
+                end         
+                
+                im_matrix_max_row_prior=im_matrix_max_row;
+                
+            end
+            
+            d=0;            
+            [row,col]=size(images_matrix);
+            stop_for_loop=row;
+            
+            for i=1:row % delete rows consisting of zeros
+
+                 d=d+1;
+                 length_zeros=length(find(images_matrix(i,:) == 0));
+
+                 if length_zeros==col
+
+                     images_matrix(i,:)=[];
+                     stop_for_loop=stop_for_loop-1;
+
+                 end
+
+                 if stop_for_loop==d
+
+                     break
+
+                 end
+
+
+            end 
+            
+            d=0;            
+            [row,~]=size(images_matrix);
+            stop_for_loop=row;
+            
+            if T_image == 1 % T1
+                
+                treshold_dist_row=8;
+            
+            elseif T_image == 2 % T2
+                
+                treshold_dist_row=4;
+                
+            end
+            
+            speicher_row_delete=[];
+            
+            for i=1:row % delete rows which coloumbs with characters are smaller than T1=8 && T2=4
+
+                length_row=length(find(images_matrix(i,:) > 0));
+
+                if length_row < treshold_dist_row
+                              d=d+1;
+                              speicher_row_delete(1,d)=i;
+
+                end 
+                          
+            end
+            
+                if speicher_row_delete==[]
+
+                else
+
+                    images_matrix(speicher_row_delete,:)=[]; % it should be 4 images within the matrix 
+
+                end
+            
+            [row,~]=size(images_matrix);
+            d=0;
+
+            if row > 5 % 4- 5 images out of one image box
+                
+                if T_image == 1 % T1
+                
+                    for i=1:row % to delete rows which coloumbs are smaller than 3
+
+                              length_row=length(find(images_matrix(i,:) > 0));
+
+                              if length_row < 17
+                                  d=d+1;
+                                  speicher_row_delete(1,d)=i;
+
+                              end 
+
+                    end
+                
+                    images_matrix(speicher_row_delete,:)=[]; % it should be 4 images within the matrix  
+            
+                elseif T_image == 2 % T2
+                
+                    for i=1:row % to delete rows which coloumbs are smaller than 3
+
+                                  length_row=length(find(images_matrix(i,:) > 0));
+
+                                  if length_row < 8
+                                      d=d+1;
+                                      speicher_row_delete(1,d)=i;
+
+                                  end 
+
+                     end
+
+                    images_matrix(speicher_row_delete,:)=[]; % it should be 4 images within the matrix   
+                
+                end
+                
+                images_matrix(speicher_row_delete,:)=[]; % it should be 4 images within the matrix 
+                
+            end
+
+            
+            [row_image_matrix,~]=size(images_matrix);
+
+            dist_image=0;
+            find_dist_images=0;
+
+            % final process to differ image 1 to 3
+            image_1_col=images_matrix(row_image_matrix-2,:);
+            image_1_col(image_1_col==0)=[];
+            image_1_col_min=min(image_1_col);
+            image_1_col_max=max(image_1_col);
+            image_1_hor_cut=dicom_image(:,image_1_col);
+            % cut images horizontally to min length
+            dist_image=0;
+            [row,col]=size(image_1_hor_cut);
+
+            for i=1:row
+                 dist_image(1,i)=length(find(image_1_hor_cut(i,:)<200));
+            end
+
+            image_1_row_dist= find(dist_image<col);
+            image_1_row_min=min(image_1_row_dist);
+            image_1_row_max=max(image_1_row_dist);
+            image_1_show=dicom_image(image_1_row_min:image_1_row_max,image_1_col_min:image_1_col_max);
+            %figure;imshow(image_1_show,[]);
+
+            image_2_col=images_matrix(row_image_matrix-1,:);
+            image_2_col(image_2_col==0)=[];
+            image_2_col_min=min(image_2_col);
+            image_2_col_max=max(image_2_col);
+            image_2_hor_cut=dicom_image(:,image_2_col);
+            % cut images horizontally to min length
+            dist_image=0;
+            [row,col]=size(image_2_hor_cut);
+
+            for i=1:row
+                 dist_image(1,i)=length(find(image_2_hor_cut(i,:)<200));
+            end
+
+            image_2_row_dist= find(dist_image<col);
+            image_2_row_min=min(image_2_row_dist);
+            image_2_row_max=max(image_2_row_dist);
+            image_2_show=dicom_image(image_2_row_min:image_2_row_max,image_2_col_min:image_2_col_max);
+            %figure;imshow(image_2_show,[]);
+
+            image_3_col=images_matrix(row_image_matrix,:);
+            image_3_col(image_3_col==0)=[];
+            image_3_col_min=min(image_3_col);
+            image_3_col_max=max(image_3_col);
+            image_3_hor_cut=dicom_image(:,image_3_col);
+            % cut images horizontally to min length
+            dist_image=0;
+            [row,col]=size(image_3_hor_cut);
+
+            for i=1:row
+                dist_image(1,i)=length(find(image_3_hor_cut(i,:)<200));
+            end
+
+            image_3_row_dist= find(dist_image<col);
+            image_3_row_min=min(image_3_row_dist);
+            image_3_row_max=max(image_3_row_dist);
+            image_3_show=dicom_image(image_3_row_min:image_3_row_max,image_3_col_min:image_3_col_max);
+            %figure;imshow(image_3_show,[]);
+            %% get Image- Profiles in x and y direction && analysis for images 1-3
+            
+            if T_image == 1
+                   
+            image_show=image_1_show; % #image 1
+            image_number=1;
+            image_show_size=1:20;% Box of upper left matrix
+            image_show_size2=18;% Box of lower right matrix
+            [image_grNull_x,image_grNull_y,Ix,Iy]=HCSR_get_image_profile(image_show,image_show_size,image_show_size2,image_number);
+            hcsr_test_x_1=image_grNull_x;
+            hcsr_test_y_1=image_grNull_y;
+            hscr_x_1=Ix;
+            hscr_y_1=Iy;
+            
+            image_show=image_2_show;% #image 2
+            image_number=2;
+            image_show_size=1:19;% Box of upper left matrix
+            image_show_size2=18;% Box of lower right matrix
+            [image_grNull_x,image_grNull_y,Ix,Iy]=HCSR_get_image_profile(image_show,image_show_size,image_show_size2,image_number);
+            hcsr_test_x_2=image_grNull_x;
+            hcsr_test_y_2=image_grNull_y;
+            hscr_x_2=Ix;
+            hscr_y_2=Iy;
+            
+            
+            image_show=image_3_show;% #image 3
+            image_number=3;
+            image_show_size=1:17;% Box of upper left matrix
+            image_show_size2=15;% Box of lower right matrix
+            [image_grNull_x,image_grNull_y,Ix,Iy]=HCSR_get_image_profile(image_show,image_show_size,image_show_size2,image_number);
+            hcsr_test_x_3=image_grNull_x;
+            hcsr_test_y_3=image_grNull_y;
+            hscr_x_3=Ix;
+            hscr_y_3=Iy;
+            
+            elseif T_image == 2
+                
+            image_show=image_1_show; % #image 1
+            image_number=1;
+            image_show_size=1:9;% Box of upper left matrix
+            image_show_size2=9;% Box of lower right matrix
+            [image_grNull_x,image_grNull_y,Ix,Iy]=HCSR_get_image_profile(image_show,image_show_size,image_show_size2,image_number);
+            hcsr_test_x_1=image_grNull_x;
+            hcsr_test_y_1=image_grNull_y;
+            hscr_x_1=Ix;
+            hscr_y_1=Iy;
+            
+            image_show=image_2_show;% #image 2
+            image_number=2;
+            image_show_size=1:9;% Box of upper left matrix
+            image_show_size2=9;% Box of lower right matrix
+            [image_grNull_x,image_grNull_y,Ix,Iy]=HCSR_get_image_profile(image_show,image_show_size,image_show_size2,image_number);
+            hcsr_test_x_2=image_grNull_x;
+            hcsr_test_y_2=image_grNull_y;
+            hscr_x_2=Ix;
+            hscr_y_2=Iy;
+            
+            
+            image_show=image_3_show;% #image 3
+            image_number=3;
+            image_show_size=1:9;% Box of upper left matrix
+            image_show_size2=9;% Box of lower right matrix
+            [image_grNull_x,image_grNull_y,Ix,Iy]=HCSR_get_image_profile(image_show,image_show_size,image_show_size2,image_number);
+            hcsr_test_x_3=image_grNull_x;
+            hcsr_test_y_3=image_grNull_y;
+            hscr_x_3=Ix;
+            hscr_y_3=Iy;
+            end
