@@ -1,0 +1,145 @@
+       % Analyze profile
+       function [image_gr0,image_gr0_2,dist_total]=LCOD_analyze_profile(signal_profile,range,T_image)
+       
+       signal_profile=double(signal_profile);
+       [Max_peak,MaxIdx_peak] = findpeaks(signal_profile);% find max values + position
+       max_signal_profile=max(Max_peak);
+       d=0;
+       
+       if T_image == 1
+  
+            range_15_1=2:24;% profiles 1-5
+            range_15_2=25:49;
+            range_15_3=50:70; 
+            range_610_1=10:32;% profiles 6-10
+            range_610_2=33:55;
+            range_610_3=56:70;
+            
+       elseif T_image == 2
+           
+           [~,col]=size(signal_profile);
+           
+            range_15_1=1:12;% profiles 1-5
+            range_15_2=13:24;
+            range_15_3=25:col; 
+            range_610_1=5:16;% profiles 6-10
+            range_610_2=17:27;
+            range_610_3=28:col;
+          
+       end
+       
+       
+       [~,col_profil]=size(MaxIdx_peak);
+       dist_max=[];
+              
+       if range == 0 %% range 0 == get profiles 1-5 and range 1 == get profiles 6-10 
+           % find Maxima for profiles 1-5
+           for i=1:col_profil
+
+               dist_current=find(MaxIdx_peak(1,i)==range_15_1);
+
+               if dist_current>0
+
+                  d=d+1; 
+                  dist_max(d,1)=Max_peak(1,i);
+
+
+               end
+
+           end
+
+           dist_max15_1=max(dist_max);
+           dist_max=[];
+
+           for i=1:col_profil
+
+               dist_current=find(MaxIdx_peak(1,i)==range_15_2);
+
+               if dist_current>0
+
+                  d=d+1; 
+                  dist_max(d,1)=Max_peak(1,i);
+
+
+               end
+
+           end
+
+           dist_max15_2=max(dist_max);   
+           dist_max=[];
+
+           for i=1:col_profil
+
+               dist_current=find(MaxIdx_peak(1,i)==range_15_3);
+
+               if dist_current>0
+
+                  d=d+1; 
+                  dist_max(d,1)=Max_peak(1,i);
+
+
+               end
+
+           end
+
+           dist_max15_3=max(dist_max);
+           dist_total=[dist_max15_1;dist_max15_2;dist_max15_3];
+       
+       else
+           
+           for i=1:col_profil
+
+               dist_current=find(MaxIdx_peak(1,i)==range_610_1);
+
+               if dist_current>0
+
+                  d=d+1;
+                  dist_max(d,1)=Max_peak(1,i);
+
+
+               end
+
+           end
+
+           dist_max610_1=max(dist_max);
+           dist_max=[];
+
+           for i=1:col_profil
+
+               dist_current=find(MaxIdx_peak(1,i)==range_610_2);
+
+               if dist_current>0
+
+                  d=d+1; 
+                  dist_max(d,1)=Max_peak(1,i);
+
+
+               end
+
+           end
+
+           dist_max610_2=max(dist_max);   
+           dist_max=[];
+
+           for i=1:col_profil
+
+               dist_current=find(MaxIdx_peak(1,i)==range_610_3);
+
+               if dist_current>0
+
+                  d=d+1; 
+                  dist_max(d,1)=Max_peak(1,i);
+
+
+               end
+
+           end
+
+           dist_max610_3=max(dist_max);
+           dist_total=[dist_max610_1;dist_max610_2;dist_max610_3];      
+       end    
+       
+       % Abstand von min und max soll größer sein als 45% des Maximalwertes im signal_profile
+     signal_profile_noise=max_signal_profile.*0.45; % 1. Threshold based on paper
+     image_gr0=dist_total-signal_profile_noise; 
+     image_gr0_2=dist_total-12; % 2. Threshold; this threshold is evaluated out of analyzing all dist_totals: dist_total_t1,dis
