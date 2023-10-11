@@ -1,0 +1,989 @@
+function dauer=mri_qa_protocol(inputvalue,name_of_protocol_file)
+% %% Input %%
+% 
+% inputvalue='/home/boeckefx/Documents/MATLAB/PHD/DICOM_data';%  Type in 'name' of main folder ...('.../name'); 
+% csv_file='mri_protocol.csv';
+% filename = 'mri_protocol.mat'; 
+
+
+%% Method %%
+
+%load(filename); % cop_ex1.mat needs to be defined in the same folder as MRI_qa.m file
+load('ex1.mat','cop_ex1');
+[row,~]=size(cop_ex1);
+loop_count=0;
+for k=3:row
+
+%% Data for Excel sheet %%
+    
+    
+    loop_count=loop_count+1;
+    % Date
+    [C,matches] = strsplit(cop_ex1{k,1},{'ACR_Phantom_'});
+    AquisitionDate=C{1,2};
+
+    % Localizer
+    data=cop_ex1{k,3};
+    no_scan='';
+   
+        [~,~,index2] = find(strcmp(cop_ex1{k,3},no_scan));
+                   
+        if data<1
+            
+            geo_localizer='p';
+            
+        elseif index2==1
+            
+            geo_localizer='-';
+            
+        else
+            
+            geo_localizer='x';
+            
+        end
+    
+    % GEO_t1
+    data=cop_ex1{k,5};
+    no_scan='';
+   
+        [~,~,index2] = find(strcmp(cop_ex1{k,5},no_scan));
+                   
+        if data<1
+            
+            geo_t1='p';
+            
+        elseif index2==1
+            
+            geo_t1='-';
+        
+        else
+            
+            geo_t1='x';
+            
+        end
+        
+    % HCSR_t1
+    no_scan='';
+    name_of_file='HCSR test passed'; 
+    count=0;
+    
+        for i=6:9
+            
+            count=count+1;
+            value_test=cop_ex1{k,i}';
+            [row_cop_ex1,col_cop_ex1]=size(value_test);
+            [~,~,index] = find(strcmp(value_test(row_cop_ex1,:),name_of_file));
+            [~,~,index2] = find(strcmp(cop_ex1{k,i}',no_scan));
+            
+            
+            if index==1
+                
+            else
+                
+                index=0;
+                
+            end
+            
+            if index2==1
+               
+                hscr_test=5;
+                break
+                
+            end 
+          
+            hscr_test(1,count)=index;
+        end 
+    
+        data_hcsr=sum(hscr_test);
+        
+        if data_hcsr==4
+            
+            hcsr_t1='p';
+            
+        elseif data_hcsr==5
+            
+            hcsr_t1='-';
+            
+        else
+            
+            hcsr_t1='x';
+            
+        end    
+  
+    % STA_t1
+    no_scan='';
+    name_of_file='sta test passed'; 
+   
+            [~,~,index] = find(strcmp(cop_ex1{k,12},name_of_file));
+            [~,~,index2] = find(strcmp(cop_ex1{k,12}',no_scan));
+            
+            if index==1
+                
+            else
+                
+                index=0;
+                
+            end  
+            
+            if index2==1
+               
+                index=2;
+              
+            end 
+ 
+        if index==1
+            
+            sta_t1='p';
+            
+        elseif index==2
+            
+            sta_t1='-';
+            
+        else
+            
+            sta_t1='x';
+            
+        end 
+        
+    % SPA_t1
+    name_of_file='spa test passed';
+    no_scan='';
+   
+            [~,~,index] = find(strcmp(cop_ex1{k,17},name_of_file));
+            [~,~,index2] = find(strcmp(cop_ex1{k,17},no_scan));
+            
+            if index==1
+                
+            else
+                
+                index=0;
+                
+            end
+            
+            if index2==1
+               
+                index=3;
+                
+            end  
+            
+        
+        if index==1
+            
+            spa_t1='p';
+            
+        elseif index==3
+            
+            spa_t1='-';
+            
+        else
+            
+            spa_t1='x';
+            
+        end 
+        
+    % PIU_t1
+    no_scan='';
+    name_of_file='piu test passed'; 
+    count=0;
+    
+        for i=19:2:21
+            
+            count=count+1;
+            [~,~,index] = find(strcmp(cop_ex1{k,i},name_of_file));
+            [~,~,index2] = find(strcmp(cop_ex1{k,i},no_scan));
+            
+            if index==1
+                
+            else
+                
+                index=0;
+                
+            end
+            
+            if index2==1
+               
+                piu_test=3;
+                
+            end          
+            
+            piu_test(1,count)=index;
+        end 
+    
+        data_piu=sum(piu_test);
+        
+        if data_piu==2
+            
+            piu_t1='p';
+            
+        elseif data_piu==3
+            
+            piu_t1='-';
+            
+        else
+            
+            piu_t1='x';
+            
+        end 
+        
+    % PSG_t1
+    no_scan='';
+    name_of_file='psg test passed'; 
+    count=0;
+    
+        for i=23:2:25
+            
+            count=count+1;
+            [~,~,index] = find(strcmp(cop_ex1{k,i},name_of_file));
+            [~,~,index2] = find(strcmp(cop_ex1{k,i},no_scan));
+            
+            if index==1
+                
+            else
+                
+                index=0;
+                
+            end
+            
+            if index2==1
+               
+                psg_test=3;
+                break
+                
+            end          
+            
+            psg_test(1,count)=index;
+        end 
+    
+        data_psg=sum(psg_test);
+        
+        if data_psg==2
+            
+            psg_t1='p';
+            
+        elseif data_psg==3
+            
+            psg_t1='-';
+            
+        else
+            
+            psg_t1='x';
+            
+        end
+        
+    % LCOD_t1
+    name_of_file='LCOD test passed';
+    no_scan='';
+   
+            [~,~,index] = find(strcmp(cop_ex1{k,28},name_of_file));
+            [~,~,index2] = find(strcmp(cop_ex1{k,28},no_scan));
+            
+            if index==1
+                
+            else
+                
+                index=0;
+                
+            end
+            
+            if index2==1
+               
+                index=3;
+                
+            end  
+            
+        
+        if index==1
+            
+            lcod_t1='p';
+            
+        elseif index==3
+            
+            lcod_t1='-';
+            
+        else
+            
+            lcod_t1='x';
+            
+        end 
+     
+    % GEO_t2_20
+    data=cop_ex1{k,35};
+    no_scan='';
+   
+        [~,~,index2] = find(strcmp(cop_ex1{k,35},no_scan));
+                   
+        if data<1
+            
+            geo_t2_20='p';
+            
+        elseif index2==1
+            
+            geo_t2_20='-';
+            
+        else
+            
+            geo_t2_20='x';
+            
+        end
+        
+    % HCSR_t2_20
+    no_scan='';
+    name_of_file='HCSR test passed'; 
+    count=0;
+    
+        for i=36:39
+            
+            count=count+1;
+            value_test=cop_ex1{k,i}';
+            [row_cop_ex1,col_cop_ex1]=size(value_test);
+            if row_cop_ex1 == 0
+                
+                index=0;
+             
+            else 
+                
+                [~,~,index] = find(strcmp(value_test(row_cop_ex1,:),name_of_file));
+            
+            end
+            
+                [~,~,index2] = find(strcmp(cop_ex1{k,i}',no_scan));
+            
+            if index==1
+                
+            else
+                
+                index=0;
+                
+            end
+            
+            if index2==1
+               
+                hscr_test=5;
+                break
+                
+            end 
+          
+            hscr_test(1,count)=index;
+        end 
+    
+        data_hcsr=sum(hscr_test);
+        
+        if data_hcsr==4
+            
+            hcsr_t2_20='p';
+            
+        elseif data_hcsr==5
+            
+            hcsr_t2_20='-';
+            
+        else
+            
+            hcsr_t2_20='x';
+            
+        end    
+  
+    % STA_t2_20    
+    no_scan='';
+    name_of_file='sta test passed'; 
+   
+            [~,~,index] = find(strcmp(cop_ex1{k,42},name_of_file));
+            [~,~,index2] = find(strcmp(cop_ex1{k,42}',no_scan));
+            
+            if index==1
+                
+            else
+                
+                index=0;
+                
+            end  
+            
+            if index2==1
+               
+                index=2;
+              
+            end 
+ 
+        if index==1
+            
+            sta_t2_20='p';
+            
+        elseif index==2
+            
+            sta_t2_20='-';
+            
+        else
+            
+            sta_t2_20='x';
+            
+        end 
+           
+    % SPA_t2_20
+    name_of_file='spa test passed';
+    no_scan='';
+   
+            [~,~,index] = find(strcmp(cop_ex1{k,47},name_of_file));
+            [~,~,index2] = find(strcmp(cop_ex1{k,47},no_scan));
+            
+            if index==1
+                
+            else
+                
+                index=0;
+                
+            end
+            
+            if index2==1
+               
+                index=3;
+ 
+            end  
+            
+        
+        if index==1
+            
+            spa_t2_20='p';
+            
+        elseif index==3
+            
+            spa_t2_20='-';
+            
+        else
+            
+            spa_t2_20='x';
+            
+        end 
+        
+    % PIU_t2_20
+    no_scan='';
+    name_of_file='piu test passed'; 
+    count=0;
+    
+        for i=49:2:51
+            
+            count=count+1;
+            [~,~,index] = find(strcmp(cop_ex1{k,i},name_of_file));
+            [~,~,index2] = find(strcmp(cop_ex1{k,i},no_scan));
+            
+            if index==1
+                
+            else
+                
+                index=0;
+                
+            end
+            
+            if index2==1
+               
+                piu_test=3;
+                break
+                
+            end          
+            
+            piu_test(1,count)=index;
+        end 
+    
+        data_piu=sum(piu_test);
+        
+        if data_piu==2
+            
+            piu_t2_20='p';
+            
+        elseif data_piu==3
+            
+            piu_t2_20='-';
+            
+        else
+            
+            piu_t2_20='x';
+            
+        end 
+        
+    % PSG_t2_20
+    no_scan='';
+    name_of_file='psg test passed'; 
+    count=0;
+    
+        for i=53:2:55
+            
+            count=count+1;
+            [~,~,index] = find(strcmp(cop_ex1{k,i},name_of_file));
+            [~,~,index2] = find(strcmp(cop_ex1{k,i},no_scan));
+            
+            if index==1
+                
+            else
+                
+                index=0;
+                
+            end
+            
+            if index2==1
+               
+                psg_test=3;
+                break
+                
+            end          
+            
+            psg_test(1,count)=index;
+        end 
+    
+        data_psg=sum(psg_test);
+        
+        if data_psg==2
+            
+            psg_t2_20='p';
+            
+        elseif data_psg==3
+            
+            psg_t2_20='-';
+            
+        else
+            
+            psg_t2_20='x';
+            
+        end
+        
+    % LCOD_t2_20
+    name_of_file='LCOD test passed';
+    no_scan='';
+   
+            [~,~,index] = find(strcmp(cop_ex1{k,58},name_of_file));
+            [~,~,index2] = find(strcmp(cop_ex1{k,58},no_scan));
+            
+            if index==1
+                
+            else
+                
+                index=0;
+                
+            end
+            
+            if index2==1
+               
+                index=3;
+ 
+            end  
+            
+        
+        if index==1
+            
+            lcod_t2_20='p';
+            
+        elseif index==3
+            
+            lcod_t2_20='-';
+            
+        else
+            
+            lcod_t2_20='x';
+            
+        end  
+        
+     % GEO_t2_80
+    data=cop_ex1{k,65};
+    no_scan='';
+   
+        [~,~,index2] = find(strcmp(cop_ex1{k,65},no_scan));
+                   
+        if data<1
+            
+            geo_t2_80='p';
+            
+        elseif index2==1
+            
+            geo_t2_80='-';
+            
+        else
+            
+            geo_t2_80='x';
+            
+        end
+        
+    % HCSR_t2_80
+    no_scan='';
+    name_of_file='HCSR test passed'; 
+    count=0;
+    
+        for i=66:69
+            count=count+1;
+            value_test=cop_ex1{k,i}';
+            [row_cop_ex1,col_cop_ex1]=size(value_test);
+            if row_cop_ex1 == 0
+                
+                index=0;
+             
+            else 
+                
+                [~,~,index] = find(strcmp(value_test(row_cop_ex1,:),name_of_file));
+            
+            end
+            
+            [~,~,index2] = find(strcmp(cop_ex1{k,i}',no_scan));
+            
+            if index==1
+                
+            else
+                
+                index=0;
+                
+            end
+            
+            if index2==1
+               
+                hscr_test=5;
+                break
+                
+            end 
+          
+            hscr_test(1,count)=index;
+        end 
+    
+        data_hcsr=sum(hscr_test);
+        
+        if data_hcsr==4
+            
+            hcsr_t2_80='p';
+            
+        elseif data_hcsr==5
+            
+            hcsr_t2_80='-';
+            
+        else
+            
+            hcsr_t2_80='x';
+            
+        end    
+  
+    % STA_t2_80
+    no_scan='';
+    name_of_file='sta test passed'; 
+   
+            [~,~,index] = find(strcmp(cop_ex1{k,72},name_of_file));
+            [~,~,index2] = find(strcmp(cop_ex1{k,72}',no_scan));
+            
+            if index==1
+                
+            else
+                
+                index=0;
+                
+            end  
+            
+            if index2==1
+               
+                index=2;
+              
+            end 
+ 
+        if index==1
+            
+            sta_t2_80='p';
+            
+        elseif index==2
+            
+            sta_t2_80='-';
+            
+        else
+            
+            sta_t2_80='x';
+            
+        end 
+        
+    % SPA_t2_80
+    name_of_file='spa test passed';
+    no_scan='';
+   
+            [~,~,index] = find(strcmp(cop_ex1{k,77},name_of_file));
+            [~,~,index2] = find(strcmp(cop_ex1{k,77},no_scan));
+            
+            if index==1
+                
+            else
+                
+                index=0;
+                
+            end
+            
+            if index2==1
+               
+                index=3;
+    
+            end  
+            
+        
+        if index==1
+            
+            spa_t2_80='p';
+            
+        elseif index==3
+            
+            spa_t2_80='-';
+            
+        else
+            
+            spa_t2_80='x';
+            
+        end 
+        
+    % PIU_t2_80
+    no_scan='';
+    name_of_file='piu test passed'; 
+    count=0;
+    
+        for i=79:2:81
+            
+            count=count+1;
+            [~,~,index] = find(strcmp(cop_ex1{k,i},name_of_file));
+            [~,~,index2] = find(strcmp(cop_ex1{k,i},no_scan));
+            
+            if index==1
+                
+            else
+                
+                index=0;
+                
+            end
+            
+            if index2==1
+               
+                piu_test=3;
+                break
+                
+            end          
+            
+            piu_test(1,count)=index;
+        end 
+    
+        data_piu=sum(piu_test);
+        
+        if data_piu==2
+            
+            piu_t2_80='p';
+            
+        elseif data_piu==3
+            
+            piu_t2_80='-';
+            
+        else
+            
+            piu_t2_80='x';
+            
+        end 
+        
+    % PSG_t2_80
+    no_scan='';
+    name_of_file='psg test passed'; 
+    count=0;
+    
+        for i=83:2:85
+            
+            count=count+1;
+            [~,~,index] = find(strcmp(cop_ex1{k,i},name_of_file));
+            [~,~,index2] = find(strcmp(cop_ex1{k,i},no_scan));
+            
+            if index==1
+                
+            else
+                
+                index=0;
+                
+            end
+            
+            if index2==1
+               
+                psg_test=3;
+                break
+                
+            end          
+            
+            psg_test(1,count)=index;
+        end 
+    
+        data_psg=sum(psg_test);
+        
+        if data_psg==2
+            
+            psg_t2_80='p';
+            
+        elseif data_psg==3
+            
+            psg_t2_80='-';
+            
+        else
+            
+            psg_t2_80='x';
+            
+        end
+        
+    % LCOD_t2_80
+    name_of_file='LCOD test passed';
+    no_scan='';
+   
+            [~,~,index] = find(strcmp(cop_ex1{k,88},name_of_file));
+            [~,~,index2] = find(strcmp(cop_ex1{k,88},no_scan));
+            
+            if index==1
+                
+            else
+                
+                index=0;
+                
+            end
+            
+            if index2==1
+               
+                index=3;
+       
+            end  
+            
+        
+        if index==1
+            
+            lcod_t2_80='p';
+            
+        elseif index==3
+            
+            lcod_t2_80='-';
+            
+        else
+            
+            lcod_t2_80='x';
+            
+        end    
+
+%% Create Excel- File %%
+
+                % The ability to save a cell array with both strings and numbers using a single function
+                 col2={'MRI QA CHECK';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';                       
+                        '';
+                        '';
+                        '';                  
+                        }; 
+                col1={'';
+                        'Localizer';
+                        't1';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        't2_20';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        '';
+                        't2_80';
+                        '';
+                        '';
+                        '';                       
+                        '';
+                        '';
+                        '';
+                        };
+                
+                
+                col={'Date';
+                        'GEOM';
+                        'GEOM';
+                        'HCSR';
+                        'STA';
+                        'SPA';
+                        'PUI';
+                        'PSG';
+                        'LCOD';
+                        'GEOM';
+                        'HCSR';
+                        'STA';
+                        'SPA';
+                        'PUI';
+                        'PSG';
+                        'LCOD';
+                        'GEOM';
+                        'HCSR';
+                        'STA';
+                        'SPA';
+                        'PUI';                       
+                        'PSG';
+                        'LCOD';
+                             
+                        };
+
+                                   
+                    rows={AquisitionDate;
+                        geo_localizer;
+                        geo_t1;          
+                        hcsr_t1;
+                        sta_t1;
+                        spa_t1;
+                        piu_t1;
+                        psg_t1;
+                        lcod_t1;
+                        geo_t2_20;          
+                        hcsr_t2_20;
+                        sta_t2_20;
+                        spa_t2_20;
+                        piu_t2_20;
+                        psg_t2_20;
+                        lcod_t2_20;
+                        geo_t2_80;          
+                        hcsr_t2_80;
+                        sta_t2_80;
+                        spa_t2_80;
+                        piu_t2_80;
+                        psg_t2_80;
+                        lcod_t2_80;                        
+                        };
+
+                    if loop_count==1
+                        
+                        cell_protocol = [col2';col1';col']; % Cell array
+                        
+                    end
+                    
+                        [cop_ex1_row,~]=size(cell_protocol);
+                        d=cop_ex1_row+1;
+                        cell_protocol(d,:)=rows'; % Cell array
+                        
+end                        
+
+%% Save and Export as csv. data %%
+
+
+%save(filename)
+
+ex2 = cellfun(@ex_func,cell_protocol,'UniformOutput',0); % it is a cell array
+cell2csv(name_of_protocol_file, ex2, ';', '.') % name the csv.file
+
+phd_file='/home/boeckefx/Documents/MATLAB';
+sourcefile=strcat(phd_file,'/',name_of_protocol_file); 
+statusmovefile=movefile(sourcefile,inputvalue);
+
+phd_file='/home/boeckefx/Documents/MATLAB/PHD';
+sourcefile=strcat(phd_file,'/',name_of_protocol_file); 
+statusmovefile=movefile(sourcefile,inputvalue);
+
+%% time of process %%
+t=toc;
+dauer=datestr(datenum(0,0,0,0,0,t),'HH:MM:SS');% hours:minutes:seconds
