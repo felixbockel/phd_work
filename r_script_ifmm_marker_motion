@@ -1,0 +1,1761 @@
+## AUfRUF: Rscript /home/boeckefx/Documents/Prostate_SOP/scripte/ifmm_marker_motion.r
+
+##########
+## data ##
+##########
+
+## x-ray marker ##
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/albig.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/albig_xrt.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt=marker_xrt[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_17=marker_xrt
+marker=marker[-c(1),]
+marker=marker[,c(1,3,2)]
+colnames(marker)<-c(1:3)
+marker_17=marker
+mean_marker17=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker17=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/ammon.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/ammon_xrt.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt=marker_xrt[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_1=marker_xrt
+marker=marker[,c(1,3,2)]
+colnames(marker)<-c(1:3)
+marker_1=marker
+mean_marker1=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker1=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/babic.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker=cbind(((marker[,1])-(marker[,4])),((marker[,3])-(marker[,6])),((marker[,2])-(marker[,5])))
+colnames(marker)<-c(1:3)
+marker_44=marker
+mean_marker44=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker44=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker_xrt=marker[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_44=marker_xrt
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/beck.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/beck_xrt.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt=marker_xrt[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_13=marker_xrt
+marker=marker[,c(1,3,2)]
+colnames(marker)<-c(1:3)
+marker_13=marker
+mean_marker13=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker13=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/bohn.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/bohn_xrt.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt=marker_xrt[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_11=marker_xrt
+marker=marker[,c(1,3,2)]
+colnames(marker)<-c(1:3)
+marker_11=marker
+mean_marker11=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker11=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/brauer.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/brauer_xrt.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt=marker_xrt[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_2=marker_xrt
+marker=marker[,c(1,3,2)]
+colnames(marker)<-c(1:3)
+marker_2=marker
+mean_marker2=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker2=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/brendel.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker=cbind(((marker[,1])-(marker[,4])),((marker[,3])-(marker[,6])),((marker[,2])-(marker[,5])))
+colnames(marker)<-c(1:3)
+marker_53=marker
+mean_marker53=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker53=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker_xrt=marker[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_53=marker_xrt
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/fehn.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker=cbind(((marker[,1])-(marker[,4])),((marker[,3])-(marker[,6])),((marker[,2])-(marker[,5])))
+colnames(marker)<-c(1:3)
+marker_30=marker
+mean_marker30=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker30=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker_xrt=marker[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_30=marker_xrt
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/gläseke.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker=cbind(((marker[,1])-(marker[,4])),((marker[,3])-(marker[,6])),((marker[,2])-(marker[,5])))
+colnames(marker)<-c(1:3)
+marker_48=marker
+mean_marker48=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker48=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker_xrt=marker[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_48=marker_xrt
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/gropp.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker=cbind(((marker[,1])-(marker[,4])),((marker[,3])-(marker[,6])),((marker[,2])-(marker[,5])))
+colnames(marker)<-c(1:3)
+marker_45=marker
+mean_marker45=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker45=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker_xrt=marker[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_45=marker_xrt
+print(paste("pat45mean",mean_marker45))
+print(paste("pat45std",sd_mean_marker45))
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/hackel.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/hackel_xrt.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt=marker_xrt[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_20=marker_xrt
+marker=marker[,c(1,3,2)]
+colnames(marker)<-c(1:3)
+marker_20=marker
+mean_marker20=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker20=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/heidenreich.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/heidenreich_xrt.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt=marker_xrt[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_14=marker_xrt
+marker=marker[,c(1,3,2)]
+colnames(marker)<-c(1:3)
+marker_14=marker
+mean_marker14=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker14=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+print(paste("pat14mean",mean_marker14))
+print(paste("pat14std",sd_mean_marker14))
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/jacobi.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/jacobi_xrt.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt=marker_xrt[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_12=marker_xrt
+marker=marker[,c(1,3,2)]
+colnames(marker)<-c(1:3)
+marker_12=marker
+mean_marker12=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker12=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+print(paste("pat12mean",mean_marker12))
+print(paste("pat12std",sd_mean_marker12))
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/kaiser.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker=cbind(((marker[,1])-(marker[,4])),((marker[,3])-(marker[,6])),((marker[,2])-(marker[,5])))
+colnames(marker)<-c(1:3)
+marker_31=marker
+mean_marker31=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker31=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker_xrt=marker[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_31=marker_xrt
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/klenk.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker=cbind(((marker[,1])-(marker[,4])),((marker[,3])-(marker[,6])),((marker[,2])-(marker[,5])))
+colnames(marker)<-c(1:3)
+marker_37=marker
+mean_marker37=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker37=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker_xrt=marker[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_37=marker_xrt
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/koeppel.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/koeppel_xrt.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt=marker_xrt[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_4=marker_xrt
+marker=marker[,c(1,3,2)]
+colnames(marker)<-c(1:3)
+marker_4=marker
+mean_marker4=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker4=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/koopmann.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker=cbind(((marker[,1])-(marker[,4])),((marker[,3])-(marker[,6])),((marker[,2])-(marker[,5])))
+colnames(marker)<-c(1:3)
+marker_32=marker
+mean_marker32=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker32=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker_xrt=marker[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_32=marker_xrt
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/krämer.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker=cbind(((marker[,1])-(marker[,4])),((marker[,3])-(marker[,6])),((marker[,2])-(marker[,5])))
+colnames(marker)<-c(1:3)
+marker_35=marker
+mean_marker35=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker35=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker_xrt=marker[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_35=marker_xrt
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/kulke.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/kulke_xrt.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt=marker_xrt[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_18=marker_xrt
+marker=marker[,c(1,3,2)]
+colnames(marker)<-c(1:3)
+marker_18=marker
+mean_marker18=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker18=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/lang.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker=cbind(((marker[,1])-(marker[,4])),((marker[,3])-(marker[,6])),((marker[,2])-(marker[,5])))
+colnames(marker)<-c(1:3)
+marker_40=marker
+mean_marker40=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker40=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker_xrt=marker[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_40=marker_xrt
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/liandrakis.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/liandrakis_xrt.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt=marker_xrt[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_26=marker_xrt
+marker=marker[,c(1,3,2)]
+colnames(marker)<-c(1:3)
+marker_26=marker
+mean_marker26=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker26=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/meusel.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/meusel_xrt.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt=marker_xrt[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_16=marker_xrt
+marker=marker[,c(1,3,2)]
+colnames(marker)<-c(1:3)
+marker_16=marker
+mean_marker16=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker16=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/meyer.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker=cbind(((marker[,1])-(marker[,4])),((marker[,3])-(marker[,6])),((marker[,2])-(marker[,5])))
+colnames(marker)<-c(1:3)
+marker_50=marker
+mean_marker50=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker50=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker_xrt=marker[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_50=marker_xrt
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/mitrovic.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker=cbind(((marker[,1])-(marker[,4])),((marker[,3])-(marker[,6])),((marker[,2])-(marker[,5])))
+colnames(marker)<-c(1:3)
+marker_46=marker
+mean_marker46=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker46=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker_xrt=marker[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_46=marker_xrt
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/moenius.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/moenius_xrt.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt=marker_xrt[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_5=marker_xrt
+marker=marker[,c(1,3,2)]
+colnames(marker)<-c(1:3)
+marker_5=marker
+mean_marker5=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker5=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/mück.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker=cbind(((marker[,1])-(marker[,4])),((marker[,3])-(marker[,6])),((marker[,2])-(marker[,5])))
+colnames(marker)<-c(1:3)
+marker_27=marker
+mean_marker27=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker27=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker_xrt=marker[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_27=marker_xrt
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/paul.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/paul_xrt.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt=marker_xrt[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_19=marker_xrt
+marker=marker[,c(1,3,2)]
+colnames(marker)<-c(1:3)
+marker_19=marker
+mean_marker19=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker19=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/potschadtke.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/potschadtke_xrt.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt=marker_xrt[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_10=marker_xrt
+marker=marker[,c(1,3,2)]
+colnames(marker)<-c(1:3)
+marker_10=marker
+mean_marker10=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker10=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+print(paste("pat10mean",mean_marker10))
+print(paste("pat10std",sd_mean_marker10))
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/raum.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/raum_xrt.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt=marker_xrt[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_25=marker_xrt
+marker=marker[,c(1,3,2)]
+colnames(marker)<-c(1:3)
+marker_25=marker
+mean_marker25=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker25=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/rode.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker=cbind(((marker[,1])-(marker[,4])),((marker[,3])-(marker[,6])),((marker[,2])-(marker[,5])))
+colnames(marker)<-c(1:3)
+marker_51=marker
+mean_marker51=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker51=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker_xrt=marker[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_51=marker_xrt
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/schmidt_rolf_rainer.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker=cbind(((marker[,1])-(marker[,4])),((marker[,3])-(marker[,6])),((marker[,2])-(marker[,5])))
+colnames(marker)<-c(1:3)
+marker_42=marker
+mean_marker42=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker42=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker_xrt=marker[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_42=marker_xrt
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/schrauder.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker=cbind(((marker[,1])-(marker[,4])),((marker[,3])-(marker[,6])),((marker[,2])-(marker[,5])))
+colnames(marker)<-c(1:3)
+marker_47=marker
+mean_marker47=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker47=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker_xrt=marker[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_47=marker_xrt
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/vazoukis.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/vazoukis_xrt.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt=marker_xrt[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_28=marker_xrt
+marker=marker[,c(1,3,2)]
+colnames(marker)<-c(1:3)
+marker_28=marker
+mean_marker28=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker28=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/vogt.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/vogt_xrt.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt=marker_xrt[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_23=marker_xrt
+marker=marker[,c(1,3,2)]
+colnames(marker)<-c(1:3)
+marker_23=marker
+mean_marker23=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker23=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/wagner.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/wagner_xrt.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt=marker_xrt[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_24=marker_xrt
+marker=marker[,c(1,3,2)]
+colnames(marker)<-c(1:3)
+marker_24=marker
+mean_marker24=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker24=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/wolfrum.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/wolfrum_xrt.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt=marker_xrt[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_7=marker_xrt
+marker=marker[,c(1,3,2)]
+colnames(marker)<-c(1:3)
+marker_7=marker
+mean_marker7=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker7=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/woznik.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/woznik_xrt.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt=marker_xrt[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_15=marker_xrt
+marker=marker[,c(1,3,2)]
+colnames(marker)<-c(1:3)
+marker_15=marker
+mean_marker15=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker15=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/zausch.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/zausch_xrt.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt=marker_xrt[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_8=marker_xrt
+marker=marker[,c(1,3,2)]
+colnames(marker)<-c(1:3)
+marker_8=marker
+mean_marker8=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker8=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+marker= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/offenmueller.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/intrafraktion/offenmueller_xrt.txt", sep="") , header=TRUE, sep="\t",dec=".")
+marker_xrt=marker_xrt[,c(1,3,2)]
+colnames(marker_xrt)<-c(1:3)
+marker_xrt_54=marker_xrt
+marker=marker[,c(1,3,2)]
+colnames(marker)<-c(1:3)
+marker_54=marker
+mean_marker54=c(mean(marker[,1]),mean(marker[,2]),mean(marker[,3]))
+sd_mean_marker54=c(sd(marker[,1]),sd(marker[,2]),sd(marker[,3]))
+
+#
+
+
+## shift of cbct-cbct of same fraction ##
+#
+cbct_corr17a= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Albig^Bernd/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double17a<-cbct_corr17a[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+cbct_corr17b= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Albig^Bernd2/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+#
+cbct_corr1= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Ammon_Klaus/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double1<-cbct_corr1[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+cbct_corr13= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Beck^Michael/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double13<-cbct_corr13[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+cbct_corr2= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Brauer_Reinhard/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double2<-cbct_corr2[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+cbct_corr12= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Jacobi^Wilfried/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double12<-cbct_corr12[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+cbct_corr18= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Kulke^Bernd/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double18<-cbct_corr18[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+cbct_corr26= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/liandrakis^sprios/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double26<-cbct_corr26[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+cbct_corr29= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Ivanov^Aleksandr/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double29<-cbct_corr29[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+cbct_corr14= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Heidenreich/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double14<-cbct_corr14[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+cbct_corr20= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Hackel^Hans/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double20<-cbct_corr20[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+cbct_corr30= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Fehn^Guenther/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double30<-cbct_corr30[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+cbct_corr9= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Ernst^Reinhard/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double9<-cbct_corr9[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+cbct_corr15= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Woznik^Georg/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double15<-cbct_corr15[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+cbct_corr32= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Koopmann^Klaus/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double32<-cbct_corr32[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+# Kaiser hat kein 2. CBCT
+#cbct_corr31= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/kaiser^hermann/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+#cbct_corr_double31<-cbct_corr31[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+cbct_corr54= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Offenmueller^Werner/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double54<-cbct_corr54[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+# Schrauder hat kein 2. CBCT
+#cbct_corr47= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Schrauder^Oliver/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+#cbct_corr_double47<-cbct_corr47[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+cbct_corr45= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/gropp_dieter/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double45<-cbct_corr45[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+cbct_corr37= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/klenk_hermann/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double37<-cbct_corr37[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+cbct_corr35= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/kraemer_elmar/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double35<-cbct_corr35[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+cbct_corr27= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Mueck^Rainer/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double27<-cbct_corr27[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+cbct_corr19= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Paul^Burkhard/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double19<-cbct_corr19[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+cbct_corr44= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/babic/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double44<-cbct_corr44[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+cbct_corr42= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/schmidt^rolf_rainer/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double42<-cbct_corr42[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+cbct_corr24= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Wagner^Franz/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double24<-cbct_corr24[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+cbct_corr5= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/moenius/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double5<-cbct_corr5[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+cbct_corr7= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Wolfrum^Gerd/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double7<-cbct_corr7[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+cbct_corr8= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Zausch^Andreas/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double8<-cbct_corr8[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+# Potschadtke hat kein 2. CBCT
+#cbct_corr10= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/potschatke/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+#cbct_corr_double10<-cbct_corr10[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+cbct_corr16= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/Meusel^Juergen/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double16<-cbct_corr16[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+cbct_corr28= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct/vazoukis^georgis/cbct_korrektur.txt", sep="") , header=TRUE, sep="\t",dec=".")
+cbct_corr_double28<-cbct_corr28[1:2,c( 4,6,5)]# 2. cbct in einer fraktion -> erklärt in excel sop_patienten
+#
+
+## #### many more data to follow here ####
+
+
+
+#################
+## calculation ##            will 31 Patienten und möglichst die gleichen wie in der ifpp-analyse
+#################
+
+## x-ray marker ## 
+
+# marker_all_pat=rbind(marker_1,marker_2,marker_4,marker_5,marker_7,marker_8,marker_10,marker_11,marker_12,marker_13,marker_14,marker_15,marker_16,marker_17,marker_18,marker_19,
+# marker_20,marker_23,marker_24,marker_25,marker_26,marker_27,marker_28,marker_30,marker_31,marker_32,marker_35,marker_37,marker_40,marker_42,marker_44,marker_45,marker_46,
+# marker_47,marker_48,marker_50,marker_51,marker_53)# for histogram lat, vert, long
+
+marker_all_pat=rbind(marker_1,marker_2,marker_5,marker_7,marker_8,marker_10,marker_11,marker_12,marker_13,marker_14,marker_15,marker_16,marker_17,marker_18,marker_19,
+marker_20,marker_24,marker_25,marker_26,marker_27,marker_28,marker_30,marker_31,marker_32,marker_35,marker_37,marker_42,marker_44,marker_45,
+marker_47,marker_54)# for histogram lat, vert, longitudinal_boxplot
+
+num_pat=c(1,2,5,7,8,10,11,12,13,14,15,16,17,18,19,20,24,25,26,27,28,30,31,32,35,37,42,44,45,47,54)# for boxplot x- axis lat, vert, long
+print(paste("number of patients of intrafractional marker motion:   ",length(num_pat)))
+
+# mean_marker_all_pat=rbind(mean_marker1,mean_marker2,mean_marker4,mean_marker5,mean_marker7,mean_marker8,mean_marker10,mean_marker11,mean_marker12,mean_marker13,mean_marker14,
+# mean_marker15,mean_marker16,mean_marker17,mean_marker18,mean_marker19,mean_marker20,mean_marker23,mean_marker24,mean_marker25,mean_marker26,mean_marker27,mean_marker28,
+# mean_marker30,mean_marker31,mean_marker32,mean_marker35,mean_marker37,mean_marker40,mean_marker42,mean_marker44,mean_marker45,mean_marker46,mean_marker47,mean_marker48,
+# mean_marker50,mean_marker51,mean_marker53)# for boxplot mean value lat, vert, long
+
+mean_marker_all_pat=rbind(mean_marker1,mean_marker2,mean_marker5,mean_marker7,mean_marker8,mean_marker10,mean_marker11,mean_marker12,mean_marker13,mean_marker14,
+mean_marker15,mean_marker16,mean_marker17,mean_marker18,mean_marker19,mean_marker20,mean_marker24,mean_marker25,mean_marker26,mean_marker27,mean_marker28,
+mean_marker30,mean_marker31,mean_marker32,mean_marker35,mean_marker37,mean_marker42,mean_marker44,mean_marker45,mean_marker47,
+mean_marker54)# for boxplot mean value lat, vert, long
+
+# std_marker_all_pat=rbind(sd_mean_marker1,sd_mean_marker2,sd_mean_marker4,sd_mean_marker5,sd_mean_marker7,sd_mean_marker8,sd_mean_marker10,sd_mean_marker11,sd_mean_marker12,
+# sd_mean_marker13,sd_mean_marker14,sd_mean_marker15,sd_mean_marker16,sd_mean_marker17,sd_mean_marker18,sd_mean_marker19,sd_mean_marker20,sd_mean_marker23,sd_mean_marker24,
+# sd_mean_marker25,sd_mean_marker26,sd_mean_marker27,sd_mean_marker28,sd_mean_marker30,sd_mean_marker31,sd_mean_marker32,sd_mean_marker35,sd_mean_marker37,sd_mean_marker40,
+# sd_mean_marker42,sd_mean_marker44,sd_mean_marker45,sd_mean_marker46,sd_mean_marker47,sd_mean_marker48,
+# sd_mean_marker50,sd_mean_marker51,sd_mean_marker53)# for boxplot std value lat, vert, long
+
+std_marker_all_pat=rbind(sd_mean_marker1,sd_mean_marker2,sd_mean_marker5,sd_mean_marker7,sd_mean_marker8,sd_mean_marker10,sd_mean_marker11,sd_mean_marker12,
+sd_mean_marker13,sd_mean_marker14,sd_mean_marker15,sd_mean_marker16,sd_mean_marker17,sd_mean_marker18,sd_mean_marker19,sd_mean_marker20,sd_mean_marker24,
+sd_mean_marker25,sd_mean_marker26,sd_mean_marker27,sd_mean_marker28,sd_mean_marker30,sd_mean_marker31,sd_mean_marker32,sd_mean_marker35,sd_mean_marker37,
+sd_mean_marker42,sd_mean_marker44,sd_mean_marker45,sd_mean_marker47,sd_mean_marker54)# for boxplot std value lat, vert, long
+
+empty_vec=rep(NA,nrow(mean_marker_all_pat))
+empty_matrix=matrix(empty_vec,ncol=1,nrow=length(empty_vec))
+intra_gab=cbind(mean_marker_all_pat[,c(1:3)],empty_matrix) # damit ich abline v an NA machen kann
+
+
+List=list()
+for(i in 1:nrow(intra_gab)){
+  a=intra_gab[i,]
+  LM= a
+  List[[length(List)+1]] = LM
+}
+mean_vector <- as.numeric(unlist(List))#x axis with gab: lat,long,vert,NA, ...
+
+#
+intra_gab=cbind(std_marker_all_pat[,c(1:3)],empty_matrix) # damit ich abline v an NA machen kann
+
+List=list()
+for(i in 1:nrow(intra_gab)){
+  a=intra_gab[i,]
+  LM= a
+  List[[length(List)+1]] = LM
+}
+min_max_vector <- as.numeric(unlist(List))#lat,long,vert
+
+#
+
+List1=list()
+List2=list()
+for(i in 1:length(mean_vector)){
+  a=min_max_vector[i]
+  b=mean_vector[i]
+  LM1=b-a 
+  LM2=b+a
+  List1[[length(List1)+1]] = LM1
+  List2[[length(List2)+1]] = LM2 
+ }
+max_mean <- as.numeric(unlist(List1))
+min_mean <- as.numeric(unlist(List2))
+
+## mean, std, data for van herk formel ## 
+
+mean_lat=round(mean(marker_all_pat[,1]),2)
+std_lat=round(sd(marker_all_pat[,1]),2)
+
+systematic_median_error_lat=sd(c(median(marker_1[,1]-mean_lat),
+median(marker_2[,1]-mean_lat),
+median(marker_5[,1]-mean_lat),
+median(marker_7[,1]-mean_lat),
+median(marker_8[,1]-mean_lat),
+median(marker_10[,1]-mean_lat),
+median(marker_11[,1]-mean_lat),
+median(marker_12[,1]-mean_lat),
+median(marker_13[,1]-mean_lat),
+median(marker_14[,1]-mean_lat),
+median(marker_15[,1]-mean_lat),
+median(marker_16[,1]-mean_lat),
+median(marker_17[,1]-mean_lat),
+median(marker_18[,1]-mean_lat),
+median(marker_19[,1]-mean_lat),
+median(marker_20[,1]-mean_lat),
+median(marker_24[,1]-mean_lat),
+median(marker_25[,1]-mean_lat),
+median(marker_26[,1]-mean_lat),
+median(marker_27[,1]-mean_lat),
+median(marker_28[,1]-mean_lat),
+median(marker_30[,1]-mean_lat),
+median(marker_31[,1]-mean_lat),
+median(marker_32[,1]-mean_lat),
+median(marker_35[,1]-mean_lat),
+median(marker_37[,1]-mean_lat),
+median(marker_42[,1]-mean_lat),
+median(marker_44[,1]-mean_lat),
+median(marker_45[,1]-mean_lat),
+median(marker_47[,1]-mean_lat),
+median(marker_54[,1]-mean_lat)))# systematischer Fehler - großes sigma
+
+random_median_error_lat=sd(c((marker_1[,1]-mean_lat)-(median(marker_1[,1]-mean_lat)),
+(marker_2[,1]-mean_lat)-(median(marker_2[,1]-mean_lat)),
+(marker_5[,1]-mean_lat)-(median(marker_5[,1]-mean_lat)),
+(marker_7[,1]-mean_lat)-(median(marker_7[,1]-mean_lat)),
+(marker_8[,1]-mean_lat)-(median(marker_8[,1]-mean_lat)),
+(marker_10[,1]-mean_lat)-(median(marker_10[,1]-mean_lat)),
+(marker_11[,1]-mean_lat)-(median(marker_12[,1]-mean_lat)),
+(marker_12[,1]-mean_lat)-(median(marker_12[,1]-mean_lat)),
+(marker_13[,1]-mean_lat)-(median(marker_13[,1]-mean_lat)),
+(marker_14[,1]-mean_lat)-(median(marker_14[,1]-mean_lat)),
+(marker_15[,1]-mean_lat)-(median(marker_15[,1]-mean_lat)),
+(marker_16[,1]-mean_lat)-(median(marker_16[,1]-mean_lat)),
+(marker_17[,1]-mean_lat)-(median(marker_17[,1]-mean_lat)),
+(marker_18[,1]-mean_lat)-(median(marker_18[,1]-mean_lat)),
+(marker_19[,1]-mean_lat)-(median(marker_19[,1]-mean_lat)),
+(marker_20[,1]-mean_lat)-(median(marker_20[,1]-mean_lat)),
+(marker_24[,1]-mean_lat)-(median(marker_24[,1]-mean_lat)),
+(marker_25[,1]-mean_lat)-(median(marker_25[,1]-mean_lat)),
+(marker_26[,1]-mean_lat)-(median(marker_26[,1]-mean_lat)),
+(marker_27[,1]-mean_lat)-(median(marker_27[,1]-mean_lat)),
+(marker_28[,1]-mean_lat)-(median(marker_28[,1]-mean_lat)),
+(marker_30[,1]-mean_lat)-(median(marker_30[,1]-mean_lat)),
+(marker_31[,1]-mean_lat)-(median(marker_31[,1]-mean_lat)),
+(marker_32[,1]-mean_lat)-(median(marker_32[,1]-mean_lat)),
+(marker_35[,1]-mean_lat)-(median(marker_35[,1]-mean_lat)),
+(marker_37[,1]-mean_lat)-(median(marker_37[,1]-mean_lat)),
+(marker_42[,1]-mean_lat)-(median(marker_42[,1]-mean_lat)),
+(marker_44[,1]-mean_lat)-(median(marker_44[,1]-mean_lat)),
+(marker_45[,1]-mean_lat)-(median(marker_45[,1]-mean_lat)),
+(marker_47[,1]-mean_lat)-(median(marker_47[,1]-mean_lat)),
+(marker_54[,1]-mean_lat)-(median(marker_54[,1]-mean_lat))))# zufälliger Fehler- kleines sigma
+
+print(paste("global mean lat",mean_lat))
+print(paste("std of global mean lat",std_lat))
+print(paste("systematic_median_error_lat",round(systematic_median_error_lat,2)))
+print(paste("random_median_error_lat",round(random_median_error_lat,2)))
+
+#
+
+mean_vert=round(mean(marker_all_pat[,2]),2)
+std_vert=round(sd(marker_all_pat[,2]),2)
+
+systematic_median_error_vert=sd(c(median(marker_1[,2]-mean_vert),
+median(marker_2[,2]-mean_vert),
+median(marker_5[,2]-mean_vert),
+median(marker_7[,2]-mean_vert),
+median(marker_8[,2]-mean_vert),
+median(marker_10[,2]-mean_vert),
+median(marker_11[,2]-mean_vert),
+median(marker_12[,2]-mean_vert),
+median(marker_13[,2]-mean_vert),
+median(marker_14[,2]-mean_vert),
+median(marker_15[,2]-mean_vert),
+median(marker_16[,2]-mean_vert),
+median(marker_17[,2]-mean_vert),
+median(marker_18[,2]-mean_vert),
+median(marker_19[,2]-mean_vert),
+median(marker_20[,2]-mean_vert),
+median(marker_24[,2]-mean_vert),
+median(marker_25[,2]-mean_vert),
+median(marker_26[,2]-mean_vert),
+median(marker_27[,2]-mean_vert),
+median(marker_28[,2]-mean_vert),
+median(marker_30[,2]-mean_vert),
+median(marker_31[,2]-mean_vert),
+median(marker_32[,2]-mean_vert),
+median(marker_35[,2]-mean_vert),
+median(marker_37[,2]-mean_vert),
+median(marker_42[,2]-mean_vert),
+median(marker_44[,2]-mean_vert),
+median(marker_45[,2]-mean_vert),
+median(marker_47[,2]-mean_vert),
+median(marker_54[,2]-mean_vert)))# systematischer Fehler - großes sigma
+
+random_median_error_vert=sd(c((marker_1[,2]-mean_vert)-(median(marker_1[,1]-mean_vert)),
+(marker_2[,2]-mean_vert)-(median(marker_2[,2]-mean_vert)),
+(marker_5[,2]-mean_vert)-(median(marker_5[,2]-mean_vert)),
+(marker_7[,2]-mean_vert)-(median(marker_7[,2]-mean_vert)),
+(marker_8[,2]-mean_vert)-(median(marker_8[,2]-mean_vert)),
+(marker_10[,2]-mean_vert)-(median(marker_10[,2]-mean_vert)),
+(marker_11[,2]-mean_vert)-(median(marker_12[,2]-mean_vert)),
+(marker_12[,2]-mean_vert)-(median(marker_12[,2]-mean_vert)),
+(marker_13[,2]-mean_vert)-(median(marker_13[,2]-mean_vert)),
+(marker_14[,2]-mean_vert)-(median(marker_14[,2]-mean_vert)),
+(marker_15[,2]-mean_vert)-(median(marker_15[,2]-mean_vert)),
+(marker_16[,2]-mean_vert)-(median(marker_16[,2]-mean_vert)),
+(marker_17[,2]-mean_vert)-(median(marker_17[,2]-mean_vert)),
+(marker_18[,2]-mean_vert)-(median(marker_18[,2]-mean_vert)),
+(marker_19[,2]-mean_vert)-(median(marker_19[,2]-mean_vert)),
+(marker_20[,2]-mean_vert)-(median(marker_20[,2]-mean_vert)),
+(marker_24[,2]-mean_vert)-(median(marker_24[,2]-mean_vert)),
+(marker_25[,2]-mean_vert)-(median(marker_25[,2]-mean_vert)),
+(marker_26[,2]-mean_vert)-(median(marker_26[,2]-mean_vert)),
+(marker_27[,2]-mean_vert)-(median(marker_27[,2]-mean_vert)),
+(marker_28[,2]-mean_vert)-(median(marker_28[,2]-mean_vert)),
+(marker_30[,2]-mean_vert)-(median(marker_30[,2]-mean_vert)),
+(marker_31[,2]-mean_vert)-(median(marker_31[,2]-mean_vert)),
+(marker_32[,2]-mean_vert)-(median(marker_32[,2]-mean_vert)),
+(marker_35[,2]-mean_vert)-(median(marker_35[,2]-mean_vert)),
+(marker_37[,2]-mean_vert)-(median(marker_37[,2]-mean_vert)),
+(marker_42[,2]-mean_vert)-(median(marker_42[,2]-mean_vert)),
+(marker_44[,2]-mean_vert)-(median(marker_44[,2]-mean_vert)),
+(marker_45[,2]-mean_vert)-(median(marker_45[,2]-mean_vert)),
+(marker_47[,2]-mean_vert)-(median(marker_47[,2]-mean_vert)),
+(marker_54[,2]-mean_vert)-(median(marker_54[,2]-mean_vert))))# zufälliger Fehler- kleines sigma
+
+print(paste("global mean vert",mean_vert))
+print(paste("std of global mean vert",std_vert))
+print(paste("systematic_median_error_vert",round(systematic_median_error_vert,2)))
+print(paste("random_median_error_vert",round(random_median_error_vert,2)))
+
+#
+
+mean_long=round(mean(marker_all_pat[,3]),2)
+std_long=round(sd(marker_all_pat[,3]),2)
+
+systematic_median_error_long=sd(c(median(marker_1[,3]-mean_long),
+median(marker_2[,3]-mean_long),
+median(marker_5[,3]-mean_long),
+median(marker_7[,3]-mean_long),
+median(marker_8[,3]-mean_long),
+median(marker_10[,3]-mean_long),
+median(marker_11[,3]-mean_long),
+median(marker_12[,3]-mean_long),
+median(marker_13[,3]-mean_long),
+median(marker_14[,3]-mean_long),
+median(marker_15[,3]-mean_long),
+median(marker_16[,3]-mean_long),
+median(marker_17[,3]-mean_long),
+median(marker_18[,3]-mean_long),
+median(marker_19[,3]-mean_long),
+median(marker_20[,3]-mean_long),
+median(marker_24[,3]-mean_long),
+median(marker_25[,3]-mean_long),
+median(marker_26[,3]-mean_long),
+median(marker_27[,3]-mean_long),
+median(marker_28[,3]-mean_long),
+median(marker_30[,3]-mean_long),
+median(marker_31[,3]-mean_long),
+median(marker_32[,3]-mean_long),
+median(marker_35[,3]-mean_long),
+median(marker_37[,3]-mean_long),
+median(marker_42[,3]-mean_long),
+median(marker_44[,3]-mean_long),
+median(marker_45[,3]-mean_long),
+median(marker_47[,3]-mean_long),
+median(marker_54[,3]-mean_long)))# systematischer Fehler - großes sigma
+
+random_median_error_long=sd(c((marker_1[,3]-mean_long)-(median(marker_1[,1]-mean_long)),
+(marker_2[,3]-mean_long)-(median(marker_2[,3]-mean_long)),
+(marker_5[,3]-mean_long)-(median(marker_5[,3]-mean_long)),
+(marker_7[,3]-mean_long)-(median(marker_7[,3]-mean_long)),
+(marker_8[,3]-mean_long)-(median(marker_8[,3]-mean_long)),
+(marker_10[,3]-mean_long)-(median(marker_10[,3]-mean_long)),
+(marker_11[,3]-mean_long)-(median(marker_12[,3]-mean_long)),
+(marker_12[,3]-mean_long)-(median(marker_12[,3]-mean_long)),
+(marker_13[,3]-mean_long)-(median(marker_13[,3]-mean_long)),
+(marker_14[,3]-mean_long)-(median(marker_14[,3]-mean_long)),
+(marker_15[,3]-mean_long)-(median(marker_15[,3]-mean_long)),
+(marker_16[,3]-mean_long)-(median(marker_16[,3]-mean_long)),
+(marker_17[,3]-mean_long)-(median(marker_17[,3]-mean_long)),
+(marker_18[,3]-mean_long)-(median(marker_18[,3]-mean_long)),
+(marker_19[,3]-mean_long)-(median(marker_19[,3]-mean_long)),
+(marker_20[,3]-mean_long)-(median(marker_20[,3]-mean_long)),
+(marker_24[,3]-mean_long)-(median(marker_24[,3]-mean_long)),
+(marker_25[,3]-mean_long)-(median(marker_25[,3]-mean_long)),
+(marker_26[,3]-mean_long)-(median(marker_26[,3]-mean_long)),
+(marker_27[,3]-mean_long)-(median(marker_27[,3]-mean_long)),
+(marker_28[,3]-mean_long)-(median(marker_28[,3]-mean_long)),
+(marker_30[,3]-mean_long)-(median(marker_30[,3]-mean_long)),
+(marker_31[,3]-mean_long)-(median(marker_31[,3]-mean_long)),
+(marker_32[,3]-mean_long)-(median(marker_32[,3]-mean_long)),
+(marker_35[,3]-mean_long)-(median(marker_35[,3]-mean_long)),
+(marker_37[,3]-mean_long)-(median(marker_37[,3]-mean_long)),
+(marker_42[,3]-mean_long)-(median(marker_42[,3]-mean_long)),
+(marker_44[,3]-mean_long)-(median(marker_44[,3]-mean_long)),
+(marker_45[,3]-mean_long)-(median(marker_45[,3]-mean_long)),
+(marker_47[,3]-mean_long)-(median(marker_47[,3]-mean_long)),
+(marker_54[,3]-mean_long)-(median(marker_54[,3]-mean_long))))# zufälliger Fehler- kleines sigma
+
+print(paste("global mean long",mean_long))
+print(paste("std of global mean long",std_long))
+print(paste("systematic_median_error_long",round(systematic_median_error_long,2)))
+print(paste("random_median_error_long",round(random_median_error_long,2)))
+
+##
+
+#
+x_length=1:(length(mean_vector))
+
+seq_1_in_3=seq(1,length(x_length),4)# index lat
+seq_2_in_3=seq(2,length(x_length),4)# index vert
+seq_3_in_3=seq(3,length(x_length),4)# index long 
+seq_4_in_4=seq(4,length(x_length),4)# index empty space
+
+
+#
+List1=list()
+List2=list()
+List3=list()
+for(i in 1:length(seq_1_in_3)){
+  LM1=mean_vector[c(seq_1_in_3[i])]
+  LM2=mean_vector[c(seq_2_in_3[i])]
+  LM3=mean_vector[c(seq_3_in_3[i])]
+  List1[[length(List1)+1]] = LM1
+  List2[[length(List2)+1]] = LM2
+  List3[[length(List2)+1]] = LM3 
+ }
+seq_11_in_3 <- as.numeric(unlist(List1))# value lat
+seq_22_in_3 <- as.numeric(unlist(List2))# value vert
+seq_33_in_3 <- as.numeric(unlist(List3))# value long
+
+#
+
+num_pat2=seq(1,length(num_pat),2)# index of each second patient
+empty_vec=rep(NA,length(num_pat2))
+empty_matrix=matrix(empty_vec,ncol=1,nrow=length(empty_vec))
+intra_gab=cbind((t(num_pat2))[1,],empty_matrix) 
+
+List=list()
+for(i in 1:nrow(intra_gab)){
+  a=intra_gab[i,]
+  LM= a
+  List[[length(List)+1]] = LM
+}
+num_pat_x <- as.numeric(unlist(List))# x axis scale
+num_pat_x=num_pat_x[1:(length(num_pat_x)-1)]
+
+#
+
+empty_vec_x=rep("",length(num_pat_x))
+
+## shift of cbct-cbct of same fraction ##
+
+sub_double17a=cbct_corr_double17a[1,]-cbct_corr_double17a[2,] # cbct double lat, vert, long
+sub_double1=cbct_corr_double1[1,]-cbct_corr_double1[2,]
+sub_double13=cbct_corr_double13[1,]-cbct_corr_double13[2,]
+sub_double2=cbct_corr_double2[1,]-cbct_corr_double2[2,]
+sub_double12=cbct_corr_double12[1,]-cbct_corr_double12[2,] # cbct double lat, vert, long
+sub_double14=cbct_corr_double14[1,]-cbct_corr_double14[2,]
+sub_double18=cbct_corr_double18[1,]-cbct_corr_double18[2,]
+sub_double20=cbct_corr_double20[1,]-cbct_corr_double20[2,]
+sub_double26=cbct_corr_double26[1,]-cbct_corr_double26[2,]
+sub_double29=cbct_corr_double29[1,]-cbct_corr_double29[2,]
+sub_double30=cbct_corr_double30[1,]-cbct_corr_double30[2,]
+sub_double9=cbct_corr_double9[1,]-cbct_corr_double9[2,] # cbct double lat, vert, long
+sub_double15=cbct_corr_double15[1,]-cbct_corr_double15[2,]
+sub_double32=cbct_corr_double32[1,]-cbct_corr_double32[2,]
+sub_double54=cbct_corr_double54[1,]-cbct_corr_double54[2,] # cbct double lat, vert, long
+sub_double45=cbct_corr_double45[1,]-cbct_corr_double45[2,]
+sub_double37=cbct_corr_double37[1,]-cbct_corr_double37[2,]
+sub_double35=cbct_corr_double35[1,]-cbct_corr_double35[2,]
+sub_double27=cbct_corr_double27[1,]-cbct_corr_double27[2,]
+sub_double19=cbct_corr_double19[1,]-cbct_corr_double19[2,]
+sub_double44=cbct_corr_double44[1,]-cbct_corr_double44[2,] # cbct double lat, vert, long
+sub_double42=cbct_corr_double42[1,]-cbct_corr_double42[2,]
+sub_double24=cbct_corr_double24[1,]-cbct_corr_double24[2,]
+sub_double5=cbct_corr_double5[1,]-cbct_corr_double5[2,]
+sub_double7=cbct_corr_double7[1,]-cbct_corr_double7[2,] # cbct double lat, vert, long
+sub_double8=cbct_corr_double8[1,]-cbct_corr_double8[2,]
+sub_double16=cbct_corr_double16[1,]-cbct_corr_double16[2,]
+sub_double28=cbct_corr_double28[1,]-cbct_corr_double28[2,]
+
+sub_double_all=rbind(sub_double1,sub_double2,sub_double5,sub_double7,sub_double8,sub_double9,sub_double12,sub_double13,sub_double14,sub_double15,
+sub_double16,sub_double18,sub_double19,sub_double20,sub_double24,sub_double26,sub_double27,sub_double28,sub_double29,sub_double30,
+sub_double32,sub_double35,sub_double37,sub_double42,sub_double44,sub_double45,sub_double54) # lat, vert, long // sub_double17a weg- daten sehr hoch
+ 
+mean_lat_cbct=round(mean(sub_double_all[,c(1)]),2)
+std_lat_cbct=round(sd(sub_double_all[,c(1)]),2)
+
+mean_vert_cbct=round(mean(sub_double_all[,c(2)]),2)
+std_vert_cbct=round(sd(sub_double_all[,c(2)]),2)
+
+mean_long_cbct=round(mean(sub_double_all[,c(3)]),2)
+std_long_cbct=round(sd(sub_double_all[,c(3)]),2)
+
+## prepare marker interfractional motion data for boxplot ##
+
+minvec=min(maxseq<-c(nrow(marker_1),nrow(marker_2),nrow(marker_5),nrow(marker_7),nrow(marker_8),nrow(marker_10),nrow(marker_11),nrow(marker_12),
+nrow(marker_13),nrow(marker_14),nrow(marker_15),nrow(marker_16),nrow(marker_17),nrow(marker_18),nrow(marker_19),nrow(marker_20),nrow(marker_24),
+nrow(marker_25),nrow(marker_26),nrow(marker_27),nrow(marker_28),nrow(marker_30),nrow(marker_31),nrow(marker_32),nrow(marker_35),nrow(marker_37),
+nrow(marker_42),nrow(marker_44),nrow(marker_45),nrow(marker_47),nrow(marker_54)))
+
+add_empty_row=rep(NA,80) # empty values
+
+marker_1=rbind(marker_1,add_empty_row[1],add_empty_row[1])# 26
+marker_2=rbind(marker_2,add_empty_row[1],add_empty_row[1])# 26
+marker_5=rbind(marker_5,add_empty_row[1],add_empty_row[1],add_empty_row[1])# 25
+marker_7=rbind(marker_7,add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 21
+marker_8=rbind(marker_xrt_8)# 25
+marker_10=rbind(marker_10,add_empty_row[1])# 27
+marker_11=marker_11# 28
+marker_12=rbind(marker_12,add_empty_row[1],add_empty_row[1],add_empty_row[1])# 25
+marker_13=marker_13# 28
+marker_14=rbind(marker_14,add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 24
+marker_15=rbind(marker_15,add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 23
+marker_16=marker_16# 28
+marker_17=rbind(marker_17,add_empty_row[1])# 27
+marker_18=rbind(marker_18,add_empty_row[1],add_empty_row[1])# 26
+marker_19=rbind(marker_19,add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 24
+marker_20=rbind(marker_20,add_empty_row[1],add_empty_row[1],add_empty_row[1])# 25
+marker_24=rbind(marker_24,add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 23
+marker_25=marker_25# 28
+marker_26=rbind(marker_26,add_empty_row[1])# 27
+marker_27=rbind(marker_27,add_empty_row[1],add_empty_row[1],add_empty_row[1])# 25
+marker_28=rbind(marker_28,add_empty_row[1],add_empty_row[1])# 26
+marker_30=rbind(marker_30,add_empty_row[1],add_empty_row[1],add_empty_row[1])# 25
+marker_31=rbind(marker_31,add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 24
+marker_32=rbind(marker_32,add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 22
+marker_35=marker_35# 28
+marker_37=marker_37# 28
+marker_42=rbind(marker_42,add_empty_row[1],add_empty_row[1])# 26
+marker_44=rbind(marker_44,add_empty_row[1],add_empty_row[1])# 26
+marker_45=marker_45# 28
+marker_47=marker_47# 28
+marker_54=rbind(marker_54,add_empty_row[1],add_empty_row[1])# 26
+
+minvec=min(maxseq<-c(nrow(marker_1),nrow(marker_2),nrow(marker_5),nrow(marker_7),nrow(marker_8),nrow(marker_10),nrow(marker_11),nrow(marker_12),
+nrow(marker_13),nrow(marker_14),nrow(marker_15),nrow(marker_16),nrow(marker_17),nrow(marker_18),nrow(marker_19),nrow(marker_20),nrow(marker_24),
+nrow(marker_25),nrow(marker_26),nrow(marker_27),nrow(marker_28),nrow(marker_30),nrow(marker_31),nrow(marker_32),nrow(marker_35),nrow(marker_37),
+nrow(marker_42),nrow(marker_44),nrow(marker_45),nrow(marker_47),nrow(marker_54)))
+
+# marker_all_pat_boxplot=cbind(marker_1[1:minvec,],marker_2[1:minvec,],marker_4[1:minvec,],marker_5[1:minvec,],marker_7[1:minvec,],marker_8[1:minvec,],marker_10[1:minvec,],marker_11[1:minvec,],
+# marker_12[1:minvec,],marker_13[1:minvec,],marker_14[1:minvec,],marker_15[1:minvec,],marker_16[1:minvec,],marker_17[1:minvec,],marker_18[1:minvec,],marker_19[1:minvec,],marker_20[1:minvec,],
+# marker_23[1:minvec,],marker_24[1:minvec,],marker_25[1:minvec,],marker_26[1:minvec,],marker_27[1:minvec,],marker_28[1:minvec,],marker_30[1:minvec,],marker_31[1:minvec,],marker_32[1:minvec,],
+# marker_35[1:minvec,],marker_37[1:minvec,],marker_40[1:minvec,],marker_42[1:minvec,],marker_44[1:minvec,],marker_45[1:minvec,],marker_46[1:minvec,],marker_47[1:minvec,],marker_48[1:minvec,],
+# marker_50[1:minvec,],marker_51[1:minvec,],marker_53[1:minvec,])# for histogram lat, vert, long
+
+marker_all_pat_boxplot=cbind(marker_1[1:minvec,],marker_2[1:minvec,],marker_5[1:minvec,],marker_7[1:minvec,],marker_8[1:minvec,],marker_10[1:minvec,],marker_11[1:minvec,],
+marker_12[1:minvec,],marker_13[1:minvec,],marker_14[1:minvec,],marker_15[1:minvec,],marker_16[1:minvec,],marker_17[1:minvec,],marker_18[1:minvec,],marker_19[1:minvec,],marker_20[1:minvec,],
+marker_24[1:minvec,],marker_25[1:minvec,],marker_26[1:minvec,],marker_27[1:minvec,],marker_28[1:minvec,],marker_30[1:minvec,],marker_31[1:minvec,],marker_32[1:minvec,],
+marker_35[1:minvec,],marker_37[1:minvec,],marker_42[1:minvec,],marker_44[1:minvec,],marker_45[1:minvec,],marker_47[1:minvec,],
+marker_54[1:minvec,])# for histogram lat, vert, long
+
+lateral_seq_boxplot<-seq(1,length(marker_all_pat_boxplot),3)# index lat
+vertical_seq_boxplot=seq(2,length(marker_all_pat_boxplot),3)# index vert
+longitudinal_seq_boxplot=seq(3,length(marker_all_pat_boxplot),3)# index long 
+
+lateral_boxplot=marker_all_pat_boxplot[,lateral_seq_boxplot]
+vertical_boxplot=marker_all_pat_boxplot[,vertical_seq_boxplot]
+longitudinal_boxplot=marker_all_pat_boxplot[,longitudinal_seq_boxplot]
+
+
+
+## prepare histo data: focusing on set-up x-ray data which are taken just before rt and after aquiring cbct ##
+
+marker_histo_xrt=rbind(marker_xrt_1,marker_xrt_2,marker_xrt_5,marker_xrt_7,marker_xrt_8,marker_xrt_10,marker_xrt_11,
+marker_xrt_12,marker_xrt_13,marker_xrt_14,marker_xrt_15,marker_xrt_16,marker_xrt_17,marker_xrt_18,marker_xrt_19,marker_xrt_20,marker_xrt_24,marker_xrt_25,
+marker_xrt_26,marker_xrt_27,marker_xrt_28,marker_xrt_30,marker_xrt_31,marker_xrt_32,marker_xrt_35,marker_xrt_37,marker_xrt_42,marker_xrt_44,marker_xrt_45,
+marker_xrt_47,marker_xrt_54)
+
+
+
+## mean, std, data for van herk formel ## 
+
+mean_lat=round(mean(marker_histo_xrt[,c(1)]),2)
+mean_lat_marker_xrt=mean_lat
+std_lat=round(sd(marker_histo_xrt[,c(1)]),2)
+std_lat_marker_xrt=std_lat
+
+systematic_median_error_lat=sd(c(median(marker_xrt_1[,1]-mean_lat),
+median(marker_xrt_2[,1]-mean_lat),
+median(marker_xrt_5[,1]-mean_lat),
+median(marker_xrt_7[,1]-mean_lat),
+median(marker_xrt_8[,1]-mean_lat),
+median(marker_xrt_10[,1]-mean_lat),
+median(marker_xrt_11[,1]-mean_lat),
+median(marker_xrt_12[,1]-mean_lat),
+median(marker_xrt_13[,1]-mean_lat),
+median(marker_xrt_14[,1]-mean_lat),
+median(marker_xrt_15[,1]-mean_lat),
+median(marker_xrt_16[,1]-mean_lat),
+median(marker_xrt_17[,1]-mean_lat),
+median(marker_xrt_18[,1]-mean_lat),
+median(marker_xrt_19[,1]-mean_lat),
+median(marker_xrt_20[,1]-mean_lat),
+median(marker_xrt_24[,1]-mean_lat),
+median(marker_xrt_25[,1]-mean_lat),
+median(marker_xrt_26[,1]-mean_lat),
+median(marker_xrt_27[,1]-mean_lat),
+median(marker_xrt_28[,1]-mean_lat),
+median(marker_xrt_30[,1]-mean_lat),
+median(marker_xrt_31[,1]-mean_lat),
+median(marker_xrt_32[,1]-mean_lat),
+median(marker_xrt_35[,1]-mean_lat),
+median(marker_xrt_37[,1]-mean_lat),
+median(marker_xrt_42[,1]-mean_lat),
+median(marker_xrt_44[,1]-mean_lat),
+median(marker_xrt_45[,1]-mean_lat),
+median(marker_xrt_47[,1]-mean_lat),
+median(marker_xrt_54[,1]-mean_lat)))# systematischer Fehler - großes sigma
+
+random_median_error_lat=sd(c((marker_xrt_1[,1]-mean_lat)-(median(marker_xrt_1[,1]-mean_lat)),
+(marker_xrt_2[,1]-mean_lat)-(median(marker_xrt_2[,1]-mean_lat)),
+(marker_xrt_5[,1]-mean_lat)-(median(marker_xrt_5[,1]-mean_lat)),
+(marker_xrt_7[,1]-mean_lat)-(median(marker_xrt_7[,1]-mean_lat)),
+(marker_xrt_8[,1]-mean_lat)-(median(marker_xrt_8[,1]-mean_lat)),
+(marker_xrt_10[,1]-mean_lat)-(median(marker_xrt_10[,1]-mean_lat)),
+(marker_xrt_11[,1]-mean_lat)-(median(marker_xrt_12[,1]-mean_lat)),
+(marker_xrt_12[,1]-mean_lat)-(median(marker_xrt_12[,1]-mean_lat)),
+(marker_xrt_13[,1]-mean_lat)-(median(marker_xrt_13[,1]-mean_lat)),
+(marker_xrt_14[,1]-mean_lat)-(median(marker_xrt_14[,1]-mean_lat)),
+(marker_xrt_15[,1]-mean_lat)-(median(marker_xrt_15[,1]-mean_lat)),
+(marker_xrt_16[,1]-mean_lat)-(median(marker_xrt_16[,1]-mean_lat)),
+(marker_xrt_17[,1]-mean_lat)-(median(marker_xrt_17[,1]-mean_lat)),
+(marker_xrt_18[,1]-mean_lat)-(median(marker_xrt_18[,1]-mean_lat)),
+(marker_xrt_19[,1]-mean_lat)-(median(marker_xrt_19[,1]-mean_lat)),
+(marker_xrt_20[,1]-mean_lat)-(median(marker_xrt_20[,1]-mean_lat)),
+(marker_xrt_24[,1]-mean_lat)-(median(marker_xrt_24[,1]-mean_lat)),
+(marker_xrt_25[,1]-mean_lat)-(median(marker_xrt_25[,1]-mean_lat)),
+(marker_xrt_26[,1]-mean_lat)-(median(marker_xrt_26[,1]-mean_lat)),
+(marker_xrt_27[,1]-mean_lat)-(median(marker_xrt_27[,1]-mean_lat)),
+(marker_xrt_28[,1]-mean_lat)-(median(marker_xrt_28[,1]-mean_lat)),
+(marker_xrt_30[,1]-mean_lat)-(median(marker_xrt_30[,1]-mean_lat)),
+(marker_xrt_31[,1]-mean_lat)-(median(marker_xrt_31[,1]-mean_lat)),
+(marker_xrt_32[,1]-mean_lat)-(median(marker_xrt_32[,1]-mean_lat)),
+(marker_xrt_35[,1]-mean_lat)-(median(marker_xrt_35[,1]-mean_lat)),
+(marker_xrt_37[,1]-mean_lat)-(median(marker_xrt_37[,1]-mean_lat)),
+(marker_xrt_42[,1]-mean_lat)-(median(marker_xrt_42[,1]-mean_lat)),
+(marker_xrt_44[,1]-mean_lat)-(median(marker_xrt_44[,1]-mean_lat)),
+(marker_xrt_45[,1]-mean_lat)-(median(marker_xrt_45[,1]-mean_lat)),
+(marker_xrt_47[,1]-mean_lat)-(median(marker_xrt_47[,1]-mean_lat)),
+(marker_xrt_54[,1]-mean_lat)-(median(marker_xrt_54[,1]-mean_lat))))# zufälliger Fehler- kleines sigma
+
+print(paste("global mean xrt lat",mean_lat))
+print(paste("std of global mean xrt lat",std_lat))
+print(paste("systematic_median_error_xrt_lat",round(systematic_median_error_lat,2)))
+print(paste("random_median_error_xrt_lat",round(random_median_error_lat,2)))
+
+#
+
+
+mean_vert=round(mean(marker_histo_xrt[,c(2)]),2)
+mean_vert_marker_xrt=mean_vert
+std_vert=round(sd(marker_histo_xrt[,c(2)]),2)
+std_vert_marker_xrt=std_vert
+
+systematic_median_error_vert=sd(c(median(marker_xrt_1[,2]-mean_vert),
+median(marker_xrt_2[,2]-mean_vert),
+median(marker_xrt_5[,2]-mean_vert),
+median(marker_xrt_7[,2]-mean_vert),
+median(marker_xrt_8[,2]-mean_vert),
+median(marker_xrt_10[,2]-mean_vert),
+median(marker_xrt_11[,2]-mean_vert),
+median(marker_xrt_12[,2]-mean_vert),
+median(marker_xrt_13[,2]-mean_vert),
+median(marker_xrt_14[,2]-mean_vert),
+median(marker_xrt_15[,2]-mean_vert),
+median(marker_xrt_16[,2]-mean_vert),
+median(marker_xrt_17[,2]-mean_vert),
+median(marker_xrt_18[,2]-mean_vert),
+median(marker_xrt_19[,2]-mean_vert),
+median(marker_xrt_20[,2]-mean_vert),
+median(marker_xrt_24[,2]-mean_vert),
+median(marker_xrt_25[,2]-mean_vert),
+median(marker_xrt_26[,2]-mean_vert),
+median(marker_xrt_27[,2]-mean_vert),
+median(marker_xrt_28[,2]-mean_vert),
+median(marker_xrt_30[,2]-mean_vert),
+median(marker_xrt_31[,2]-mean_vert),
+median(marker_xrt_32[,2]-mean_vert),
+median(marker_xrt_35[,2]-mean_vert),
+median(marker_xrt_37[,2]-mean_vert),
+median(marker_xrt_42[,2]-mean_vert),
+median(marker_xrt_44[,2]-mean_vert),
+median(marker_xrt_45[,2]-mean_vert),
+median(marker_xrt_47[,2]-mean_vert),
+median(marker_xrt_54[,2]-mean_vert)))# systematischer Fehler - großes sigma
+
+random_median_error_vert=sd(c((marker_xrt_1[,2]-mean_vert)-(median(marker_xrt_1[,1]-mean_vert)),
+(marker_xrt_2[,2]-mean_vert)-(median(marker_xrt_2[,2]-mean_vert)),
+(marker_xrt_5[,2]-mean_vert)-(median(marker_xrt_5[,2]-mean_vert)),
+(marker_xrt_7[,2]-mean_vert)-(median(marker_xrt_7[,2]-mean_vert)),
+(marker_xrt_8[,2]-mean_vert)-(median(marker_xrt_8[,2]-mean_vert)),
+(marker_xrt_10[,2]-mean_vert)-(median(marker_xrt_10[,2]-mean_vert)),
+(marker_xrt_11[,2]-mean_vert)-(median(marker_xrt_12[,2]-mean_vert)),
+(marker_xrt_12[,2]-mean_vert)-(median(marker_xrt_12[,2]-mean_vert)),
+(marker_xrt_13[,2]-mean_vert)-(median(marker_xrt_13[,2]-mean_vert)),
+(marker_xrt_14[,2]-mean_vert)-(median(marker_xrt_14[,2]-mean_vert)),
+(marker_xrt_15[,2]-mean_vert)-(median(marker_xrt_15[,2]-mean_vert)),
+(marker_xrt_16[,2]-mean_vert)-(median(marker_xrt_16[,2]-mean_vert)),
+(marker_xrt_17[,2]-mean_vert)-(median(marker_xrt_17[,2]-mean_vert)),
+(marker_xrt_18[,2]-mean_vert)-(median(marker_xrt_18[,2]-mean_vert)),
+(marker_xrt_19[,2]-mean_vert)-(median(marker_xrt_19[,2]-mean_vert)),
+(marker_xrt_20[,2]-mean_vert)-(median(marker_xrt_20[,2]-mean_vert)),
+(marker_xrt_24[,2]-mean_vert)-(median(marker_xrt_24[,2]-mean_vert)),
+(marker_xrt_25[,2]-mean_vert)-(median(marker_xrt_25[,2]-mean_vert)),
+(marker_xrt_26[,2]-mean_vert)-(median(marker_xrt_26[,2]-mean_vert)),
+(marker_xrt_27[,2]-mean_vert)-(median(marker_xrt_27[,2]-mean_vert)),
+(marker_xrt_28[,2]-mean_vert)-(median(marker_xrt_28[,2]-mean_vert)),
+(marker_xrt_30[,2]-mean_vert)-(median(marker_xrt_30[,2]-mean_vert)),
+(marker_xrt_31[,2]-mean_vert)-(median(marker_xrt_31[,2]-mean_vert)),
+(marker_xrt_32[,2]-mean_vert)-(median(marker_xrt_32[,2]-mean_vert)),
+(marker_xrt_35[,2]-mean_vert)-(median(marker_xrt_35[,2]-mean_vert)),
+(marker_xrt_37[,2]-mean_vert)-(median(marker_xrt_37[,2]-mean_vert)),
+(marker_xrt_42[,2]-mean_vert)-(median(marker_xrt_42[,2]-mean_vert)),
+(marker_xrt_44[,2]-mean_vert)-(median(marker_xrt_44[,2]-mean_vert)),
+(marker_xrt_45[,2]-mean_vert)-(median(marker_xrt_45[,2]-mean_vert)),
+(marker_xrt_47[,2]-mean_vert)-(median(marker_xrt_47[,2]-mean_vert)),
+(marker_xrt_54[,2]-mean_vert)-(median(marker_xrt_54[,2]-mean_vert))))# zufälliger Fehler- kleines sigma
+
+print(paste("global mean xrt vert",mean_vert))
+print(paste("std of global mean xrt vert",std_vert))
+print(paste("systematic_median_error_xrt_vert",round(systematic_median_error_vert,2)))
+print(paste("random_median_error_xrt_vert",round(random_median_error_vert,2)))
+
+#
+
+mean_long=round(mean(marker_histo_xrt[,c(3)]),2)
+mean_long_marker_xrt=mean_long
+std_long=round(sd(marker_histo_xrt[,c(3)]),2)
+std_long_marker_xrt=std_long
+
+systematic_median_error_long=sd(c(median(marker_xrt_1[,3]-mean_long),
+median(marker_xrt_2[,3]-mean_long),
+median(marker_xrt_5[,3]-mean_long),
+median(marker_xrt_7[,3]-mean_long),
+median(marker_xrt_8[,3]-mean_long),
+median(marker_xrt_10[,3]-mean_long),
+median(marker_xrt_11[,3]-mean_long),
+median(marker_xrt_12[,3]-mean_long),
+median(marker_xrt_13[,3]-mean_long),
+median(marker_xrt_14[,3]-mean_long),
+median(marker_xrt_15[,3]-mean_long),
+median(marker_xrt_16[,3]-mean_long),
+median(marker_xrt_17[,3]-mean_long),
+median(marker_xrt_18[,3]-mean_long),
+median(marker_xrt_19[,3]-mean_long),
+median(marker_xrt_20[,3]-mean_long),
+median(marker_xrt_24[,3]-mean_long),
+median(marker_xrt_25[,3]-mean_long),
+median(marker_xrt_26[,3]-mean_long),
+median(marker_xrt_27[,3]-mean_long),
+median(marker_xrt_28[,3]-mean_long),
+median(marker_xrt_30[,3]-mean_long),
+median(marker_xrt_31[,3]-mean_long),
+median(marker_xrt_32[,3]-mean_long),
+median(marker_xrt_35[,3]-mean_long),
+median(marker_xrt_37[,3]-mean_long),
+median(marker_xrt_42[,3]-mean_long),
+median(marker_xrt_44[,3]-mean_long),
+median(marker_xrt_45[,3]-mean_long),
+median(marker_xrt_47[,3]-mean_long),
+median(marker_xrt_54[,3]-mean_long)))# systematischer Fehler - großes sigma
+
+random_median_error_long=sd(c((marker_xrt_1[,3]-mean_long)-(median(marker_xrt_1[,1]-mean_long)),
+(marker_xrt_2[,3]-mean_long)-(median(marker_xrt_2[,3]-mean_long)),
+(marker_xrt_5[,3]-mean_long)-(median(marker_xrt_5[,3]-mean_long)),
+(marker_xrt_7[,3]-mean_long)-(median(marker_xrt_7[,3]-mean_long)),
+(marker_xrt_8[,3]-mean_long)-(median(marker_xrt_8[,3]-mean_long)),
+(marker_xrt_10[,3]-mean_long)-(median(marker_xrt_10[,3]-mean_long)),
+(marker_xrt_11[,3]-mean_long)-(median(marker_xrt_12[,3]-mean_long)),
+(marker_xrt_12[,3]-mean_long)-(median(marker_xrt_12[,3]-mean_long)),
+(marker_xrt_13[,3]-mean_long)-(median(marker_xrt_13[,3]-mean_long)),
+(marker_xrt_14[,3]-mean_long)-(median(marker_xrt_14[,3]-mean_long)),
+(marker_xrt_15[,3]-mean_long)-(median(marker_xrt_15[,3]-mean_long)),
+(marker_xrt_16[,3]-mean_long)-(median(marker_xrt_16[,3]-mean_long)),
+(marker_xrt_17[,3]-mean_long)-(median(marker_xrt_17[,3]-mean_long)),
+(marker_xrt_18[,3]-mean_long)-(median(marker_xrt_18[,3]-mean_long)),
+(marker_xrt_19[,3]-mean_long)-(median(marker_xrt_19[,3]-mean_long)),
+(marker_xrt_20[,3]-mean_long)-(median(marker_xrt_20[,3]-mean_long)),
+(marker_xrt_24[,3]-mean_long)-(median(marker_xrt_24[,3]-mean_long)),
+(marker_xrt_25[,3]-mean_long)-(median(marker_xrt_25[,3]-mean_long)),
+(marker_xrt_26[,3]-mean_long)-(median(marker_xrt_26[,3]-mean_long)),
+(marker_xrt_27[,3]-mean_long)-(median(marker_xrt_27[,3]-mean_long)),
+(marker_xrt_28[,3]-mean_long)-(median(marker_xrt_28[,3]-mean_long)),
+(marker_xrt_30[,3]-mean_long)-(median(marker_xrt_30[,3]-mean_long)),
+(marker_xrt_31[,3]-mean_long)-(median(marker_xrt_31[,3]-mean_long)),
+(marker_xrt_32[,3]-mean_long)-(median(marker_xrt_32[,3]-mean_long)),
+(marker_xrt_35[,3]-mean_long)-(median(marker_xrt_35[,3]-mean_long)),
+(marker_xrt_37[,3]-mean_long)-(median(marker_xrt_37[,3]-mean_long)),
+(marker_xrt_42[,3]-mean_long)-(median(marker_xrt_42[,3]-mean_long)),
+(marker_xrt_44[,3]-mean_long)-(median(marker_xrt_44[,3]-mean_long)),
+(marker_xrt_45[,3]-mean_long)-(median(marker_xrt_45[,3]-mean_long)),
+(marker_xrt_47[,3]-mean_long)-(median(marker_xrt_47[,3]-mean_long)),
+(marker_xrt_54[,3]-mean_long)-(median(marker_xrt_54[,3]-mean_long))))# zufälliger Fehler- kleines sigma
+
+print(paste("global mean xrt long",mean_long))
+print(paste("std of global mean xrt long",std_long))
+print(paste("systematic_median_error_xrt_long",round(systematic_median_error_long,2)))
+print(paste("random_median_error_xrt_long",round(random_median_error_long,2)))
+
+
+## prepare boxplot data: focusing on set-up x-ray data which are taken just before rt and after aquiring cbct - dataset equal to 28 ##
+
+maxseq<-c(nrow(marker_xrt_1),nrow(marker_xrt_2),nrow(marker_xrt_5),nrow(marker_xrt_7),nrow(marker_xrt_8),nrow(marker_xrt_10),
+nrow(marker_xrt_11),nrow(marker_xrt_12),nrow(marker_xrt_13),nrow(marker_xrt_14),nrow(marker_xrt_15),nrow(marker_xrt_16),
+nrow(marker_xrt_17),nrow(marker_xrt_18),nrow(marker_xrt_19),nrow(marker_xrt_20),nrow(marker_xrt_24),nrow(marker_xrt_25),
+nrow(marker_xrt_26),nrow(marker_xrt_27),nrow(marker_xrt_28),nrow(marker_xrt_30),nrow(marker_xrt_31),nrow(marker_xrt_32),
+nrow(marker_xrt_35),nrow(marker_xrt_37),nrow(marker_xrt_42),nrow(marker_xrt_44),nrow(marker_xrt_45),nrow(marker_xrt_47),
+nrow(marker_xrt_54))
+add_empty_row=rep(NA,80) # empty values
+
+marker_xrt_1=marker_xrt_1# 28
+marker_xrt_2=marker_xrt_2# 28
+marker_xrt_5=rbind(marker_xrt_5,add_empty_row[1])# 27
+marker_xrt_7=rbind(marker_xrt_7,add_empty_row[1])# 27
+marker_xrt_8=marker_xrt_8# 28
+marker_xrt_10=rbind(marker_xrt_10,add_empty_row[1])# 27
+marker_xrt_11=rbind(marker_xrt_11,add_empty_row[1],add_empty_row[1])# 26
+marker_xrt_12=marker_xrt_12# 28
+marker_xrt_13=marker_xrt_13# 28
+marker_xrt_14=rbind(marker_xrt_14,add_empty_row[1],add_empty_row[1])# 26
+marker_xrt_15=rbind(marker_xrt_15,add_empty_row[1])# 27
+marker_xrt_16=marker_xrt_16# 28
+marker_xrt_17=marker_xrt_17# 28
+marker_xrt_18=rbind(marker_xrt_18,add_empty_row[1],add_empty_row[1])# 26
+marker_xrt_19=rbind(marker_xrt_19,add_empty_row[1],add_empty_row[1])# 26
+marker_xrt_20=rbind(marker_xrt_20,add_empty_row[1])# 27
+marker_xrt_24=rbind(marker_xrt_24,add_empty_row[1],add_empty_row[1],add_empty_row[1])# 25
+marker_xrt_25=marker_xrt_25# 28
+marker_xrt_26=rbind(marker_xrt_26,add_empty_row[1])# 27
+marker_xrt_27=rbind(marker_xrt_27,add_empty_row[1],add_empty_row[1],add_empty_row[1])# 25
+marker_xrt_28=rbind(marker_xrt_28,add_empty_row[1])# 27
+marker_xrt_30=rbind(marker_xrt_30,add_empty_row[1],add_empty_row[1],add_empty_row[1])# 25
+marker_xrt_31=rbind(marker_xrt_31,add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 24
+marker_xrt_32=rbind(marker_xrt_32,add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1],add_empty_row[1])# 22
+marker_xrt_35=marker_xrt_35# 28
+marker_xrt_37=marker_xrt_37# 28
+marker_xrt_42=rbind(marker_xrt_42,add_empty_row[1],add_empty_row[1])# 26
+marker_xrt_44=rbind(marker_xrt_44,add_empty_row[1],add_empty_row[1])# 26
+marker_xrt_45=marker_xrt_45# 28
+marker_xrt_47=marker_xrt_47# 28
+marker_xrt_54=rbind(marker_xrt_54,add_empty_row[1])# 27
+
+marker_xrt_box_x=cbind(marker_xrt_1[,1],marker_xrt_2[,1],marker_xrt_5[,1],marker_xrt_7[,1],marker_xrt_8[,1],marker_xrt_10[,1],marker_xrt_11[,1],
+marker_xrt_12[,1],marker_xrt_13[,1],marker_xrt_14[,1],marker_xrt_15[,1],marker_xrt_16[,1],marker_xrt_17[,1],marker_xrt_18[,1],marker_xrt_19[,1],
+marker_xrt_20[,1],marker_xrt_24[,1],marker_xrt_25[,1],marker_xrt_26[,1],marker_xrt_27[,1],marker_xrt_28[,1],marker_xrt_30[,1],marker_xrt_31[,1],
+marker_xrt_32[,1],marker_xrt_35[,1],marker_xrt_37[,1],marker_xrt_42[,1],marker_xrt_44[,1],marker_xrt_45[,1],marker_xrt_47[,1],marker_xrt_54[,1])
+
+marker_xrt_box_y=cbind(marker_xrt_1[,2],marker_xrt_2[,2],marker_xrt_5[,2],marker_xrt_7[,2],marker_xrt_8[,2],marker_xrt_10[,2],marker_xrt_11[,2],
+marker_xrt_12[,2],marker_xrt_13[,2],marker_xrt_14[,2],marker_xrt_15[,2],marker_xrt_16[,2],marker_xrt_17[,2],marker_xrt_18[,2],marker_xrt_19[,2],
+marker_xrt_20[,2],marker_xrt_24[,2],marker_xrt_25[,2],marker_xrt_26[,2],marker_xrt_27[,2],marker_xrt_28[,2],marker_xrt_30[,2],marker_xrt_31[,2],
+marker_xrt_32[,2],marker_xrt_35[,2],marker_xrt_37[,2],marker_xrt_42[,2],marker_xrt_44[,2],marker_xrt_45[,2],marker_xrt_47[,2],marker_xrt_54[,2])
+
+marker_xrt_box_z=cbind(marker_xrt_1[,3],marker_xrt_2[,3],marker_xrt_5[,3],marker_xrt_7[,3],marker_xrt_8[,3],marker_xrt_10[,3],marker_xrt_11[,3],
+marker_xrt_12[,3],marker_xrt_13[,3],marker_xrt_14[,3],marker_xrt_15[,3],marker_xrt_16[,3],marker_xrt_17[,3],marker_xrt_18[,3],marker_xrt_19[,3],
+marker_xrt_20[,3],marker_xrt_24[,3],marker_xrt_25[,3],marker_xrt_26[,3],marker_xrt_27[,3],marker_xrt_28[,3],marker_xrt_30[,3],marker_xrt_31[,3],
+marker_xrt_32[,3],marker_xrt_35[,3],marker_xrt_37[,3],marker_xrt_42[,3],marker_xrt_44[,3],marker_xrt_45[,3],marker_xrt_47[,3],marker_xrt_54[,3])
+
+## function for round y-axis ##
+
+mround<-function(x,base){base*round(x/base)}
+
+#
+
+###########
+## print ##
+###########
+
+
+## histogram of marker mean std all patients ## 
+
+
+
+matrix_hist<-t(marker_all_pat)
+
+x <- t(marker_all_pat[,1])# lat
+y <- t(marker_all_pat[,2])# vert
+z <- t(marker_all_pat[,3])# long
+
+
+interpol_length=20# interpolation lenght of interpolation x,y,z
+
+diff=round(diff((c((min(matrix_hist)),(max(matrix_hist))))),0)
+num_bins=round(sqrt((ncol(matrix_hist))),0)# x,y,z have same number of values
+diff2=round(diff((c((min(x)),(max(x))))),0)
+div=round((diff2/diff),2)
+breaks=round(div*num_bins,0)
+hx<-hist(x, breaks=breaks)
+xfit<-seq(min(x),max(x),length=interpol_length)
+yfit<-dnorm(xfit,mean=mean(x),sd=sd(x))
+yfit <- yfit*diff(hx$mids[1:2])*length(x)
+lines(xfit, yfit,type="l", pch=c(1),col=rgb(0,0,0,1))
+#
+diff2=round(diff((c((min(y)),(max(y))))),0)
+div=round((diff2/diff),2)
+breaks=round(div*num_bins,0)
+hy<-hist(y, breaks=breaks)
+xfit2<-seq(min(y),max(y),length=interpol_length)
+yfit2<-dnorm(xfit2,mean=mean(y),sd=sd(y))
+yfit2 <- yfit2*diff(hy$mids[1:2])*length(y)
+lines(xfit2, yfit2,type="l",  pch=c(15),col=rgb(0,0,0,1))
+#
+diff2=round(diff((c((min(z)),(max(z))))),0)
+div=round((diff2/diff),2)
+breaks=round(div*num_bins,0)
+hz<-hist(z, breaks=breaks)
+xfit3<-seq(min(z),max(z),length=interpol_length)
+yfit3<-dnorm(xfit3,mean=mean(z),sd=sd(z))
+yfit3 <- yfit3*diff(hz$mids[1:2])*length(z)
+lines(xfit3, yfit3,type="l",  pch=c(8),col=rgb(0,0,0,1))
+
+# more interpolpation for boxplot (4 plots in one) 
+interpol_length_box=80# interpolation lenght of interpolation x,y,z
+
+xfit_box<-seq(min(x),max(x),length=interpol_length_box)
+yfit_box<-dnorm(xfit_box,mean=mean(x),sd=sd(x))
+yfit_box <- yfit_box*diff(hx$mids[1:2])*length(x)
+#
+xfit2_box<-seq(min(y),max(y),length=interpol_length_box)
+yfit2_box<-dnorm(xfit2_box,mean=mean(y),sd=sd(y))
+yfit2_box <- yfit2_box*diff(hy$mids[1:2])*length(y)
+#
+xfit3_box<-seq(min(z),max(z),length=interpol_length_box)
+yfit3_box<-dnorm(xfit3_box,mean=mean(z),sd=sd(z))
+yfit3_box <- yfit3_box*diff(hz$mids[1:2])*length(z)
+#
+
+#
+
+plot(hx, ylab=NA, xlab=NA,col=rgb(0,1,1,0),border=NA,yaxt="n",xaxt = "n",main="Inter-fractional marker motion variability based on CBCT w/o Exactrac correction",xlim=c(-10,10),ylim=c(0,+20))
+lines(xfit, yfit,type="l",  pch=c(1),col=rgb(0,0,0,1))# lat
+lines(xfit2, yfit2,type="l",  pch=c(1),col=rgb(0,0,0,1))# vert
+lines(xfit3, yfit3,type="l",  pch=c(1),col=rgb(0,0,0,1))# long
+
+box()
+axis(1, at=-5, las=1,labels= "-5")
+axis(1, at=-10, las=1,labels= "-10")
+axis(1, at=-15, las=1,labels= "-15")
+axis(1, at=-20, las=1,labels= "-20")
+axis(1, at=-25, las=1,labels= "-25")
+axis(1, at=0, las=1,labels= "")
+axis(1, at=5, las=1,labels= "5")
+axis(1, at=10, las=1,labels= "10")
+axis(1, at=15, las=1,labels= "15")
+axis(1, at=20, las=1,labels= "20")
+axis(1, at=25, las=1,labels= "25")
+axis(1, at=30, las=1,labels= "30")
+axis(1, at=-30, las=1,labels= "-30")
+#axis(2,at=labels_y,las=1,labels=labels_y)
+
+mtext("Frequency", side = 2, line=3, cex = 0.9, font = 1)
+mtext("Relative shifts [mm]", side = 1, line = 3, cex = 0.9, font = 1)
+mtext("reference CBCT", side = 1, line = 0.5, at=0,cex = 0.9, font = 1)
+abline(v=0, col = "black", lty=2,lwd=.5)
+
+plot(hx, ylab=NA, xlab=NA,col=rgb(0,1,1,0),border=NA,yaxt="n",xaxt = "n",main="Inter-fractional marker motion variability based on CBCT w/o Exactrac correction",xlim=c(0,+20),ylim=c(-10,+10))
+lines(yfit, xfit,  type="o",pch=1,lty=0,col=rgb(0,0,0,1))
+lines(yfit2, xfit2,  type="o",pch=15,lty=0,col=rgb(0,0,0,1))
+lines(yfit3, xfit3,  type="o",pch=8,lty=0,col=rgb(0,0,0,1))
+
+box()
+axis(2, at=-5, las=1,labels= "-5")
+axis(2, at=-10, las=1,labels= "-10")
+axis(2, at=-15, las=1,labels= "-15")
+axis(2, at=-20, las=1,labels= "-20")
+axis(2, at=-25, las=1,labels= "-25")
+axis(2, at=0, las=1,labels= "")
+axis(2, at=5, las=1,labels= "5")
+axis(2, at=10, las=1,labels= "10")
+axis(2, at=15, las=1,labels= "15")
+axis(2, at=20, las=1,labels= "20")
+axis(2, at=25, las=1,labels= "25")
+axis(2, at=30, las=1,labels= "30")
+axis(2, at=-30, las=1,labels= "-30")
+#axis(2,at=labels_y,las=1,labels=labels_y)
+
+mtext("Frequency", side = 2, line=3, cex = 0.9, font = 1)
+mtext("Relative shifts [mm]", side = 1, line = 3, cex = 0.9, font = 1)
+mtext("reference CBCT", side = 1, line = 0.5, at=0,cex = 0.9, font = 1)
+abline(v=0, col = "black", lty=2,lwd=.5)
+
+## boxplot (manual) + horizontal histogram marker mean std all patients #
+
+y_axis=seq(-15,15,5)
+
+pdf("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct_analysis/ifmm_marker_motion_mean_std_xray.pdf",width= 9, height= 5)
+
+mat <- matrix(c(1,2), 1)
+layout(mat, c(3,1),c(1,1))
+par(mar=c(5.1,4.1,4.1,0)) # tiefe -y, -x, +y, +x
+
+plot(x_length,mean_vector,pch=(NA),ylab=NA,xlab=NA,axes= F,main="Intra-fractional motion based on X-ray marker fusion",ylim=c(-10,10))#ylab=NA,xlab=NA,axes= F
+points(seq_1_in_3,seq_11_in_3,pch=(1),cex=0.5)# lat
+points(seq_2_in_3,seq_22_in_3,pch=(15),cex=0.5)# long
+points(seq_3_in_3,seq_33_in_3,pch=(8),cex=0.5)# vert
+box()
+arrows(x_length,min_mean,x_length,max_mean, code=3, length=0.01, angle = 90, col="black")# length= größe der linien
+abline(v = seq_4_in_4, col = "gray", lty=2)
+abline(h = 0, col = "black", lty=1);
+mtext("ACR Phantom SNR Tests", side = 1, line = -25, cex = 1, font = 1)
+empty_vec2=rep("",length(seq_2_in_3))
+axis(1, at=seq_2_in_3,labels=empty_vec2)
+axis(2, at=y_axis,las=2,labels=y_axis)
+text(seq_2_in_3,-11.8, srt=45, pos=1, xpd=TRUE, labels=num_pat)
+legendtext2<-c(paste("left-right:               ",round(mean_lat,2),"\u00B1",round(std_lat,2)),paste("anterior-posterior: ",round(mean_vert,2),"\u00B1",round(std_vert,2)),paste("superior-inferior:   ",round(mean_long,2),"\u00B1",round(std_long,3)))
+legend(4,10, legend=legendtext2, pch=c(1,15,8),cex = 0.8,bg="white")
+mtext("Relative shifts [mm]", side = 2, line=3, cex = 0.9, font = 1)
+mtext("# of patients", side = 1, line = 2, cex = 0.9, font = 1)
+#
+max_y_fits=max(yfit,yfit2,yfit3)
+par(mar=c(5.1,0,4.1,2.1)) # tiefe -y, -x, +y, +x
+plot(hx, ylab=NA,xlab=NA,col=rgb(0,1,1,0),border=NA,yaxt="n",xaxt = "n",main="",xlim=c(0,+(round(max_y_fits,1))),ylim=c(-10,+10))
+box()
+yfit_cut=(ifelse(round(yfit,0)<= 0,NA,round(yfit,0)))
+yfit2_cut=(ifelse(round(yfit2,0)<= 0,NA,round(yfit2,0)))
+yfit3_cut=(ifelse(round(yfit3,0)<= 0,NA,round(yfit3,0)))
+index_zero=which((round(yfit,0)) == 0)
+index_zero2=which((round(yfit2,0)) == 0)
+index_zero3=which((round(yfit3,0)) == 0)
+xfit[c(index_zero)]=NA
+xfit2[c(index_zero2)]=NA
+xfit3[c(index_zero3)]=NA
+lines(yfit_cut, xfit,  type="o",pch=1,lty=0,col=rgb(0,0,0,1))
+lines(yfit2_cut, xfit2,  type="o",pch=15,lty=0,col=rgb(0,0,0,1))
+lines(yfit3_cut, xfit3,  type="o",pch=8,lty=0,col=rgb(0,0,0,1))
+empty_vec3=rep("",length(y_axis))
+axis(2, at=y_axis, las=1,labels=empty_vec3)
+abline(h = 0, col = "black", lty=1);
+
+#
+
+mat <- matrix(c(1,2), 1)
+layout(mat, c(3,1),c(1,1))
+par(mar=c(5.1,4.1,4.1,0)) # tiefe -y, -x, +y, +x
+
+plot(x_length,mean_vector,pch=(NA),ylab=NA,xlab=NA,axes= F,main="Intra-fractional motion based on X-ray marker fusion",ylim=c(-10,10))#ylab=NA,xlab=NA,axes= F
+points(seq_1_in_3,seq_11_in_3,pch=(1),cex=0.65)# lat
+points(seq_2_in_3,seq_22_in_3,pch=(15),cex=0.65)# long
+points(seq_3_in_3,seq_33_in_3,pch=(8),cex=0.65)# vert
+box()
+arrows(x_length,min_mean,x_length,max_mean, code=3, length=0.01, angle = 90, col="black")# length= größe der linien
+abline(v = seq_4_in_4, col = "gray", lty=2)
+abline(h = 0, col = "black", lty=1);
+mtext("ACR Phantom SNR Tests", side = 1, line = -25, cex = 1, font = 1)
+empty_vec2=rep("",length(seq_2_in_3))
+axis(1, at=seq_2_in_3,labels=empty_vec2)
+axis(2, at=y_axis,las=2,labels=y_axis)
+text(seq_2_in_3,-11.8, srt=45, pos=1, xpd=TRUE, labels=num_pat_x)
+legendtext2<-c(paste("left-right:               ",round(mean_lat,2),"\u00B1",round(std_lat,2)),paste("anterior-posterior: ",round(mean_vert,2),"\u00B1",round(std_vert,2)),paste("superior-inferior:   ",round(mean_long,2),"\u00B1",round(std_long,3)))
+legend(4,10, legend=legendtext2, pch=c(1,15,8),cex = 0.8,bg="white")
+mtext("Relative shifts [mm]", side = 2, line=3, cex = 0.9, font = 1)
+mtext("# of patients", side = 1, line = 2, cex = 0.9, font = 1)
+#
+max_y_fits=max(yfit,yfit2,yfit3)
+par(mar=c(5.1,0,4.1,2.1)) # tiefe -y, -x, +y, +x
+plot(hx, ylab=NA,xlab=NA,col=rgb(0,1,1,0),border=NA,yaxt="n",xaxt = "n",main="",xlim=c(0,+(round(max_y_fits,1))),ylim=c(+10,-10))
+box()
+lines((ifelse(round(yfit,1)<= 0,NA,round(yfit,1))), xfit,  type="o",pch=1,lty=0,col=rgb(0,0,0,1))
+lines((ifelse(round(yfit2,1)<= 0,NA,round(yfit2,1))), xfit2,  type="o",pch=15,lty=0,col=rgb(0,0,0,1))
+lines((ifelse(round(yfit3,1)<= 0,NA,round(yfit3,1))), xfit3,  type="o",pch=8,lty=0,col=rgb(0,0,0,1))
+empty_vec3=rep("",length(y_axis))
+axis(2, at=y_axis, las=1,labels=empty_vec3)
+abline(h = 0, col = "black", lty=1);
+#
+
+## boxplot + vertical histogram marker mean std all patients #
+
+mat <- matrix(c(1,3,2,4), 2,2)
+layout(mat, c(1,1),c(1,1))
+par(mar=c(2,4.1,4.1,2.1)) # tiefe -y, -x, +y, +x
+boxplot(lateral_boxplot,xlab= NA,ylab=NA,xaxt="n",axes= F,pars=list(boxwex=0.8,staplewex=.6),main="Intra-fractional motion based on X-ray marker fusion", ylim=c(-13,13))
+# h<-boxplot(lateral_boxplot,xlab= NA,ylab=NA,xaxt="n",axes= F,pars=list(boxwex=0.8,staplewex=.6),main="Intra-fractional motion based on X-ray marker fusion", ylim=c(-13,13))
+# print(h$stats)
+box()
+abline(h=0, col = "black", lty=2)
+axis(2, at=0, las=2,labels= "0")
+axis(2, at=-10, las=2,labels= "-10")
+axis(2, at=10, las=2,labels= "10")
+axis(2, at=15, las=2,labels= "15")
+axis(2, at=30, las=2,labels= "30")
+axis(2, at=40, las=2,labels= "40")
+axis(2, at=5, las=2,labels= "5")
+axis(2, at=-5, las=2,labels= "-5")
+axis(2, at=-15, las=2,labels= "-15")
+axis(2, at=-30, las=2,labels= "-30")
+axis(2, at=-40, las=2,labels= "-40")
+axis(2, at=-50, las=2,labels= "-50")
+legend("topright", legend="a)", cex = 0.8,bg="white")
+axis(1, at=1:length(empty_vec_x), las=2,labels=empty_vec_x)
+#axis(1, at=1:7, las=2,labels=c(-6,-4,-2,0,2,4,6))
+text(1:length(num_pat_x),-15, srt=0, pos=1, xpd=TRUE, labels=num_pat_x,cex= 1)
+mtext("Lateral shifts [mm]", side = 2, line=3, cex = 0.8, font = 1)
+mtext("# of patients", side = 1, line = 2, cex = 0.8, font = 1)
+#
+par(mar=c(2,4.1,4.1,2.1)) # tiefe -y, -x, +y, +x
+boxplot(vertical_boxplot,xlab= NA,ylab=NA,xaxt="n",axes= F,pars=list(boxwex=.8,staplewex=.6), ylim=c(-13,13))
+box()
+abline(h=0, col = "black", lty=2)
+axis(2, at=0, las=2,labels= "0")
+axis(2, at=-10, las=2,labels= "-10")
+axis(2, at=10, las=2,labels= "10")
+axis(2, at=15, las=2,labels= "15")
+axis(2, at=30, las=2,labels= "30")
+axis(2, at=40, las=2,labels= "40")
+axis(2, at=5, las=2,labels= "5")
+axis(2, at=-5, las=2,labels= "-5")
+axis(2, at=-15, las=2,labels= "-15")
+axis(2, at=-30, las=2,labels= "-30")
+axis(2, at=-40, las=2,labels= "-40")
+axis(2, at=-50, las=2,labels= "-50")
+legend("topright", legend="b)", cex = 0.8,bg="white")
+axis(1, at=1:length(empty_vec_x), las=2,labels=empty_vec_x)
+text(1:length(num_pat_x),-15, srt=0, pos=1, xpd=TRUE, labels=num_pat_x,cex= 1)
+mtext("Vertical shifts [mm]", side = 2, line=3, cex = 0.8, font = 1)
+mtext("# of patients", side = 1, line = 2, cex = 0.8, font = 1)
+#
+par(mar=c(5.1,4.1,2,2.1)) # tiefe -y, -x, +y, +x
+boxplot(longitudinal_boxplot,xlab= NA,ylab=NA,xaxt="n",axes= F,pars=list(boxwex=.8,staplewex=.6), ylim=c(-13,13))
+box()
+abline(h=0, col = "black", lty=2)
+axis(2, at=0, las=2,labels= "0")
+axis(2, at=-10, las=2,labels= "-10")
+axis(2, at=10, las=2,labels= "10")
+axis(2, at=15, las=2,labels= "15")
+axis(2, at=30, las=2,labels= "30")
+axis(2, at=40, las=2,labels= "40")
+axis(2, at=5, las=2,labels= "5")
+axis(2, at=-5, las=2,labels= "-5")
+axis(2, at=-15, las=2,labels= "-15")
+axis(2, at=-30, las=2,labels= "-30")
+axis(2, at=-40, las=2,labels= "-40")
+axis(2, at=-50, las=2,labels= "-50")
+legend("topright", legend="c)", cex = 0.8,bg="white")
+axis(1, at=1:length(empty_vec_x), las=2,labels=empty_vec_x)
+text(1:length(num_pat_x),-15, srt=0, pos=1, xpd=TRUE, labels=num_pat_x,cex= 1)
+mtext("Longitudinal shifts [mm]", side = 2, line=3, cex = 0.8, font = 1)
+mtext("# of patients", side = 1, line = 2, cex = 0.8, font = 1)
+#
+par(mar=c(5.1,4.1,2,2.1)) # tiefe -y, -x, +y, +x
+max_y_fits=max(yfit,yfit2,yfit3)
+max_x_fits=max(xfit,xfit2,xfit3)
+x_axis=seq(-15,15,5)
+labels_y=seq(0,max_y_fits,(mround((max_y_fits/10),10)))
+plot(hx, ylab=NA,xlab=NA,col=rgb(0,1,1,0),border=NA,yaxt="n",xaxt = "n",main="",ylim=c(0,+(round(max_y_fits+10,1))),xlim=c(-10,+10))
+box()
+lines(xfit_box,(ifelse(round(yfit_box,1)<= 0,NA,round(yfit_box,1))),  type="l",lty=1,col=rgb(0,0,0,1))
+lines(xfit2_box,(ifelse(round(yfit2_box,1)<= 0,NA,round(yfit2_box,1))),  type="l",lty=2,col=rgb(0,0,0,1))
+lines(xfit3_box,(ifelse(round(yfit3_box,1)<= 0,NA,round(yfit3_box,1))),  type="l",lty=3,col=rgb(0,0,0,1))
+axis(2,at=labels_y,las=2,labels=labels_y)
+axis(1, at=x_axis,las=1,labels=x_axis)
+legendtext2<-c(paste("left-right:               ",round(mean_lat,2),"\u00B1",round(std_lat,2)),paste("anterior-posterior: ",round(mean_vert,2),"\u00B1",round(std_vert,2)),paste("superior-inferior:   ",round(mean_long,2),"\u00B1",round(std_long,3)))
+legend("topleft", legend=legendtext2, lty=c(1,2,3),cex = 0.55,bg="white")
+legend("topright", legend="d)", cex = 0.8,bg="white")
+mtext("Frequency", side = 2, line=3, cex = 0.8, font = 1)
+mtext("Relative shifts [mm]", side = 1, line = 2, cex = 0.8, font = 1)
+abline(v=0, col = "black",lty=2)
+#
+
+## boxplot of cbct-cbct mean std all patients ##
+
+label_dir=c("left-right","anterior-posterior","superior-inferior")
+label=c("","","")
+pdf("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct_analysis/ifmm_CBCT_CBCT_mean_std.pdf",width= 9, height= 5)
+boxplot(sub_double_all,xlab= NA,ylab=NA,xaxt="n",axes= F,pars=list(boxwex=.35,staplewex=.6),main="Intra-fractional motion based on cbct fusion", ylim=c(-15,15))
+
+box()
+abline(h=0, col = "black", lty=2)
+axis(2, at=0, las=2,labels= "0")
+axis(2, at=-10, las=2,labels= "-10")
+axis(2, at=10, las=2,labels= "10")
+axis(2, at=15, las=2,labels= "15")
+axis(2, at=20, las=2,labels= "20")
+axis(2, at=30, las=2,labels= "30")
+axis(2, at=40, las=2,labels= "40")
+axis(2, at=5, las=2,labels= "5")
+axis(2, at=-5, las=2,labels= "-5")
+axis(2, at=-15, las=2,labels= "-15")
+axis(2, at=-20, las=2,labels= "-20")
+axis(2, at=-30, las=2,labels= "-30")
+axis(2, at=-40, las=2,labels= "-40")
+axis(2, at=-50, las=2,labels= "-50")
+axis(1, at=1:3, las=2,labels=label)
+text(1:3,-17, srt=0, pos=1, xpd=TRUE, labels=label_dir,cex= 1)
+mtext("Relative shifts [mm]", side = 2, line=3, cex = 1, font = 1)
+mtext("Direction of motion", side = 1, line = 2, cex = 1, font = 1)
+legendtext2<-c(paste("left-right:               ",round(mean_lat_cbct,2),"\u00B1",round(std_lat_cbct,2)),paste("anterior-posterior: ",round(mean_vert_cbct,2),"\u00B1",round(std_vert_cbct,2)),paste("superior-inferior:   ",round(mean_long_cbct,2),"\u00B1",round(std_long_cbct,3)))
+legend(2.3,15, legend=legendtext2, cex = 0.8,bg="white")
+
+
+
+
+
+## histo of marker x-ray before rt to compare it with set-up marker data taken by cbct ##
+
+pdf("/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct_analysis/ifmm_histo_xrt.pdf",width= 9, height= 5)
+
+matrix_hist<-t(marker_histo_xrt)
+
+x <- marker_histo_xrt[,1]# lat
+y <- marker_histo_xrt[,2]# vert
+z <- marker_histo_xrt[,3]# long
+
+interpol_length=80# interpolation lenght of interpolation x,y,z
+
+diff=round(diff((c((min(matrix_hist)),(max(matrix_hist))))),0)
+num_bins=round(sqrt((ncol(matrix_hist))),0)# x,y,z have same number of values
+diff2=round(diff((c((min(x)),(max(x))))),0)
+div=round((diff2/diff),2)
+breaks=round(div*num_bins,0)
+hx<-hist(x, breaks=breaks)
+xfit<-seq(min(x),max(x),length=interpol_length)
+yfit<-dnorm(xfit,mean=mean(x),sd=sd(x))
+yfit <- yfit*diff(hx$mids[1:2])*length(x)
+lines(xfit, yfit,type="l", pch=c(1),col=rgb(0,0,0,1))
+#
+diff2=round(diff((c((min(y)),(max(y))))),0)
+div=round((diff2/diff),2)
+breaks=round(div*num_bins,0)
+hy<-hist(y, breaks=breaks)
+xfit2<-seq(min(y),max(y),length=interpol_length)
+yfit2<-dnorm(xfit2,mean=mean(y),sd=sd(y))
+yfit2 <- yfit2*diff(hy$mids[1:2])*length(y)
+lines(xfit2, yfit2,type="l",  pch=c(15),col=rgb(0,0,0,1))
+#
+diff2=round(diff((c((min(z)),(max(z))))),0)
+div=round((diff2/diff),2)
+breaks=round(div*num_bins,0)
+hz<-hist(z, breaks=breaks)
+xfit3<-seq(min(z),max(z),length=interpol_length)
+yfit3<-dnorm(xfit3,mean=mean(z),sd=sd(z))
+yfit3 <- yfit3*diff(hz$mids[1:2])*length(z)
+lines(xfit3, yfit3,type="l",  pch=c(8),col=rgb(0,0,0,1))
+#
+
+max_x_fits=max(xfit,xfit2,xfit3)
+max_y_fits=max(yfit,yfit2,yfit3)
+labels_y=seq(0,max_y_fits,(mround((max_y_fits/10),10)))
+plot(hx, ylab=NA, xlab=NA,col=rgb(0,1,1,0),border=NA,yaxt="n",xaxt = "n",main="Inter-fractional marker motion variability",xlim=c(-15,15),ylim=c(0,+(round(max_y_fits+10,1))))
+lines(xfit, yfit,type="l",  lty=2,col=rgb(0,0,0,1))# lat
+lines(xfit2, yfit2,type="l",  lty=1,col=rgb(0,0,0,1))# vert
+lines(xfit3, yfit3,type="l",  lty=6,col=rgb(0,0,0,1))# long
+box()
+axis(1, at=-5, las=1,labels= "-5")
+axis(1, at=-10, las=1,labels= "-10")
+axis(1, at=-15, las=1,labels= "-15")
+axis(1, at=-25, las=1,labels= "-25")
+axis(1, at=0, las=1,labels= "0")
+axis(1, at=5, las=1,labels= "5")
+axis(1, at=10, las=1,labels= "10")
+axis(1, at=15, las=1,labels= "15")
+axis(2,at=labels_y,las=1,labels=labels_y)
+legendtext<-c(paste("left-right:               ",round((mean_lat_marker_xrt),2),"\u00B1",round((std_lat_marker_xrt),2)),paste("anterior-posterior: ",round((mean_vert_marker_xrt),2),"\u00B1",round((std_vert_marker_xrt),2)),paste("inferior-superior:   ",round((mean_long_marker_xrt),2),"\u00B1",round((std_long_marker_xrt),2)))## patient view, therefore in x direction - left und + right
+legend(-round((max_x_fits),0),round((max_y_fits),0), legend=legendtext,lty=c(2,1,6), col =c("black","black","black"),cex = 0.8,bg="white")
+mtext("Frequency", side = 2, line=3, cex = 0.9, font = 1)
+mtext("Relative shifts [mm]", side = 1, line = 3, cex = 0.9, font = 1)
+abline(v=0, col = "black", lty=2,lwd=.5)
+
+##
+
+mat <- matrix(c(1,3,2,4), 2,2)
+layout(mat, c(1,1),c(1,1))
+par(mar=c(2,4.1,4.1,2.1)) # tiefe -y, -x, +y, +x
+boxplot(marker_xrt_box_x,xlab= NA,ylab=NA,xaxt="n",axes= F,pars=list(boxwex=.8,staplewex=.6),main="Inter-fractional marker motion variability", ylim=c(-13,13))
+box()
+abline(h=0, col = "black", lty=2)
+axis(2, at=0, las=2,labels= "0")
+axis(2, at=-10, las=2,labels= "-10")
+axis(2, at=10, las=2,labels= "10")
+axis(2, at=15, las=2,labels= "15")
+axis(2, at=30, las=2,labels= "30")
+axis(2, at=40, las=2,labels= "40")
+axis(2, at=5, las=2,labels= "5")
+axis(2, at=-5, las=2,labels= "-5")
+axis(2, at=-15, las=2,labels= "-15")
+axis(2, at=-30, las=2,labels= "-30")
+axis(2, at=-40, las=2,labels= "-40")
+axis(2, at=-50, las=2,labels= "-50")
+legend("topright", legend="a)", cex = 0.8,bg="white")
+axis(1, at=1:length(empty_vec_x), las=2,labels=empty_vec_x)
+text(1:length(num_pat_x),-15, srt=0, pos=1, xpd=TRUE, labels=num_pat_x,cex= 1)
+mtext("Lateral shifts [mm]", side = 2, line=3, cex = 0.8, font = 1)
+mtext("# of patients", side = 1, line = 2, cex = 0.8, font = 1)
+#
+par(mar=c(2,4.1,4.1,2.1)) # tiefe -y, -x, +y, +x
+boxplot(marker_xrt_box_y,xlab= NA,ylab=NA,xaxt="n",axes= F,pars=list(boxwex=.8,staplewex=.6), ylim=c(-13,13))
+box()
+abline(h=0, col = "black", lty=2)
+axis(2, at=0, las=2,labels= "0")
+axis(2, at=-10, las=2,labels= "-10")
+axis(2, at=10, las=2,labels= "10")
+axis(2, at=15, las=2,labels= "15")
+axis(2, at=30, las=2,labels= "30")
+axis(2, at=40, las=2,labels= "40")
+axis(2, at=5, las=2,labels= "5")
+axis(2, at=-5, las=2,labels= "-5")
+axis(2, at=-15, las=2,labels= "-15")
+axis(2, at=-30, las=2,labels= "-30")
+axis(2, at=-40, las=2,labels= "-40")
+axis(2, at=-50, las=2,labels= "-50")
+legend("topright", legend="b)", cex = 0.8,bg="white")
+axis(1, at=1:length(empty_vec_x), las=2,labels=empty_vec_x)
+text(1:length(num_pat_x),-15, srt=0, pos=1, xpd=TRUE, labels=num_pat_x,cex= 1)
+mtext("Vertical shifts [mm]", side = 2, line=3, cex = 0.8, font = 1)
+mtext("# of patients", side = 1, line = 2, cex = 0.8, font = 1)
+#
+par(mar=c(5.1,4.1,2,2.1)) # tiefe -y, -x, +y, +x
+boxplot(marker_xrt_box_z,xlab= NA,ylab=NA,xaxt="n",axes= F,pars=list(boxwex=.8,staplewex=.6), ylim=c(-13,13))
+box()
+abline(h=0, col = "black", lty=2)
+axis(2, at=0, las=2,labels= "0")
+axis(2, at=-10, las=2,labels= "-10")
+axis(2, at=10, las=2,labels= "10")
+axis(2, at=15, las=2,labels= "15")
+axis(2, at=30, las=2,labels= "30")
+axis(2, at=40, las=2,labels= "40")
+axis(2, at=5, las=2,labels= "5")
+axis(2, at=-5, las=2,labels= "-5")
+axis(2, at=-15, las=2,labels= "-15")
+axis(2, at=-30, las=2,labels= "-30")
+axis(2, at=-40, las=2,labels= "-40")
+axis(2, at=-50, las=2,labels= "-50")
+legend("topright", legend="c)", cex = 0.8,bg="white")
+axis(1, at=1:length(empty_vec_x), las=2,labels=empty_vec_x)
+text(1:length(num_pat_x),-15, srt=0, pos=1, xpd=TRUE, labels=num_pat_x,cex= 1)
+mtext("Longitudinal shifts [mm]", side = 2, line=3, cex = 0.8, font = 1)
+mtext("# of patients", side = 1, line = 2, cex = 0.8, font = 1)
+#
+par(mar=c(5.1,4.1,2,2.1)) # tiefe -y, -x, +y, +x
+max_x_fits=max(xfit,xfit2,xfit3)
+max_y_fits=max(yfit,yfit2,yfit3)
+labels_y=seq(0,max_y_fits,(mround((max_y_fits/10),10)))
+plot(hx, ylab=NA, xlab=NA,col=rgb(0,1,1,0),border=NA,yaxt="n",xaxt = "n",main="",xlim=c(-15,15),ylim=c(0,+(round(max_y_fits+10,1))))
+lines(xfit, yfit,type="l",  lty=2,col=rgb(0,0,0,1))# lat
+lines(xfit2, yfit2,type="l",  lty=1,col=rgb(0,0,0,1))# vert
+lines(xfit3, yfit3,type="l",  lty=6,col=rgb(0,0,0,1))# long
+box()
+axis(1, at=-5, las=1,labels= "-5")
+axis(1, at=-10, las=1,labels= "-10")
+axis(1, at=-15, las=1,labels= "-15")
+axis(1, at=-25, las=1,labels= "-25")
+axis(1, at=0, las=1,labels= "0")
+axis(1, at=5, las=1,labels= "5")
+axis(1, at=10, las=1,labels= "10")
+axis(1, at=15, las=1,labels= "15")
+axis(2,at=labels_y,las=1,labels=labels_y)
+legend("topright", legend="d)", cex = 0.8,bg="white")
+legendtext<-c(paste("left-right:               ",round((mean_lat_marker_xrt),2),"\u00B1",round((std_lat_marker_xrt),2)),paste("anterior-posterior: ",round((mean_vert_marker_xrt),2),"\u00B1",round((std_vert_marker_xrt),2)),paste("inferior-superior:   ",round((mean_long_marker_xrt),2),"\u00B1",round((std_long_marker_xrt),2)))## patient view, therefore in x direction - left und + right
+legend("topleft", legend=legendtext,lty=c(2,1,6), col =c("black","black","black"),cex = 0.55,bg="white")
+mtext("Frequency", side = 2, line=3, cex = 0.9, font = 1)
+mtext("Relative shifts [mm]", side = 1, line = 3, cex = 0.9, font = 1)
+abline(v=0, col = "black", lty=2,lwd=.5)
+
+##########
+## save ##
+##########
+
+write.table((marker_histo_xrt), file = "/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct_analysis/ifmm_marker_xrt.dat", append=FALSE, row.names= FALSE,  sep="\t",dec=".")
+
+write.table(marker_xrt_44[,c(1)], file = "/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct_analysis/xrt_marker44_x.dat", append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+write.table(marker_xrt_44[,c(3)], file = "/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct_analysis/xrt_marker44_y.dat", append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+write.table(marker_xrt_44[,c(2)], file = "/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct_analysis/xrt_marker44_z.dat", append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+
+write.table(marker_xrt_45[,c(1)], file = "/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct_analysis/xrt_marker45_x.dat", append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+write.table(marker_xrt_45[,c(3)], file = "/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct_analysis/xrt_marker45_y.dat", append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+write.table(marker_xrt_45[,c(2)], file = "/home/boeckefx/Documents/Prostate_SOP/Data/vero_cbct_analysis/xrt_marker45_z.dat", append=FALSE, row.names= FALSE, col.names= FALSE, sep="\t",dec=".")
+
+
+print("ENDE")
+quit()
