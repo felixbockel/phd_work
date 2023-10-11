@@ -1,0 +1,745 @@
+ %% get Image- Profiles in x and y direction && analysis of images 1-3
+function [image_grNull_x,image_grNull_y,Ix,Iy]=HCSR_get_image_profile(image_show,image_show_size,image_show_size2,image_number)
+            
+            %%% very important: image_show as a box needs to consist of 16 holes, anything less causes errors
+        counter=0;  
+        image_bigger_x=0;
+        n=99; % just some random number > 1 
+        for ll=1:n; 
+            % upper left image
+            image_ul=double(image_show(image_show_size,image_show_size+image_bigger_x)); % manuell größe optimiert
+            % lower right image
+            image_lr=double(image_show(end-image_show_size2:end,end-image_show_size2:end)); % manuell größe optimiert 
+
+            % Start with x direction (upper left image)
+            
+            [row,~]=size(image_ul);
+            improfile_image=image_ul;
+
+            %find profiles, which have at least 4 Maximas
+            
+            improfile_image2=double(improfile_image);
+            
+            for i=1:row
+                
+            [Max_peak,~,~,~] = extrema(improfile_image2(i,:));
+            [~,col_sort]=size(Max_peak);
+            
+                if col_sort > 3
+                    max_values(i,:)=Max_peak(1,4);
+                else
+                    max_values(i,:)=0;
+                end
+                        
+            end
+            
+            max_pos=find(max_values==0);
+            improfile_image2([max_pos],:)=[];
+            value_empty = isempty(improfile_image2);
+            
+            if value_empty == 1
+                image_grNull_x=[-1;-1;-1;-1];
+                Ix(:,1)='HCSR test failed';
+            end
+            
+            % Analyze x profiles
+            [row_profil,~]=size(improfile_image2); 
+            
+            for n=1:row_profil
+                
+                pos_MinIdx=[];pos_Min_peak=[];pos_MaxIdx=[];pos_Max_peak=[];posgr4=[];
+                [Max_peak,MaxIdx_peak,Min_peak,MinIdx_peak] = extrema(improfile_image2(n,:));% find max, min values + position
+                min_value_max=min(MaxIdx_peak);
+                min_value_min=min(MinIdx_peak);
+                
+                sort_MinIdx=sort(MinIdx_peak);
+                [~,col]=size(sort_MinIdx);
+                
+                % sort min and max Vectors 
+                for i=1:col
+                    pos_MinIdx(1,i)=find(MinIdx_peak==sort_MinIdx(1,i));
+                end
+                
+                d=0;
+                
+                for i=pos_MinIdx
+                    d=d+1;
+                    pos_Min_peak(1,d)=Min_peak(1,i);
+                end
+                
+                sort_MaxIdx=sort(MaxIdx_peak);
+                [~,col]=size(sort_MaxIdx);
+                
+                for i=1:col
+                    pos_MaxIdx(1,i)=find(MaxIdx_peak==sort_MaxIdx(1,i));
+                end
+                
+                d=0;
+                
+                for i=pos_MaxIdx
+                    d=d+1;
+                    pos_Max_peak(1,d)=Max_peak(1,i);
+                end
+                
+                [~,col_max_peak]=size(pos_Max_peak);
+                [~,col_min_peak]=size(pos_Min_peak);
+                d=0;
+  
+                % if vector of max values bigger than 4,check wheather a background max value can be ignored or is part of informational signal (first and end parameter will be deleted)
+                if col_max_peak>4
+                    
+                    sort_Max_peak=sort(pos_Max_peak,'descend');
+                    value_pos_gr4=sort_Max_peak(5:end);
+                    
+                    for i=value_pos_gr4
+                        
+                        d=d+1;
+                        control_row_size(:,1)=find(pos_Max_peak == i); % if two values of same size are found, then detect them and may delete the background value 
+                        [row_control_row_size,~]=size(control_row_size);
+                        for_loop_row_control=control_row_size';
+                        
+                        if row_control_row_size>1
+                            
+                             for ii=for_loop_row_control
+                                 
+                               if ii == 1 
+                                   
+                                   pos_Max_peak(:,ii)=[];
+                                   pos_Min_peak(:,ii)=[];
+                                   
+                               elseif ii == col_max_peak
+                                   
+                                   if col_min_peak == col_max_peak
+                                       
+                                        pos_Min_peak(:,pos_gr4)=[];
+                                       
+                                   else
+                                       
+                                        if col_min_peak > col_max_peak
+                                            
+                                            pos_Min_peak(:,pos_gr4:end)=[];
+                                            
+                                        else
+                                            
+                                            pos_Min_peak(:,pos_gr4-1)=[];
+                                            
+                                        end
+                                   
+                                   end
+
+                                   pos_Max_peak(:,ii)=[];
+                                   
+                               end 
+                               
+                             end  
+                        
+                             
+                        else
+                            
+                        pos_gr4(1,d)=find(pos_Max_peak == i);
+                        
+                        end
+                        
+                        [~,col_Max_peak]=size(pos_Max_peak);
+                        
+                        if col_Max_peak < 5
+                            
+                            pos_gr4(1,:)=99; % code ignores following if- loops for value pos_gr4
+                            break
+                        end
+                    end
+                    
+                    [~,col_gr4]=size(pos_gr4);
+                    
+                    if col_gr4 == 1
+                       
+                        if pos_gr4 == 1 
+                            
+                            pos_Max_peak(:,pos_gr4)=[];
+                            pos_Min_peak(:,1)=[];
+                            
+                        elseif   pos_gr4 == col_Max_peak
+                            
+                            if col_min_peak == col_max_peak
+                                       
+                                        pos_Min_peak(:,pos_gr4)=[];
+                                       
+                                   else
+                                       
+                                        if col_min_peak > col_max_peak
+                                            
+                                            pos_Min_peak(:,pos_gr4:end)=[];
+                                            
+                                        else
+                                            
+                                            pos_Min_peak(:,pos_gr4-1)=[];
+                                            
+                                        end
+                                   
+                            end
+
+                            pos_Max_peak(:,pos_gr4)=[];
+                             
+                        end
+                        
+                    else
+                        
+                        aa=[1,2];bb=[1,2,3];cc=[col_Max_peak-1,col_Max_peak];dd=[col_Max_peak-2,col_Max_peak-1,col_Max_peak];
+                        
+                        if col_gr4 == 2
+                            
+                            if pos_gr4 == aa 
+
+                                pos_Max_peak(:,pos_gr4)=[];
+                                pos_Min_peak(:,pos_gr4)=[];
+                                
+                            elseif pos_gr4 == cc
+                                
+                                if col_min_peak == col_max_peak
+                                       
+                                        pos_Min_peak(:,pos_gr4)=[];
+                                       
+                                   else
+                                       
+                                        if col_min_peak > col_max_peak
+                                            
+                                            pos_Min_peak(:,pos_gr4:end)=[];
+                                            
+                                        else
+                                            
+                                            pos_Min_peak(:,pos_gr4-1)=[];
+                                            
+                                        end
+                                   
+                                end
+                                
+                                pos_Max_peak(:,pos_gr4)=[];
+                                
+
+                            end
+                            
+                        elseif col_gr4 == 3
+                            
+                            if pos_gr4 == bb
+
+                                pos_Max_peak(:,pos_gr4)=[];
+                                pos_Min_peak(:,pos_gr4)=[];
+                                
+                            elseif pos_gr4 == dd
+
+                                if col_min_peak == col_max_peak
+                                       
+                                        pos_Min_peak(:,pos_gr4)=[];
+                                       
+                                   else
+                                       
+                                        if col_min_peak > col_max_peak
+                                            
+                                            pos_Min_peak(:,pos_gr4:end)=[];
+                                            
+                                        else
+                                            
+                                            pos_Min_peak(:,pos_gr4-1)=[];
+                                            
+                                        end
+                                   
+                                end
+                                
+                                pos_Max_peak(:,pos_gr4)=[];
+                                
+
+                            end
+                            
+                        end
+                    end
+                    
+                    
+                end
+                
+                [~,col]=size(pos_Max_peak);
+                [~,col_min_peak]=size(pos_Min_peak);
+                d=0;
+                
+                % analyze distance between max- min
+                if min_value_max<min_value_min  
+
+                    for i=1:col
+
+                            d=d+1;
+
+                            if col_min_peak>3 
+                                
+                                if d == 1
+
+                                    dist_peak(d,1)=pos_Max_peak(1,i) - pos_Min_peak(1,i);
+
+                                elseif d==5
+                                    break
+
+                                else
+                                    mean_min_peak=mean(pos_Min_peak(1,i-1:i));
+                                    dist_peak(d,1)=pos_Max_peak(1,i) - mean_min_peak;
+                                end
+                                
+                            else
+                                
+                                if d == 1
+
+                                    dist_peak(d,1)=pos_Max_peak(1,i) - pos_Min_peak(1,i);
+
+                                elseif d==5
+                                    break
+
+                                elseif d == 4
+                                    
+                                    mean_min_peak=mean(pos_Min_peak(1,i-1));
+                                    dist_peak(d,1)=pos_Max_peak(1,i) - mean_min_peak;
+                                
+                                else
+                                    mean_min_peak=mean(pos_Min_peak(1,i-1:i));
+                                    dist_peak(d,1)=pos_Max_peak(1,i) - mean_min_peak;
+                                    
+                                end                               
+
+                            end
+
+                    end
+
+                else
+
+                    for i=1:col
+
+                            d=d+1;
+                            
+                            if i == col
+                                
+                                dist_peak(d,1)=pos_Max_peak(1,i) - pos_Min_peak(1,i);
+                                
+                            else
+                                
+                                mean_min_peak=mean(pos_Min_peak(1,i:i+1));
+                                dist_peak(d,1)=pos_Max_peak(1,i) - mean_min_peak;
+                                
+                            end
+                            
+                            if d==4
+                                break
+
+                            end
+
+                    end
+
+                end                
+
+                %Matrixregion bezieht sich auf 16-Loch Matrix, die jeweils untersucht wird
+                %erstelle die zu untersuchenende Matrixregion
+                
+                %[row,col]=size(image_1_show); nur zum austesten
+                image_ul_matrix=double(image_show(image_show_size,image_show_size)); % manuell größe optimiert
+                image_ul_30=(mean(mean(image_ul_matrix))).*30./100;
+                image_grNull_x(:,n)=dist_peak-image_ul_30; 
+                
+                if image_grNull_x(:,n)>0
+                    
+                    Ix(:,n)='HCSR test passed'; % if one profile passes conditions, then test is passed
+                    break
+                else
+                    Ix(:,n)='HCSR test failed';
+                end
+                
+            end
+            
+            TF=reshape(Ix,1,[]);
+            TF1=strfind(TF,'passed');
+            TF2=isempty(TF1); 
+            counter=counter+1;
+            
+            if TF2 == 1 % test has failed
+   
+               if image_number == 3
+                   
+                   break
+               
+               else
+                   
+                image_bigger_x=1; % there are movement variabilities of the phantom, therefore the image needs to be segmentated for special causes.   
+                clearvars Ix
+               end
+               
+               if counter == 2
+                   
+                   break
+                   
+               end
+               
+                
+            else % test has passed
+                
+               break 
+               
+            end
+            
+        end
+        
+        
+        
+        % Continue with y direction (lower right image )
+            
+            
+            
+            clearvars improfile_image
+            clearvars improfile_image2
+            [~,col]=size(image_lr);
+            improfile_image=image_lr;
+
+            %find profiles, which have at least 4 Maximas
+            
+            improfile_image2=double(improfile_image);
+            
+            for i=1:col
+                
+            [Max_peak,~,~,~] = extrema(improfile_image2(:,i));
+            [row_sort,~]=size(Max_peak);
+            
+                if row_sort > 3
+                    max_values(i,:)=Max_peak(4,1);
+                else
+                    max_values(i,:)=0;
+                end
+                        
+            end
+            
+            max_pos=find(max_values==0);
+            improfile_image2(:,[max_pos])=[];
+            value_empty = isempty(improfile_image2);
+            
+            if value_empty == 1
+                image_grNull_y=[-1;-1;-1;-1];
+                Iy(:,1)='HCSR test failed';
+            end
+            
+            
+            
+            % Analyze first y profile
+            improfile_image2=double(improfile_image2);
+            [~,col_profil]=size(improfile_image2);
+            
+            
+            for n=1:col_profil
+                
+                pos_MinIdx=[];pos_Min_peak=[];pos_MaxIdx=[];pos_Max_peak=[];posgr4=[];
+                [Max_peak,MaxIdx_peak,Min_peak,MinIdx_peak] = extrema(improfile_image2(:,n));% find max, min values + position
+                min_value_max=min(MaxIdx_peak);
+                min_value_min=min(MinIdx_peak);
+                
+                sort_MinIdx=sort(MinIdx_peak);
+                [row,~]=size(sort_MinIdx);
+                
+                % sort min and max Vectors 
+                for i=1:row
+                    pos_MinIdx(1,i)=find(MinIdx_peak==sort_MinIdx(i,1));
+                end
+                
+                d=0;
+                
+                for i=pos_MinIdx
+                    d=d+1;
+                    pos_Min_peak(1,d)=Min_peak(i,1);
+                end
+                
+                sort_MaxIdx=sort(MaxIdx_peak);
+                [row,~]=size(sort_MaxIdx);
+                
+                for i=1:row
+                    pos_MaxIdx(1,i)=find(MaxIdx_peak==sort_MaxIdx(i,1));
+                end
+                
+                d=0;
+                
+                for i=pos_MaxIdx
+                    d=d+1;
+                    pos_Max_peak(1,d)=Max_peak(i,1);
+                end
+                
+                [~,col_max_peak]=size(pos_Max_peak);
+                [~,col_min_peak]=size(pos_Min_peak);
+                d=0;
+                
+                % if vector of max values bigger than 4,check wheather the background max value can be ignored or is part of signal
+                if col_max_peak>4
+                    
+                    sort_Max_peak=sort(pos_Max_peak,'descend');
+                    value_pos_gr4=sort_Max_peak(5:end);
+         
+                    for i=value_pos_gr4
+                        
+                        d=d+1;
+                        control_row_size=find(pos_Max_peak == i); % if two values of same size are found, then detect them and may delete the background value 
+                        [row_control_row_size,~]=size(control_row_size');
+                        for_loop_row_control=control_row_size;
+                        
+                        if row_control_row_size>1
+                            
+                             for ii=for_loop_row_control
+                                 
+                               if ii == 1 
+                                   
+                                   pos_Max_peak(:,ii)=[];
+                                   pos_Min_peak(:,ii)=[];
+                                   [~,controlmaxsize]=size(pos_Max_peak);
+                                   
+                                   if controlmaxsize==4
+                                       
+                                       break
+                                                                             
+                                   end
+                                   
+                               elseif ii == col_max_peak
+                                   
+                                   if col_min_peak == col_max_peak
+                                       
+                                        pos_Min_peak(:,pos_gr4)=[];
+                                       
+                                   else
+                                       
+                                        if col_min_peak > col_max_peak
+                                            
+                                            pos_Min_peak(:,pos_gr4:end)=[];
+                                            
+                                        else
+                                            
+                                            pos_Min_peak(:,pos_gr4-1)=[];
+                                            
+                                        end
+                                   
+                                   end
+
+                                   pos_Max_peak(:,ii)=[];
+                                   [~,controlmaxsize]=size(pos_Max_peak);
+                                   
+                                   if controlmaxsize==4
+                                       
+                                       break
+                                                                             
+                                   end
+                                   
+                               end 
+                               
+                             end  
+                        
+                             
+                        else
+                            
+                        pos_gr4(1,d)=find(pos_Max_peak == i);
+                        
+                        end
+                        
+                        [~,col_Max_peak]=size(pos_Max_peak);
+                        
+                        if col_Max_peak < 5
+                            
+                            pos_gr4(1,:)=99; % code ignores following if- loops for value pos_gr4
+                            break
+                        end
+                    end
+                    
+                    [~,col_gr4]=size(pos_gr4);
+                    
+                    if col_gr4 == 1
+                       
+                        if pos_gr4 == 1 
+                            
+                            pos_Max_peak(:,pos_gr4)=[];
+                            pos_Min_peak(:,1)=[];
+    
+                        elseif   pos_gr4 == col_Max_peak
+                            
+                            
+                            if col_min_peak == col_max_peak
+                                       
+                                        pos_Min_peak(:,pos_gr4)=[];
+                                       
+                                   else
+                                       
+                                        if col_min_peak > col_max_peak
+                                            
+                                            pos_Min_peak(:,pos_gr4:end)=[];
+                                            
+                                        else
+                                            
+                                            pos_Min_peak(:,pos_gr4-1)=[];
+                                            
+                                        end
+                                   
+                             end
+                            
+                            pos_Max_peak(:,pos_gr4)=[];
+                            
+                            
+                        end
+                        
+                    else
+                        
+                        aa=[1,2];bb=[1,2,3];cc=[col_Max_peak-1,col_Max_peak];dd=[col_Max_peak-2,col_Max_peak-1,col_Max_peak];
+                        
+                        if col_gr4 == 2
+                            
+                            if pos_gr4 == aa 
+                                
+                                pos_Max_peak(:,pos_gr4)=[];
+                                pos_Min_peak(:,pos_gr4)=[];
+                                
+                            elseif pos_gr4 == cc
+                                
+                                   if col_min_peak == col_max_peak
+                                       
+                                        pos_Min_peak(:,pos_gr4)=[];
+                                       
+                                   else
+                                       
+                                        if col_min_peak > col_max_peak
+                                            
+                                            pos_Min_peak(:,pos_gr4:end)=[];
+                                            
+                                        else
+                                            
+                                            pos_Min_peak(:,pos_gr4-1)=[];
+                                            
+                                        end
+                                   
+                                   end
+                                
+                                pos_Max_peak(:,pos_gr4)=[];
+                                   
+                            end
+                            
+                        elseif col_gr4 == 3
+                            
+                            if pos_gr4 == bb
+
+                                pos_Max_peak(:,pos_gr4)=[];
+                                pos_Min_peak(:,pos_gr4)=[];
+                                
+                            elseif pos_gr4 == dd
+                                
+                                   if col_min_peak == col_max_peak
+                                       
+                                        pos_Min_peak(:,pos_gr4)=[];
+                                       
+                                   else
+                                       
+                                        if col_min_peak > col_max_peak
+                                            
+                                            pos_Min_peak(:,pos_gr4:end)=[];
+                                            
+                                        else
+                                            
+                                            pos_Min_peak(:,pos_gr4-1)=[];
+                                            
+                                        end
+                                   
+                                    end
+                                   
+                                pos_Max_peak(:,pos_gr4)=[];
+                                
+
+                            end
+                            
+                        end
+                    end
+                    
+                    
+                end  
+                
+                [~,col]=size(pos_Max_peak);
+                [~,col_min_peak]=size(pos_Min_peak);
+                d=0;
+ 
+                if min_value_max<min_value_min % analyze distance between max- min 
+
+                    for i=1:col
+
+                            d=d+1;
+                            
+                            if col_min_peak>3 
+                                
+                                if d == 1
+
+                                    dist_peak(d,1)=pos_Max_peak(1,i) - pos_Min_peak(1,i);
+
+                                elseif d==5
+                                    break
+
+                                else
+                                    mean_min_peak=mean(pos_Min_peak(1,i-1:i));
+                                    dist_peak(d,1)=pos_Max_peak(1,i) - mean_min_peak;
+                                end
+                                
+                            else
+                                
+                                if d == 1
+
+                                    dist_peak(d,1)=pos_Max_peak(1,i) - pos_Min_peak(1,i);
+
+                                elseif d==5
+                                    break
+
+                                elseif d == 4
+                                    
+                                    mean_min_peak=mean(pos_Min_peak(1,i-1));
+                                    dist_peak(d,1)=pos_Max_peak(1,i) - mean_min_peak;
+                                
+                                else
+                                    mean_min_peak=mean(pos_Min_peak(1,i-1:i));
+                                    dist_peak(d,1)=pos_Max_peak(1,i) - mean_min_peak;
+                                    
+                                end
+                                
+                            end
+                            
+                    end
+
+                else
+
+                    for i=1:col
+
+                            d=d+1;
+                            
+                            if i == col
+ 
+                                dist_peak(d,1)=pos_Max_peak(1,i) - pos_Min_peak(1,i);  
+                            
+                            
+                            else
+                                
+                                mean_min_peak=mean(pos_Min_peak(1,i:i+1));
+                                dist_peak(d,1)=pos_Max_peak(1,i) - mean_min_peak;
+                            
+                            end
+                            
+                            if d==4
+                                break
+
+                            end
+
+                    end
+
+                end
+
+                %erstelle Matrixregion
+                image_ul_matrix=double(image_show(end-image_show_size2:end,end-image_show_size2:end)); % manuell größe optimiert 
+                image_ul_30=(mean(mean(image_ul_matrix))).*30./100;
+                image_grNull_y(:,n)=dist_peak-image_ul_30; 
+                % 1 Wert auslesen
+                if image_grNull_y(:,n)>0
+                    Iy(:,n)='HCSR test passed';
+                    break
+                else
+                    Iy(:,n)='HCSR test failed';
+                end
+                
+            end
+            
+            
+            
+            
