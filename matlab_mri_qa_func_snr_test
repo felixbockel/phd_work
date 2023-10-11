@@ -1,0 +1,188 @@
+function [SNR_1,SNR_2,SNR_3_part1,SNR_3_part2,SNR_3]=SNR_test(dicom_1,t_path_1,dicom_2,t_path_2,T_image)
+
+         if T_image == 1
+  
+            [center,~]=imfindcircles(dicom_1,[100 200]); % find any circle inside of that image
+            
+        elseif T_image == 2
+             
+            [center,~]=imfindcircles(dicom_2,[50 100]); % find any circle inside of that image
+          
+        end
+
+        % create large circle 20 cm² of image 4
+        
+        center(1,2)=center(1,2)+10;% to avoid that dark box is inside of the radius_roi_large circle
+        area_circle=200;% 200cm² circle must be placed into large circle
+        radius_roi_large= 10*(sqrt(area_circle/pi));% radius of 200cm² cirlce, radius in mm     
+        dicom_info=dicominfo(t_path_1); % DICOM image will be read out      
+        FOV=char(dicom_info.Private_0051_100c);
+        FOV=FOV(9:end);
+        FOV_num=double(str2double(FOV)); 
+        image_size=double(dicom_info.Rows);
+        resolution=image_size./FOV_num; % resolution: pixel per mm
+        radius_pixel=radius_roi_large*resolution;  
+        [row,~]=size(dicom_1); % it is necessary that row and col have same length
+        [rr,cc] = meshgrid(1:row);
+        circle = sqrt((rr-center(1,1)).^2+(cc-center(1,2)).^2)<=radius_pixel; % create circle with same size and location; radius must be in pixels
+        circle_double=+circle; % convert circle from logical to double 
+        dicom_double=double(dicom_1);       
+        %figure;imshow(circle,[]);          
+        roi_image_4=circle_double.*dicom_double;  
+        
+        % get signal value
+        [~,col]=size(roi_image_4);
+        d=0;
+        vec_mean=0;  
+        for i=1:col % calculate mean of roi_image_4
+              
+                numb_values=length(find(roi_image_4(:,i) > 1));
+                
+                if numb_values>1
+                    d=d+1;
+                    vec_col_dicom=roi_image_4(:,i);
+                    vec_col_dicom(vec_col_dicom==0)=[];
+                    vec_mean(:,d)=mean(vec_col_dicom);
+                    
+                end
+        end
+          
+        signal_value_1=mean(vec_mean);     
+        
+        if T_image == 1
+  
+            [center,~]=imfindcircles(dicom_1,[100 200]); % find any circle inside of that image
+            
+        elseif T_image == 2
+             
+            [center,~]=imfindcircles(dicom_2,[50 100]); % find any circle inside of that image
+          
+        end
+  
+        % create large circle 20 cm² of image 9
+        
+        center(1,2)=center(1,2)+10;% to avoid that dark box is inside of the radius_roi_large circle
+        area_circle=200;% 200cm² circle must be placed into large circle
+        radius_roi_large= 10*(sqrt(area_circle/pi));% radius of 200cm² cirlce, radius in mm     
+        dicom_info=dicominfo(t_path_2); % DICOM image will be read out      
+        FOV=char(dicom_info.Private_0051_100c);
+        FOV=FOV(9:end);
+        FOV_num=double(str2double(FOV)); 
+        image_size=double(dicom_info.Rows);
+        resolution=image_size./FOV_num; % resolution: pixel per mm
+        radius_pixel=radius_roi_large*resolution;  
+        [row,~]=size(dicom_2); % it is necessary that row and col have same length
+        [rr,cc] = meshgrid(1:row);
+        circle = sqrt((rr-center(1,1)).^2+(cc-center(1,2)).^2)<=radius_pixel; % create circle with same size and location; radius must be in pixels
+        circle_double=+circle; % convert circle from logical to double 
+        dicom_double=double(dicom_2);       
+        %figure;imshow(circle,[]);          
+        roi_image_9=circle_double.*dicom_double;  
+        
+        % get signal value
+        [~,col]=size(roi_image_9);
+        d=0;
+        vec_mean=0;  
+        for i=1:col % calculate mean of roi_image_9
+              
+                numb_values=length(find(roi_image_9(:,i) > 1));
+                
+                if numb_values>1
+                    d=d+1;
+                    vec_col_dicom=roi_image_9(:,i);
+                    vec_col_dicom(vec_col_dicom==0)=[];
+                    vec_mean(:,d)=mean(vec_col_dicom);
+                    
+                end
+        end
+          
+        signal_value_2=mean(vec_mean); 
+        signal_value_12=[signal_value_1;signal_value_2];
+        mean_signal_value=mean(signal_value_12);
+        
+        % Substract two images
+        roi_substract=abs(roi_image_9-roi_image_4);
+        roi_substract(roi_substract>500)=0;
+        % get mean value of substracted image, which is the value of noise/ standard deviation
+        [~,col]=size(roi_substract);
+        d=0;
+        vec_mean=0;  
+        for i=1:col % calculate mean of roi_substract
+              
+                numb_values=length(find(roi_substract(:,i) > 1));
+                
+                if numb_values>1
+                    d=d+1;
+                    vec_col_dicom=roi_substract(:,i);
+                    vec_col_dicom(vec_col_dicom==0)=[];
+                    vec_mean(:,d)=mean(vec_col_dicom);
+                    
+                end
+        end
+          
+        noise_value=std(vec_mean);
+        
+        % Analysis
+        SNR_1=(sqrt(2).*mean_signal_value)./noise_value; % approach 1 aapm
+        
+        %%%% SNR 2 %%%%
+                
+        % 4 squares left,right,up,down 13.5 cm² placed inside of background
+        area_square=1350;% 13.5 cm²==1350 mm²
+        length_edge=sqrt(area_square);
+        smaller_edge=length_edge./3; % 1/2 der totalen Länge
+        longer_edge=length_edge.*3;% 2* der totalen Länge
+        smaller_edge_pixel=round(smaller_edge*resolution);
+        longer_edge_pixel=round(longer_edge*resolution);      
+        [row_dicom,~]=size(dicom_1);
+        mean_row_dicom=row_dicom/2;
+        longer_edge_pixel_half=round(longer_edge_pixel/2);
+          
+          %T1- Images == 1, T2- Image == 2
+          
+          if T_image == 1
+              
+              square_left1=dicom_1((mean_row_dicom-longer_edge_pixel_half):(mean_row_dicom+longer_edge_pixel_half),10:(10+smaller_edge_pixel));
+              square_right1=dicom_1((mean_row_dicom-longer_edge_pixel_half):(mean_row_dicom+longer_edge_pixel_half),(500-smaller_edge_pixel):500);
+              square_left2=dicom_2((mean_row_dicom-longer_edge_pixel_half):(mean_row_dicom+longer_edge_pixel_half),10:(10+smaller_edge_pixel));
+              square_right2=dicom_2((mean_row_dicom-longer_edge_pixel_half):(mean_row_dicom+longer_edge_pixel_half),(500-smaller_edge_pixel):500);
+
+          elseif T_image == 2
+              
+              square_left1=dicom_1((mean_row_dicom-longer_edge_pixel_half):(mean_row_dicom+longer_edge_pixel_half),5:(5+smaller_edge_pixel));
+              square_right1=dicom_1((mean_row_dicom-longer_edge_pixel_half):(mean_row_dicom+longer_edge_pixel_half),(250-smaller_edge_pixel):250);
+              square_left2=dicom_2((mean_row_dicom-longer_edge_pixel_half):(mean_row_dicom+longer_edge_pixel_half),5:(5+smaller_edge_pixel));
+              square_right2=dicom_2((mean_row_dicom-longer_edge_pixel_half):(mean_row_dicom+longer_edge_pixel_half),(250-smaller_edge_pixel):250);
+             
+          end
+             
+        reshape_sq_left1=reshape(square_left1,[],1);
+        reshape_sq_left1=double(reshape_sq_left1);
+        std_square_left1=std(reshape_sq_left1);
+        
+        reshape_sq_left2=reshape(square_left2,[],1);
+        reshape_sq_left2=double(reshape_sq_left2);
+        std_square_left2=std(reshape_sq_left2);
+
+        reshape_sq_right1=reshape(square_right1,[],1);
+        reshape_sq_right1=double(reshape_sq_right1);
+        std_square_right1=std(reshape_sq_right1); 
+        
+        reshape_sq_right2=reshape(square_right2,[],1);
+        reshape_sq_right2=double(reshape_sq_right2);
+        std_square_right2=std(reshape_sq_right2); 
+        
+        
+        mean_square_image1=mean([std_square_left1;std_square_right1]);% std noise image 1
+        mean_square_image2=mean([std_square_left2;std_square_right2]);% std noise image 2
+        
+        mean_squares_noise=mean([mean_square_image1;mean_square_image2]);
+        
+        SNR_2= mean_signal_value/mean_squares_noise; %approach 2 chen paper
+        
+        %%%% SNR 3 %%%%%
+        
+        SNR_3_part1=signal_value_1/mean_square_image1;% SNR of image 1
+        SNR_3_part2=signal_value_2/mean_square_image2;% SNR of image 2
+        
+        SNR_3=mean([SNR_3_part1;SNR_3_part2]);% SNR of both images
