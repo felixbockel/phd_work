@@ -1,0 +1,135 @@
+#!/bin/bash
+
+####### input ########
+Path="/home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/Ammon_Klaus/Dose_Kontur_Shift" 
+PLASTIMATCH="/projects/Plastimatch/Plastimatch/plastimatch"
+MULTIPLY="/projects/3DSlicer/3DSlicer/Slicer-build/lib/Slicer-4.5/cli-modules/MultiplyScalarVolumes"
+a="0"
+
+## prepare data before running dvh_kontur_shift.sh script
+
+
+# plastimatch convert --input /home/dicom-in/Ammon_Klaus_20161107_162228606/RD.1.2.276.0.20.1.4.5.995660019204.42984.1478532596.829816 --output-dose-img /home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/Ammon_Klaus/Dose.nrrd
+# plastimatch convert --input /home/dicom-in/Ammon_Klaus_20161107_162228606/RS.1.2.276.0.20.1.4.5.995660019204.42984.1478532329.194500 --output-prefix /home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/Ammon_Klaus/Contours --prefix-format nrrd
+# plastimatch convert --input /home/dicom-in/Ammon_Klaus_20161107_162228606 --output-img /home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/Ammon_Klaus/CT_Ammon.nrrd
+# for i in /home/boeckefx/Documents/Prostate_SOP/Data/dvh_kontur_shift/Ammon_Klaus/Contours/; do mv "$i" $(echo "$i"| sed 's/ /_/g'); done ## alle leerzeichen vom kontur namen sind weg
+
+
+## Aufruf: ./dvh_kontur_shift.sh -f Ammon_Klaus/balloon_shift.txt -d Ammon_Klaus/Dose.nrrd -n 3 -c Ammon_Klaus/Contours/Rektum.nrrd Ammon_Klaus/Contours/Rektumvorderwand.nrrd  Ammon_Klaus/Contours/Prostate.nrrd 
+
+#filename="Ammon_Klaus/balloon_shift.txt"
+
+## for balloon_shift.txt- which contours?
+# Rektum and Rektumvorderwand
+
+## for marker_markerintra.txt- which contours?
+# Prostate
+
+
+contour=()
+number=1
+
+while [ $1 ]; do
+    case $1 in
+        "-f")         filename=$2;; # filename of shift: balloon_shift.txt 
+                
+        "-d")         dose=$2;; # dose.nrrd
+                              
+        "-n")         number=$2;; # number of contours
+
+        "-c")         for (( i=0; i<$number; i++ )); do # Reihenfolge bitte so lassen : Ammon_Klaus/Contours/Rektum.nrrd Ammon_Klaus/Contours/Rektumvorderwand.nrrd Ammon_Klaus/Contours/Prostate.nrrd, ansonsten Zeile 141 und 180 i in loop ändern 
+                          contour+=($2)
+                          shift
+                      done;; # name of contours
+    esac
+    shift
+done
+
+FileName=${filename%/*}
+
+# konturen dosis shift 
+
+Folder1="shifted_kontur_dose_data"
+Folder2="shifted_dose_data"
+
+mkdir $FileName/$Folder1 # erstellt folder in dem gegebenen path
+mkdir $FileName/$Folder2 # erstellt folder in dem gegebenen path
+# get dvh 0,0,0
+   
+x="0"
+y="0"
+z="0"
+	
+cat > $FileName/shift.txt <<EOF
+#Insight Transform File V1.0
+#Transform 0
+Transform: TranslationTransform_double_3_3
+Parameters: $x $y $z
+FixedParameters:
+EOF
+
+      shifted_dose=$(echo $dose | sed "s/\.nrrd/\_$x\_$y\_$z.nrrd/g")
+
+      ${PLASTIMATCH} warp --input $dose --output-img $shifted_dose --fixed $dose --xf $FileName/shift.txt
+   
+      for (( i=0; i<$number; i++ )); do
+	result=$(echo ${contour[$i]} | sed "s/\.nrrd/_"fraktion_$a".mha/g" )
+	result=${result##*/}
+	${MULTIPLY} $shifted_dose $contour $FileName/$Folder1/$result
+      done
+    
+      mv $result $FileName/$Folder1
+      mv $shifted_dose */$Folder2
+    
+      rm -rfv $FileName/$shifted_dose/*
+		    
+rm -rfv $FileName/shift.txt
+
+
+# rektum und rektumvorderwand kontur shift dose
+
+while read -r line
+do
+   
+    a=$(($a+1))
+    
+    name="$line" #x, y , z reihenfolge ergibt sich aus der excel datei >> SOP_Patient.xlsx  >> kontur movie interfrac motion
+    x=$(echo "$(echo $name | awk '{print $1}') * -1" | bc -l ) # +x links -x rechts
+    z=$(echo "$(echo $name | awk '{print $2}') * 1" | bc -l ) # +z equals to superior -z inferior
+    y=$(echo "$(echo $name | awk '{print $3}') * -1" | bc -l ) # +y anterior -y posterior
+
+cat > $FileName/shift.txt <<EOF
+#Insight Transform File V1.0
+#Transform 0
+Transform: TranslationTransform_double_3_3
+Parameters: $x $y $z
+FixedParameters:
+EOF
+
+    shifted_dose=$(echo $dose | sed "s/\.nrrd/\_$x\_$y\_$z.nrrd/g")
+
+    ${PLASTIMATCH} warp --input $dose --output-img $shifted_dose --fixed $dose --xf $FileName/shift.txt
+
+    for (( i=0; i<$number; i++ )); do
+      result=$(echo ${contour} | sed "s/\.nrrd/_"fraktion_$a".mha/g" )   
+      result=${result##*/}
+      ${MULTIPLY} $shifted_dose $contour $FileName/$Folder1/$result
+    done
+    
+    mv $result $FileName/$Folder1
+    mv $shifted_dose */$Folder2
+    
+    rm -rfv $FileName/$shifted_dose/*
+       
+done < "$filename"
+
+    rm -rfv $FileName/shift.txt
+   
+# prostate kontur shift dose
+
+
+
+# last but not least
+
+# run ./dvh_adding_rekt_rektwand.sh script
+
