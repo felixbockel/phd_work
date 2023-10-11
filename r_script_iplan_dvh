@@ -1,0 +1,130 @@
+## AUfRUF: Rscript /home/boeckefx/Documents/Prostate_SOP/scripte/iplan_dvh.r
+
+##########
+## data ##
+##########
+
+remove <- c (NA)
+
+## x-ray marker ##
+
+#
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/Iplan_DVH/moebius_walter/moebius_walter.txt", sep="") , header=TRUE, sep="\t",dec=".")
+na_length=length(rep(NA,nrow(dvh)))
+List=list()
+for(i in 1:ncol(dvh)){
+  a=dvh[,i]
+  b=sum(is.na(a))
+  if (b == na_length){
+  LM=i
+  List[[length(List)+1]] = LM
+  }
+}
+index <- as.numeric(unlist(List))
+dvh<-dvh[,-c(index)] 
+colnames(dvh)<-c(1:ncol(dvh))
+
+dvh_5=dvh
+
+#
+
+dvh= read.table(paste("/home/boeckefx/Documents/Prostate_SOP/Data/Iplan_DVH/wolfrum_gerd/wolfrum_gerd.txt", sep="") , header=TRUE, sep="\t",dec=".")
+na_length=length(rep(NA,nrow(dvh)))
+List=list()
+for(i in 1:ncol(dvh)){
+  a=dvh[,i]
+  b=sum(is.na(a))
+  if (b == na_length){
+  LM=i
+  List[[length(List)+1]] = LM
+  }
+}
+index <- as.numeric(unlist(List))
+dvh<-dvh[,-c(index)]# 2. cbct in einer fraktion entfernt -> erklärt in excel sop_patienten
+colnames(dvh)<-c(1:ncol(dvh))
+
+dvh_7=dvh
+
+#
+
+
+#################
+## calculation ## 
+#################
+
+#p_z=ifelse((stat_rtdays$p.value)<=0.01,0.01,round(stat_rtdays$p.value,2))# p_rtdays<0.001 -> result equals p<0.001 otherwise p>0.001 =0.71
+
+#x_length=1:(length(mean_vector))
+seq_dose=seq(0,110,10)
+seq_vol=seq(0,100,10)
+seq_dvh5_x=seq(1,ncol(dvh_5),2)
+seq_dvh5_y=seq(2,ncol(dvh_5),2)
+
+###########
+## print ##
+###########
+
+# Graph parameters
+
+color_prostate=rgb(1,0,1,1) # pink
+color_rektwand=rgb(0,0.5,0,1) # dunkelgrün
+color_rektum=rgb(0,1,0,1) # hellgrün
+type_line_nonshift="l"
+type_line_shift="l"
+lty_solid=1 # for non shift
+lty_dotted=2 # for shift
+
+seq_dose=seq(0,55,5) #dvh
+seq_vol_name=seq(0,100,20) #dvh
+seq_vol_pos=seq(0,1,0.2) #dvh
+seq_vol_sd_name=seq(0,15,5) #dvh
+seq_vol_sd_pos=seq(0,0.15,0.05) #dvh
+#seq_dose_empty=add_empty_row[1:length(seq_dose)]
+
+font_size=0.9
+font_type=1
+x_axis="Dose [Gy]"
+y_axis="Volume [%]"
+y_axis_sd=paste("Absolute deviation [%]")
+x_lim=c(0,55)
+
+# print graph
+
+#png
+print_width=8
+print_height=4
+print_res=300
+
+myPng <- function(..., width=print_width, height=print_height, res=print_res) {
+  png(..., width=width*res, height=height*res, res=res)
+  
+}
+
+#
+path_print="/home/boeckefx/Documents/Prostate_SOP/Data/Iplan_DVH/analysis/dvh.pdf"
+
+#
+
+legend=c("Prostate dose after TPS","Prostate dose including motion","Anterior rectal wall dose after TPS","Anterior rectal wall dose including motion","Rectum dose after TPS","Rectum dose including motion")
+
+
+print(mean(dvh_5[,c(2)]))
+quit()
+## dvh ##
+
+myPng(path_print, width=print_width, height=print_height, res=print_res)
+#pdf("/home/boeckefx/Documents/Prostate_SOP/Data/Iplan_DVH/analysis/dvh.pdf",width= 9, height= 5)
+
+plot(dvh_5[,c(1)],dvh_5[,c(2)], type=type_line_nonshift,  lty=lty_solid,col=color_prostate,ylab=NA, xlab=NA,yaxt="n",xaxt = "n",main="DVH Moenius")#ylab=NA, xlab=NA,yaxt="n",xaxt = "n",
+lines(dvh_5[,c(3)],dvh_5[,c(4)],type="l",  lty=2,col=rgb(0,0,0,1))# lat
+box()
+axis(1, at=seq_dose, las=1,labels= seq_dose)
+axis(2,at=seq_vol,las=1,labels=seq_vol)
+mtext(y_axis, side = 2, line = 3, cex = font_size, font = font_type)
+legend("bottomleft", legend=legend,lty=c(1,2), col =c(color_prostate,color_prostate,color_rektwand,color_rektwand,color_rektum,color_rektum),cex = 0.8,bg="white")
+legend("topright", legend="a)", cex = 0.8,bg="white")
+mtext("Dose [Gy]", side = 1, line=3, cex = 0.9, font = 1)
+mtext("Volume [%]", side = 2, line = 3, cex = 0.9, font = 1)
+# abline(v=0, col = "black", lty=2,lwd=.5)
+
+print("Ende")
