@@ -1,0 +1,34 @@
+#!/bin/bash
+
+##Aufruf: ./marker_shift+marker_intrafrak_shift.sh -fm Ammon_Klaus/marker_shift.txt -fmi Ammon_Klaus/marker_intrafra_shift.txt 
+
+while [ $1 ]; do
+    case $1 in
+        "-fm")         filename1=$2;; # filename marker_shift 
+        
+        "-fmi")       filename2=$2;; # filename marker_intrafra_shift
+
+    esac
+    shift
+done
+
+FileName=${filename1%/*}
+filename3="$FileName/pre_marker_marker_markerintra.txt"
+filename4="$FileName/tab_marker_markerintra.txt"
+filename5="$FileName/marker_markerintra.txt"
+filename6="$FileName/test_marker_markerintra.txt"
+filename7="$FileName/test_test_marker_markerintra.txt"
+filename8="$FileName/test_test_test_marker_markerintra.txt"
+awk -v n=3 '{for (i=1; i<=n; i++) printf "%s%s", ($i + $(i+n) + $(i+n*2)), 
+            (i==n)?ORS:OFS}' <(paste $filename1 $filename2) > $filename3
+
+            
+awk '{$3 = $3 "\t"; print}' $filename3  > $filename4            
+cat $filename4 | sed -e 's/ /\t/g' > $filename5  
+
+rm -rfv $filename3
+rm -rfv $filename4
+
+cat $filename2 | sed -e 's/\t/ /g' > $filename6
+awk '{$3 = $2 "\t"; print}' $filename6  > $filename7 
+cat $filename7 | sed -e 's/ /\t/g' > $filename8 
