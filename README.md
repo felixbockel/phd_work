@@ -6,8 +6,8 @@ Patients diagnosed with intermediate- and high-risk prostate cancer were treated
 
 ## Code
 
-1) bash_scripts were used to transform raw data for all patients
-2) r_scripts were used to analyse transformed data from 1)
+1) bash_scripts were used to transform raw data for all patients.
+2) r_scripts were used to analyse transformed data from 1).
 
 # Monthly Quality Assurance of an MRI using an ACR (American College of Radiology) phantom 
 
