@@ -13,7 +13,7 @@ Patients diagnosed with intermediate- and high-risk prostate cancer were treated
 
 ## Code
 
-All MRI images acquired using a specific MR protocol and were analysed fully automated. The scripts were written in Matlab. 
+All acquired MRI images for this study use a specific MR protocol and the analysis was performed fully automated. The scripts were written in Matlab. 
 
-1) main code is called matlab_mri_qa_main
-2) all other matlab scripts are functions that are used in the main
+1) main code is called matlab_mri_qa_main.
+2) all other matlab scripts are functions that are initiated in the main 1).
